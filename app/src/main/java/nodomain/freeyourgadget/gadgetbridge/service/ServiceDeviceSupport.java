@@ -36,6 +36,7 @@ import nodomain.freeyourgadget.gadgetbridge.model.CallSpec;
 import nodomain.freeyourgadget.gadgetbridge.model.CannedMessagesSpec;
 import nodomain.freeyourgadget.gadgetbridge.model.MusicSpec;
 import nodomain.freeyourgadget.gadgetbridge.model.MusicStateSpec;
+import nodomain.freeyourgadget.gadgetbridge.model.NavigationInfoSpec;
 import nodomain.freeyourgadget.gadgetbridge.model.NotificationSpec;
 import nodomain.freeyourgadget.gadgetbridge.model.Reminder;
 import nodomain.freeyourgadget.gadgetbridge.model.WeatherSpec;
@@ -204,6 +205,14 @@ public class ServiceDeviceSupport implements DeviceSupport {
             return;
         }
         delegate.onSetMusicInfo(musicSpec);
+    }
+
+    @Override
+    public void onSetNavigationInfo(NavigationInfoSpec navigationInfoSpec) {
+        if (checkBusy("set navigation info")) {
+            return;
+        }
+        delegate.onSetNavigationInfo(navigationInfoSpec);
     }
 
     @Override

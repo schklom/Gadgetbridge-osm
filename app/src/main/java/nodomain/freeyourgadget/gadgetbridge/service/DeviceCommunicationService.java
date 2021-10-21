@@ -1080,6 +1080,10 @@ public class DeviceCommunicationService extends Service implements SharedPrefere
                 registerReceiver(mAlarmClockReceiver, filter);
             }
 
+            if (mOsmandAidlHelper == null) {
+                mOsmandAidlHelper = new OsmandEventReceiver(this.getApplication());
+            }
+
             // Weather receivers
             if (features.supportsWeather()) {
                 if (GBApplication.isRunningOreoOrLater()) {
@@ -1087,8 +1091,7 @@ public class DeviceCommunicationService extends Service implements SharedPrefere
                         mLineageOsWeatherReceiver = new LineageOsWeatherReceiver();
                         registerReceiver(mLineageOsWeatherReceiver, new IntentFilter("GB_UPDATE_WEATHER"));
                     }
-                }
-                else {
+                } else {
                     if (mCMWeatherReceiver == null) {
                         mCMWeatherReceiver = new CMWeatherReceiver();
                         registerReceiver(mCMWeatherReceiver, new IntentFilter("GB_UPDATE_WEATHER"));
@@ -1105,9 +1108,6 @@ public class DeviceCommunicationService extends Service implements SharedPrefere
                     } catch (PackageManager.NameNotFoundException e) {
                         //Nothing wrong, it just means we're not running on omnirom.
                     }
-                }
-                if (mOsmandAidlHelper == null) {
-                    mOsmandAidlHelper = new OsmandEventReceiver(this.getApplication());
                 }
             }
 

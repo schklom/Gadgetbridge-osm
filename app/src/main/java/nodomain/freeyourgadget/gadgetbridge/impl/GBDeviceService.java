@@ -443,4 +443,22 @@ public class GBDeviceService implements DeviceService {
                 .putExtra(EXTRA_LED_COLOR, color);
         invokeService(intent);
     }
+
+    @Override
+    public void onSetAutomaticNoiseCancelling() {
+        Intent intent = createIntent().setAction(ACTION_SET_ANC);
+        invokeService(intent);
+    }
+
+    @Override
+    public void onSetAmbientSound() {
+        Intent intent = createIntent().setAction(ACTION_SET_AMBIENT_SOUND);
+        invokeService(intent);
+    }
+
+    @Override
+    public void onSetClearSound() {
+        Intent intent = createIntent().setAction(ACTION_SET_CLEAR_SOUND);
+        invokeService(intent);
+    }
 }

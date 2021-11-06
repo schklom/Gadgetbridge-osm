@@ -218,6 +218,40 @@ public class GBDeviceAdapterv2 extends RecyclerView.Adapter<GBDeviceAdapterv2.Vi
                                                      }
         );
 
+        holder.ancIcon.setVisibility((device.isInitialized() && coordinator.supportsAutomaticNoiseCancellation()) ? View.VISIBLE : View.GONE);
+        holder.ambientIcon.setVisibility((device.isInitialized() && coordinator.supportsAmbientSound()) ? View.VISIBLE : View.GONE);
+        holder.ancAmbOffIcon.setVisibility((device.isInitialized() && coordinator.supportsClearSound()) ? View.VISIBLE : View.GONE);
+
+        holder.ancIcon.setOnClickListener(new View.OnClickListener()
+
+                                                    {
+                                                        @Override
+                                                        public void onClick(View v) {
+                                                            GBApplication.deviceService().onSetAutomaticNoiseCancelling();
+                                                        }
+                                                    }
+        );
+
+        holder.ambientIcon.setOnClickListener(new View.OnClickListener()
+
+                                          {
+                                              @Override
+                                              public void onClick(View v) {
+                                                  GBApplication.deviceService().onSetAmbientSound();
+                                              }
+                                          }
+        );
+
+        holder.ancAmbOffIcon.setOnClickListener(new View.OnClickListener()
+
+                                          {
+                                              @Override
+                                              public void onClick(View v) {
+                                                  GBApplication.deviceService().onSetClearSound();
+                                              }
+                                          }
+        );
+
         //device specific settings
         holder.deviceSpecificSettingsView.setVisibility(coordinator.getSupportedDeviceSpecificSettings(device) != null ? View.VISIBLE : View.GONE);
         holder.deviceSpecificSettingsView.setOnClickListener(new View.OnClickListener()
@@ -634,6 +668,9 @@ public class GBDeviceAdapterv2 extends RecyclerView.Adapter<GBDeviceAdapterv2.Vi
         LinearLayout heartRateStatusBox;
         ImageView heartRateIcon;
         TextView heartRateStatusLabel;
+        ImageView ancIcon;
+        ImageView ambientIcon;
+        ImageView ancAmbOffIcon;
 
 
         ImageView deviceInfoView;
@@ -692,6 +729,9 @@ public class GBDeviceAdapterv2 extends RecyclerView.Adapter<GBDeviceAdapterv2.Vi
             heartRateStatusBox = view.findViewById(R.id.device_heart_rate_status_box);
             heartRateStatusLabel = view.findViewById(R.id.heart_rate_status);
             heartRateIcon = view.findViewById(R.id.device_heart_rate_status);
+            ancIcon = view.findViewById(R.id.device_anc_icon);
+            ambientIcon = view.findViewById(R.id.device_ambient_icon);
+            ancAmbOffIcon = view.findViewById(R.id.device_anc_amb_off_icon);
         }
 
     }

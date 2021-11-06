@@ -258,5 +258,19 @@ public abstract class AbstractDeviceCoordinator implements DeviceCoordinator {
         return new BatteryConfig[0];
     }
 
+    @Override
+    public boolean supportsAutomaticNoiseCancellation() {
+        return false;
+    }
+
+    @Override
+    public boolean supportsAmbientSound() {
+        return false;
+    }
+
+    @Override
+    public boolean supportsClearSound() {
+        return false;
+    }
 
 }

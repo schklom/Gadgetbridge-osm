@@ -390,4 +390,16 @@ public abstract class AbstractBTLEDeviceSupport extends AbstractDeviceSupport im
     public boolean onDescriptorWriteRequest(BluetoothDevice device, int requestId, BluetoothGattDescriptor descriptor, boolean preparedWrite, boolean responseNeeded, int offset, byte[] value) {
         return false;
     }
+
+    @Override
+    public void onSetAutomaticNoiseCancelling() {
+    }
+
+    @Override
+    public void onSetAmbientSound() {
+    }
+
+    @Override
+    public void onSetClearSound() {
+    }
 }

@@ -53,6 +53,22 @@ public class GalaxyBudsDeviceCoordinator extends AbstractDeviceCoordinator {
         return new BatteryConfig[]{battery1, battery2};
     }
 
+    @Override
+    public boolean supportsAutomaticNoiseCancellation() {
+        return true;
+    }
+
+    @Override
+    public boolean supportsAmbientSound() {
+        return true;
+    }
+
+    @Override
+    public boolean supportsClearSound() {
+        return true;
+    }
+
+
     @Nullable
     @Override
     public Class<? extends Activity> getPairingActivity() {

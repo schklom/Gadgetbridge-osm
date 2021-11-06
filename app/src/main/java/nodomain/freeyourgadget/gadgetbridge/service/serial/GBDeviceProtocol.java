@@ -144,4 +144,16 @@ public abstract class GBDeviceProtocol {
     public byte[] encodeFmFrequency(float frequency) {
         return null;
     }
+
+    public byte[] encodeSetAutomaticNoiseCancelling() {
+        return null;
+    }
+
+    public byte[] encodeSetAmbientSound() {
+        return null;
+    }
+
+    public byte[] encodeSetClearSound() {
+        return null;
+    }
 }

@@ -357,6 +357,29 @@ public interface DeviceCoordinator {
      */
     int getBatteryCount();
 
+    /*
+    * Provides optional configuration for battery icon and battery label
+    * in the form of array of BatteryConfig
+    */
     BatteryConfig[] getBatteryConfig();
+
+    /**
+     * Indicates whether the device supports enabling Automatic Noise Cancellation (ANC)
+     */
+    boolean supportsAutomaticNoiseCancellation();
+
+    /**
+     * Indicates whether the device supports enabling Ambient Sound
+     */
+    boolean supportsAmbientSound();
+
+    /**
+     * Indicates whether the device supports disabling ANC and Ambient Sounds,
+     * thus enabling just "clean sound"
+     */
+    boolean supportsClearSound();
+
+
+
 
 }

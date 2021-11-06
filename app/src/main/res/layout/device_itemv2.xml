@@ -460,6 +460,53 @@
 
                 </LinearLayout>
 
+                <ImageView
+                    android:id="@+id/device_anc_icon"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_below="@id/device_image"
+                    android:layout_margin="3dp"
+                    android:layout_toEndOf="@id/device_action_find"
+                    android:clickable="true"
+                    android:contentDescription="@string/controlcenter_calibrate_device"
+                    android:focusable="true"
+                    android:padding="3dp"
+                    android:scaleType="fitXY"
+                    card_view:srcCompat="@drawable/ic_headset_and"
+                    card_view:tint="@color/secondarytext" />
+
+
+                <ImageView
+                    android:id="@+id/device_ambient_icon"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_below="@id/device_image"
+                    android:layout_margin="3dp"
+                    android:layout_toEndOf="@id/device_action_find"
+                    android:clickable="true"
+                    android:contentDescription="@string/controlcenter_calibrate_device"
+                    android:focusable="true"
+                    android:padding="3dp"
+                    android:scaleType="fitXY"
+                    card_view:srcCompat="@drawable/ic_headset_amb"
+                    card_view:tint="@color/secondarytext" />
+
+                <ImageView
+                    android:id="@+id/device_anc_amb_off_icon"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_below="@id/device_image"
+                    android:layout_margin="3dp"
+                    android:layout_toEndOf="@id/device_action_find"
+                    android:clickable="true"
+                    android:contentDescription="@string/controlcenter_calibrate_device"
+                    android:focusable="true"
+                    android:padding="3dp"
+                    android:scaleType="fitXY"
+                    card_view:srcCompat="@drawable/ic_headset_off"
+                    card_view:tint="@color/secondarytext" />
+
+
 
             </com.google.android.flexbox.FlexboxLayout>
         </RelativeLayout>

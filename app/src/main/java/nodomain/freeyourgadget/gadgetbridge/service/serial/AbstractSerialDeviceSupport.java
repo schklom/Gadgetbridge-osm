@@ -262,4 +262,22 @@ public abstract class AbstractSerialDeviceSupport extends AbstractDeviceSupport 
         byte[] bytes = gbDeviceProtocol.encodeLedColor(color);
         sendToDevice(bytes);
     }
+
+    @Override
+    public void onSetAutomaticNoiseCancelling() {
+        byte[] bytes = gbDeviceProtocol.encodeSetAutomaticNoiseCancelling();
+        sendToDevice(bytes);
+    }
+
+    @Override
+    public void onSetAmbientSound() {
+        byte[] bytes = gbDeviceProtocol.encodeSetAmbientSound();
+        sendToDevice(bytes);
+    }
+    @Override
+    public void onSetClearSound() {
+        byte[] bytes = gbDeviceProtocol.encodeSetClearSound();
+        sendToDevice(bytes);
+    }
+
 }

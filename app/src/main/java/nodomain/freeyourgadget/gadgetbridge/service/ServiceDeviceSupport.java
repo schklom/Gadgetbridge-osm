@@ -404,4 +404,28 @@ public class ServiceDeviceSupport implements DeviceSupport {
         }
         delegate.onSetLedColor(color);
     }
+
+    @Override
+    public void onSetAutomaticNoiseCancelling() {
+        if (checkBusy("automatic noise cancelling event")) {
+            return;
+        }
+        delegate.onSetAutomaticNoiseCancelling();
+    }
+
+    @Override
+    public void onSetAmbientSound() {
+        if (checkBusy("ambient sound event")) {
+            return;
+        }
+        delegate.onSetAmbientSound();
+    }
+
+    @Override
+    public void onSetClearSound() {
+        if (checkBusy("set clear sound event")) {
+            return;
+        }
+        delegate.onSetClearSound();
+    }
 }

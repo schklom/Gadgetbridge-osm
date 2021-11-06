@@ -68,6 +68,9 @@ public interface DeviceService extends EventHandler {
     String ACTION_TEST_NEW_FUNCTION = PREFIX + ".action.test_new_function";
     String ACTION_SET_FM_FREQUENCY = PREFIX + ".action.set_fm_frequency";
     String ACTION_SET_LED_COLOR = PREFIX + ".action.set_led_color";
+    String ACTION_SET_ANC = PREFIX + ".action.set_anc";
+    String ACTION_SET_AMBIENT_SOUND = PREFIX + ".action.set_ambient_sound";
+    String ACTION_SET_CLEAR_SOUND = PREFIX + ".action.set_clear_sound";
     String EXTRA_NOTIFICATION_BODY = "notification_body";
     String EXTRA_NOTIFICATION_FLAGS = "notification_flags";
     String EXTRA_NOTIFICATION_ID = "notification_id";

@@ -475,4 +475,6 @@ public interface DeviceCoordinator {
     PasswordCapabilityImpl.Mode getPasswordCapability();
 
     List<HeartRateCapability.MeasurementInterval> getHeartRateMeasurementIntervals();
+
+    boolean supportsNavigation(GBDevice mGBDevice);
 }

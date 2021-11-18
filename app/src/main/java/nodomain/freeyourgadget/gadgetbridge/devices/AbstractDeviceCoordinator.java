@@ -381,4 +381,8 @@ public abstract class AbstractDeviceCoordinator implements DeviceCoordinator {
                 HeartRateCapability.MeasurementInterval.HOUR_1
         );
     }
+
+    public boolean supportsNavigation(GBDevice gbDevice) {
+        return false;
+    }
 }

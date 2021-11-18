@@ -448,4 +448,6 @@ public interface DeviceCoordinator {
     boolean supportsPowerOff();
 
     PasswordCapabilityImpl.Mode getPasswordCapability();
+
+    boolean supportsNavigation(GBDevice mGBDevice);
 }

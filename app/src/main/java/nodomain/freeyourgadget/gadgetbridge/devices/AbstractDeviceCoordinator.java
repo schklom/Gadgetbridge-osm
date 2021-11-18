@@ -333,4 +333,9 @@ public abstract class AbstractDeviceCoordinator implements DeviceCoordinator {
     public PasswordCapabilityImpl.Mode getPasswordCapability() {
         return PasswordCapabilityImpl.Mode.NONE;
     }
+
+    @Override
+    public boolean supportsNavigation(GBDevice gbDevice) {
+        return false;
+    }
 }

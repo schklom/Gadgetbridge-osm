@@ -22,18 +22,23 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.text.InputType;
 import android.transition.TransitionManager;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.NumberPicker;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -44,6 +49,11 @@ import androidx.cardview.widget.CardView;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.utils.MPPointF;
 import com.google.android.material.snackbar.Snackbar;
 import com.jaredrummler.android.colorpicker.ColorPickerDialog;
 import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
@@ -51,8 +61,14 @@ import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import nodomain.freeyourgadget.gadgetbridge.GBApplication;
 import nodomain.freeyourgadget.gadgetbridge.R;
@@ -61,9 +77,11 @@ import nodomain.freeyourgadget.gadgetbridge.activities.BatteryInfoActivity;
 import nodomain.freeyourgadget.gadgetbridge.activities.ConfigureAlarms;
 import nodomain.freeyourgadget.gadgetbridge.activities.ControlCenterv2;
 import nodomain.freeyourgadget.gadgetbridge.activities.HeartRateDialog;
+import nodomain.freeyourgadget.gadgetbridge.activities.SettingsActivity;
 import nodomain.freeyourgadget.gadgetbridge.activities.VibrationActivity;
 import nodomain.freeyourgadget.gadgetbridge.activities.charts.ChartsActivity;
 import nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsActivity;
+import nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst;
 import nodomain.freeyourgadget.gadgetbridge.database.DBHandler;
 import nodomain.freeyourgadget.gadgetbridge.database.DBHelper;
 import nodomain.freeyourgadget.gadgetbridge.devices.DeviceCoordinator;
@@ -72,9 +90,11 @@ import nodomain.freeyourgadget.gadgetbridge.entities.DaoSession;
 import nodomain.freeyourgadget.gadgetbridge.entities.Device;
 import nodomain.freeyourgadget.gadgetbridge.impl.GBDevice;
 import nodomain.freeyourgadget.gadgetbridge.model.ActivitySample;
+import nodomain.freeyourgadget.gadgetbridge.model.ActivityUser;
 import nodomain.freeyourgadget.gadgetbridge.model.BatteryState;
 import nodomain.freeyourgadget.gadgetbridge.model.DeviceType;
 import nodomain.freeyourgadget.gadgetbridge.model.RecordedDataTypes;
+import nodomain.freeyourgadget.gadgetbridge.util.DateTimeUtils;
 import nodomain.freeyourgadget.gadgetbridge.util.DeviceHelper;
 import nodomain.freeyourgadget.gadgetbridge.util.GB;
 
@@ -88,10 +108,12 @@ public class GBDeviceAdapterv2 extends RecyclerView.Adapter<GBDeviceAdapterv2.Vi
     private List<GBDevice> deviceList;
     private int expandedDevicePosition = RecyclerView.NO_POSITION;
     private ViewGroup parent;
+    private HashMap<String, long[]> deviceActivityMap = new HashMap();
 
-    public GBDeviceAdapterv2(Context context, List<GBDevice> deviceList) {
+    public GBDeviceAdapterv2(Context context, List<GBDevice> deviceList, HashMap<String,long[]> deviceMap) {
         this.context = context;
         this.deviceList = deviceList;
+        this.deviceActivityMap = deviceMap;
     }
 
     @NonNull
@@ -105,12 +127,17 @@ public class GBDeviceAdapterv2 extends RecyclerView.Adapter<GBDeviceAdapterv2.Vi
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         final GBDevice device = deviceList.get(position);
-        final DeviceCoordinator coordinator = DeviceHelper.getInstance().getCoordinator(device);
+        long[] dailyTotals = new long[]{0, 0};
+        if (deviceActivityMap.containsKey(device.getAddress())) {
+            dailyTotals = deviceActivityMap.get(device.getAddress());
+        }
 
+        final DeviceCoordinator coordinator = DeviceHelper.getInstance().getCoordinator(device);
         holder.container.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
+                
                 if (device.isInitialized() || device.isConnected()) {
                     showTransientSnackbar(R.string.controlcenter_snackbar_need_longpress);
                 } else {
@@ -416,27 +443,107 @@ public class GBDeviceAdapterv2 extends RecyclerView.Adapter<GBDeviceAdapterv2.Vi
             holder.fmFrequencyLabel.setText(String.format(Locale.getDefault(), "%.1f", (float) device.getExtraInfo("fm_frequency")));
         }
         final TextView fmFrequencyLabel = holder.fmFrequencyLabel;
+        final float FREQ_MIN = 87.5F;
+        final float FREQ_MAX = 108.0F;
+        final int FREQ_MIN_INT = (int) Math.floor(FREQ_MIN);
+        final int FREQ_MAX_INT = (int) Math.round(FREQ_MAX);
+        final AlertDialog alert[] = new AlertDialog[1];
+
         holder.fmFrequencyBox.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                LayoutInflater inflater = LayoutInflater.from(context);
+                View frequency_picker_view = inflater.inflate(R.layout.dialog_frequency_picker, null);
                 builder.setTitle(R.string.preferences_fm_frequency);
+                final float[] fm_presets = new float[3];
 
-                final EditText input = new EditText(context);
+                fm_presets[0] = GBApplication.getDeviceSpecificSharedPrefs(device.getAddress()).getFloat("fm_preset0", 99);
+                fm_presets[1] = GBApplication.getDeviceSpecificSharedPrefs(device.getAddress()).getFloat("fm_preset1", 100);
+                fm_presets[2] = GBApplication.getDeviceSpecificSharedPrefs(device.getAddress()).getFloat("fm_preset2", 101);
 
-                input.setSelection(input.getText().length());
-                input.setRawInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-                input.setText(String.format(Locale.getDefault(), "%.1f", (float) device.getExtraInfo("fm_frequency")));
-                builder.setView(input);
+                final NumberPicker frequency_decimal_picker = frequency_picker_view.findViewById(R.id.frequency_dec);
+                frequency_decimal_picker.setMinValue(FREQ_MIN_INT);
+                frequency_decimal_picker.setMaxValue(FREQ_MAX_INT);
+
+                final NumberPicker frequency_fraction_picker = frequency_picker_view.findViewById(R.id.frequency_fraction);
+                frequency_fraction_picker.setMinValue(0);
+                frequency_fraction_picker.setMaxValue(9);
+
+                final NumberPicker.OnValueChangeListener picker_listener = new NumberPicker.OnValueChangeListener() {
+                    @Override
+                    public void onValueChange(NumberPicker numberPicker, int oldVal, int newVal) {
+
+                        int decimal_value = numberPicker.getValue();
+                        if (decimal_value == FREQ_MIN_INT) {
+                            frequency_fraction_picker.setMinValue(5);
+                            frequency_fraction_picker.setMaxValue(9);
+                        } else if (decimal_value == FREQ_MAX_INT) {
+                            frequency_fraction_picker.setMinValue(0);
+                            frequency_fraction_picker.setMaxValue(0);
+                        } else {
+                            frequency_fraction_picker.setMinValue(0);
+                            frequency_fraction_picker.setMaxValue(9);
+                        }
+                    }
+                };
+
+                frequency_decimal_picker.setOnValueChangedListener(picker_listener);
+
+                final Button[] button_presets = new Button[]{
+                        frequency_picker_view.findViewById(R.id.frequency_preset1),
+                        frequency_picker_view.findViewById(R.id.frequency_preset2),
+                        frequency_picker_view.findViewById(R.id.frequency_preset3)
+                };
+
+                for (int i = 0; i < button_presets.length; i++) {
+                    final int index = i;
+                    button_presets[index].setText(String.valueOf(fm_presets[index]));
+                    button_presets[index].setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            float frequency = Float.parseFloat(String.format(Locale.getDefault(), "%.1f", fm_presets[index]));
+                            device.setExtraInfo("fm_frequency", frequency);
+                            // Trim to 1 decimal place, discard the rest
+                            fmFrequencyLabel.setText(String.format(Locale.getDefault(), "%.1f", (float) frequency));
+                            GBApplication.deviceService().onSetFmFrequency(frequency);
+                            alert[0].dismiss();
+                        }
+                    });
+                    button_presets[index].setOnLongClickListener(new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View view) {
+                            float frequency = (float) (frequency_decimal_picker.getValue() + (0.1 * frequency_fraction_picker.getValue()));
+                            frequency = Float.parseFloat(String.format(Locale.getDefault(), "%.1f", frequency));
+                            fm_presets[index] = frequency;
+                            button_presets[index].setText(String.valueOf(frequency));
+                            SharedPreferences.Editor editor = GBApplication.getDeviceSpecificSharedPrefs(device.getAddress()).edit();
+                            editor.putFloat((String.format("fm_preset%s", index)), frequency);
+                            editor.apply();
+                            editor.commit();
+                            return true;
+                        }
+                    });
+
+                }
+
+                float frequency = (float) device.getExtraInfo("fm_frequency");
+                int decimal = (int) frequency;
+                int fraction = Math.round((frequency - decimal) * 10);
+                frequency_decimal_picker.setValue(decimal);
+                picker_listener.onValueChange(frequency_decimal_picker, frequency_decimal_picker.getValue(), decimal);
+                frequency_fraction_picker.setValue(fraction);
+
+                builder.setView(frequency_picker_view);
 
                 builder.setPositiveButton(context.getResources().getString(android.R.string.ok),
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                float frequency = Float.parseFloat(input.getText().toString());
-                                // Trim to 1 decimal place, discard the rest
+                                float frequency = (float) (frequency_decimal_picker.getValue() + (0.1 * frequency_fraction_picker.getValue()));
                                 frequency = Float.parseFloat(String.format(Locale.getDefault(), "%.1f", frequency));
-                                if (frequency < 87.5 || frequency > 108.0) {
+                                if (frequency < FREQ_MIN || frequency > FREQ_MAX) {
                                     new AlertDialog.Builder(context)
                                             .setTitle(R.string.pref_invalid_frequency_title)
                                             .setMessage(R.string.pref_invalid_frequency_message)
@@ -459,7 +566,8 @@ public class GBDeviceAdapterv2 extends RecyclerView.Adapter<GBDeviceAdapterv2.Vi
                     }
                 });
 
-                builder.show();
+                alert[0] = builder.create();
+                alert[0].show();
             }
         });
 
@@ -596,6 +704,13 @@ public class GBDeviceAdapterv2 extends RecyclerView.Adapter<GBDeviceAdapterv2.Vi
                         .show();
             }
         });
+
+        holder.cardViewActivityCardLayout.setVisibility(coordinator.supportsActivityTracking() ? View.VISIBLE : View.GONE);
+        holder.cardViewActivityCardLayout.setMinimumWidth(coordinator.supportsActivityTracking() ? View.VISIBLE : View.GONE);
+
+        if (coordinator.supportsActivityTracking()) {
+            setActivityCard(holder, device, dailyTotals);
+        }
     }
 
     @Override
@@ -647,8 +762,15 @@ public class GBDeviceAdapterv2 extends RecyclerView.Adapter<GBDeviceAdapterv2.Vi
         TextView fmFrequencyLabel;
         ImageView ledColor;
 
+        //activity card
+        LinearLayout cardViewActivityCardLayout;
+        PieChart TotalStepsChart;
+        PieChart TotalDistanceChart;
+        PieChart SleepTimeChart;
+
         ViewHolder(View view) {
             super(view);
+
             container = view.findViewById(R.id.card_view);
 
             deviceImageView = view.findViewById(R.id.device_image);
@@ -692,6 +814,12 @@ public class GBDeviceAdapterv2 extends RecyclerView.Adapter<GBDeviceAdapterv2.Vi
             heartRateStatusBox = view.findViewById(R.id.device_heart_rate_status_box);
             heartRateStatusLabel = view.findViewById(R.id.heart_rate_status);
             heartRateIcon = view.findViewById(R.id.device_heart_rate_status);
+            
+            cardViewActivityCardLayout = view.findViewById(R.id.card_view_activity_card_layout);
+
+            TotalStepsChart = view.findViewById(R.id.activity_dashboard_piechart1);
+            TotalDistanceChart = view.findViewById(R.id.activity_dashboard_piechart2);
+            SleepTimeChart = view.findViewById(R.id.activity_dashboard_piechart3);
         }
 
     }
@@ -755,6 +883,143 @@ public class GBDeviceAdapterv2 extends RecyclerView.Adapter<GBDeviceAdapterv2.Vi
         //textView.setTextColor();
         //snackbarView.setBackgroundColor(Color.MAGENTA);
         snackbar.show();
+    }
+
+    private void setActivityCard(ViewHolder holder, final GBDevice device, long[] dailyTotals) {
+        int steps = (int) dailyTotals[0];
+        int sleep = (int) dailyTotals[1];
+        ActivityUser activityUser = new ActivityUser();
+        int stepGoal = activityUser.getStepsGoal();
+        int sleepGoal = activityUser.getSleepDurationGoal();
+        int sleepGoalMinutes = sleepGoal * 60;
+        int distanceGoal = activityUser.getDistanceGoalMeters() * 100;
+        int stepLength = activityUser.getStepLengthCm();
+        double distanceMeters = dailyTotals[0] * stepLength * 0.01;
+        double distanceFeet = distanceMeters * 3.28084f;
+        double distanceFormatted = 0;
+
+        String unit = "###m";
+        distanceFormatted = distanceMeters;
+        if (distanceMeters > 2000) {
+            distanceFormatted = distanceMeters / 1000;
+            unit = "###.#km";
+        }
+        String units = GBApplication.getPrefs().getString(SettingsActivity.PREF_MEASUREMENT_SYSTEM, GBApplication.getContext().getString(R.string.p_unit_metric));
+        if (units.equals(GBApplication.getContext().getString(R.string.p_unit_imperial))) {
+            unit = "###ft";
+            distanceFormatted = distanceFeet;
+            if (distanceFeet > 6000) {
+                distanceFormatted = distanceFeet * 0.0001893939f;
+                unit = "###.#mi";
+            }
+        }
+        DecimalFormat df = new DecimalFormat(unit);
+
+        setUpChart(holder.TotalStepsChart);
+        setChartsData(holder.TotalStepsChart, steps, stepGoal, context.getString(R.string.steps), String.valueOf(steps), context);
+
+        setUpChart(holder.TotalDistanceChart);
+        setChartsData(holder.TotalDistanceChart, steps * stepLength, distanceGoal, context.getString(R.string.distance), df.format(distanceFormatted), context);
+
+        setUpChart(holder.SleepTimeChart);
+        setChartsData(holder.SleepTimeChart, sleep, sleepGoalMinutes, context.getString(R.string.prefs_activity_in_device_card_sleep_title), String.format("%1s", getHM(sleep)), context);
+
+        boolean showActivityCard = GBApplication.getDeviceSpecificSharedPrefs(device.getAddress()).getBoolean(DeviceSettingsPreferenceConst.PREFS_ACTIVITY_IN_DEVICE_CARD, true);
+        holder.cardViewActivityCardLayout.setVisibility(showActivityCard ? View.VISIBLE : View.GONE);
+
+        boolean showActivitySteps = GBApplication.getDeviceSpecificSharedPrefs(device.getAddress()).getBoolean(DeviceSettingsPreferenceConst.PREFS_ACTIVITY_IN_DEVICE_CARD_STEPS, true);
+        boolean showActivitySleep = GBApplication.getDeviceSpecificSharedPrefs(device.getAddress()).getBoolean(DeviceSettingsPreferenceConst.PREFS_ACTIVITY_IN_DEVICE_CARD_SLEEP, true);
+        boolean showActivityDistance = GBApplication.getDeviceSpecificSharedPrefs(device.getAddress()).getBoolean(DeviceSettingsPreferenceConst.PREFS_ACTIVITY_IN_DEVICE_CARD_DISTANCE, true);
+
+        //do the multiple mini-charts for activities in a loop
+        Hashtable<PieChart, Pair<Boolean, Integer>> activitiesStatusMiniCharts = new Hashtable<>();
+        activitiesStatusMiniCharts.put(holder.TotalStepsChart, new Pair<>(showActivitySteps && steps > 0, ChartsActivity.getChartsTabIndex("stepsweek", device, context)));
+        activitiesStatusMiniCharts.put(holder.SleepTimeChart, new Pair<>(showActivitySleep && sleep > 0, ChartsActivity.getChartsTabIndex("sleep", device, context)));
+        activitiesStatusMiniCharts.put(holder.TotalDistanceChart, new Pair<>(showActivityDistance && steps > 0, ChartsActivity.getChartsTabIndex("activity", device, context)));
+
+        for (Map.Entry<PieChart, Pair<Boolean, Integer>> miniCharts : activitiesStatusMiniCharts.entrySet()) {
+            PieChart miniChart = miniCharts.getKey();
+            final Pair<Boolean, Integer> parameters = miniCharts.getValue();
+            miniChart.setVisibility(parameters.first ? View.VISIBLE : View.GONE);
+            miniChart.setOnClickListener(new View.OnClickListener() {
+                                             @Override
+                                             public void onClick(View v) {
+                                                 Intent startIntent;
+                                                 startIntent = new Intent(context, ChartsActivity.class);
+                                                 startIntent.putExtra(GBDevice.EXTRA_DEVICE, device);
+                                                 startIntent.putExtra(ChartsActivity.EXTRA_FRAGMENT_ID, parameters.second);
+                                                 context.startActivity(startIntent);
+                                             }
+                                         }
+            );
+        }
+    }
+
+    private String getHM(long value) {
+        return DateTimeUtils.formatDurationHoursMinutes(value, TimeUnit.MINUTES);
+    }
+    private void setUpChart(PieChart DashboardChart) {
+        DashboardChart.setTouchEnabled(false);
+        DashboardChart.setNoDataText("");
+        DashboardChart.getLegend().setEnabled(false);
+        DashboardChart.setDrawHoleEnabled(true);
+        DashboardChart.setHoleColor(Color.WHITE);
+        DashboardChart.getDescription().setText("");
+        DashboardChart.setTransparentCircleColor(Color.WHITE);
+        DashboardChart.setTransparentCircleAlpha(110);
+        DashboardChart.setHoleRadius(70f);
+        DashboardChart.setTransparentCircleRadius(75f);
+        DashboardChart.setDrawCenterText(true);
+        DashboardChart.setRotationEnabled(true);
+        DashboardChart.setHighlightPerTapEnabled(true);
+        DashboardChart.setCenterTextOffset(0, 0);
+    }
+    private void setChartsData(PieChart pieChart, float value, float target, String label, String stringValue, Context context) {
+        final String CHART_COLOR_START = "#e74c3c";
+        final String CHART_COLOR_END = "#2ecc71";
+
+        ArrayList<PieEntry> entries = new ArrayList<>();
+        entries.add(new PieEntry((float) value, context.getResources().getDrawable(R.drawable.ic_star_gold)));
+
+        if (value < target) {
+            entries.add(new PieEntry((float) (target - value)));
+        }
+
+        pieChart.setCenterText(String.format("%s\n%s", stringValue, label));
+        float colorValue = Math.max(0, Math.min(1, value / target));
+        int chartColor = interpolateColor(Color.parseColor(CHART_COLOR_START), Color.parseColor(CHART_COLOR_END), colorValue);
+
+        PieDataSet dataSet = new PieDataSet(entries, "");
+        dataSet.setDrawIcons(false);
+        dataSet.setIconsOffset(new MPPointF(0, -66));
+
+        if (colorValue == 1) {
+            dataSet.setDrawIcons(true);
+        }
+        dataSet.setSliceSpace(0f);
+        dataSet.setSelectionShift(5f);
+        dataSet.setColors(chartColor, Color.LTGRAY);
+
+        PieData data = new PieData(dataSet);
+        data.setValueTextSize(0f);
+        data.setValueTextColor(Color.WHITE);
+
+        pieChart.setData(data);
+        pieChart.invalidate();
+    }
+    private float interpolate(float a, float b, float proportion) {
+        return (a + ((b - a) * proportion));
+    }
+
+    private int interpolateColor(int a, int b, float proportion) {
+        float[] hsva = new float[3];
+        float[] hsvb = new float[3];
+        Color.colorToHSV(a, hsva);
+        Color.colorToHSV(b, hsvb);
+        for (int i = 0; i < 3; i++) {
+            hsvb[i] = interpolate(hsva[i], hsvb[i], proportion);
+        }
+        return Color.HSVToColor(hsvb);
     }
 
 }

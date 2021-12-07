@@ -76,6 +76,13 @@ public class HybridHRWatchfaceFactory {
                     widget.put("name", widgetDesc.getWidgetType());
                     widget.put("goal_ring", false);
                     widget.put("color", widgetDesc.getColor() == HybridHRWatchfaceWidget.COLOR_WHITE ? "white" : "black");
+                    if (widgetDesc.getUpdateTimeout() >= 0) {
+                        JSONObject data = new JSONObject();
+                        data.put("update_timeout", widgetDesc.getUpdateTimeout());
+                        data.put("timeout_hide_text", widgetDesc.getTimeoutHideText());
+                        data.put("timeout_show_circle", widgetDesc.getTimeoutShowCircle());
+                        widget.put("data", data);
+                    }
                     break;
                 case "widget2ndTZ":
                     widget.put("type", "comp");
@@ -174,6 +181,7 @@ public class HybridHRWatchfaceFactory {
             if (includeWidget("widgetCalories") > 0) icons.put("icCalories", context.getAssets().open("fossil_hr/icCalories.rle"));
             if (includeWidget("widgetActiveMins") > 0) icons.put("icActiveMins", context.getAssets().open("fossil_hr/icActiveMins.rle"));
             if (includeWidget("widgetChanceOfRain") > 0) icons.put("icRainChance", context.getAssets().open("fossil_hr/icRainChance.rle"));
+            if (includeWidget("widgetCustom") > 0) icons.put("widget_bg_error.rle", context.getAssets().open("fossil_hr/widget_bg_error.rle"));
         } catch (IOException e) {
             LOG.warn("Unable to read asset file", e);
         }

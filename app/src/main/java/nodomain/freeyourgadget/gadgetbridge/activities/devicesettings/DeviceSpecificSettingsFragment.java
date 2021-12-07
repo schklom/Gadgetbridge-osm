@@ -16,12 +16,14 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 package nodomain.freeyourgadget.gadgetbridge.activities.devicesettings;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.preference.EditTextPreference;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
@@ -39,6 +41,7 @@ import java.util.Objects;
 
 import nodomain.freeyourgadget.gadgetbridge.GBApplication;
 import nodomain.freeyourgadget.gadgetbridge.R;
+import nodomain.freeyourgadget.gadgetbridge.devices.DeviceManager;
 import nodomain.freeyourgadget.gadgetbridge.devices.huami.HuamiConst;
 import nodomain.freeyourgadget.gadgetbridge.devices.makibeshr3.MakibesHR3Constants;
 import nodomain.freeyourgadget.gadgetbridge.devices.miband.MiBandConst;
@@ -121,34 +124,40 @@ import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.Dev
 import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_VIBRATION_ENABLE;
 import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_NOTHING_EAR1_AUDIOMODE;
 import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_NOTHING_EAR1_INEAR;
-import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_WH1000XM3_AMBIENT_SOUND_CONTROL;
-import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_WH1000XM3_FOCUS_VOICE;
-import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_WH1000XM3_AMBIENT_SOUND_LEVEL;
-import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_WH1000XM3_SOUND_POSITION;
-import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_WH1000XM3_SURROUND_MODE;
-import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_WH1000XM3_EQUALIZER_MODE;
-import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_WH1000XM3_EQUALIZER_MANUAL_BAND_400;
-import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_WH1000XM3_EQUALIZER_MANUAL_BAND_1000;
-import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_WH1000XM3_EQUALIZER_MANUAL_BAND_2500;
-import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_WH1000XM3_EQUALIZER_MANUAL_BAND_6300;
-import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_WH1000XM3_EQUALIZER_MANUAL_BAND_16000;
-import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_WH1000XM3_EQUALIZER_MANUAL_CLEAR_BASS;
-import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_WH1000XM3_EQUALIZER_CUSTOM_1_BAND_400;
-import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_WH1000XM3_EQUALIZER_CUSTOM_1_BAND_1000;
-import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_WH1000XM3_EQUALIZER_CUSTOM_1_BAND_2500;
-import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_WH1000XM3_EQUALIZER_CUSTOM_1_BAND_6300;
-import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_WH1000XM3_EQUALIZER_CUSTOM_1_BAND_16000;
-import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_WH1000XM3_EQUALIZER_CUSTOM_1_CLEAR_BASS;
-import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_WH1000XM3_EQUALIZER_CUSTOM_2_BAND_400;
-import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_WH1000XM3_EQUALIZER_CUSTOM_2_BAND_1000;
-import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_WH1000XM3_EQUALIZER_CUSTOM_2_BAND_2500;
-import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_WH1000XM3_EQUALIZER_CUSTOM_2_BAND_6300;
-import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_WH1000XM3_EQUALIZER_CUSTOM_2_BAND_16000;
-import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_WH1000XM3_EQUALIZER_CUSTOM_2_CLEAR_BASS;
-import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_WH1000XM3_DSEE_HX;
-import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_WH1000XM3_TOUCH_SENSOR;
-import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_WH1000XM3_AUTOMATIC_POWER_OFF;
-import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_WH1000XM3_NOTIFICATION_VOICE_GUIDE;
+import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_AMBIENT_SOUND_CONTROL;
+import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_FOCUS_VOICE;
+import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_AMBIENT_SOUND_LEVEL;
+import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_SOUND_POSITION;
+import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_SURROUND_MODE;
+import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_EQUALIZER_MODE;
+import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_EQUALIZER_MANUAL_BAND_400;
+import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_EQUALIZER_MANUAL_BAND_1000;
+import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_EQUALIZER_MANUAL_BAND_2500;
+import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_EQUALIZER_MANUAL_BAND_6300;
+import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_EQUALIZER_MANUAL_BAND_16000;
+import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_EQUALIZER_MANUAL_CLEAR_BASS;
+import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_EQUALIZER_CUSTOM_1_BAND_400;
+import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_EQUALIZER_CUSTOM_1_BAND_1000;
+import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_EQUALIZER_CUSTOM_1_BAND_2500;
+import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_EQUALIZER_CUSTOM_1_BAND_6300;
+import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_EQUALIZER_CUSTOM_1_BAND_16000;
+import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_EQUALIZER_CUSTOM_1_CLEAR_BASS;
+import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_EQUALIZER_CUSTOM_2_BAND_400;
+import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_EQUALIZER_CUSTOM_2_BAND_1000;
+import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_EQUALIZER_CUSTOM_2_BAND_2500;
+import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_EQUALIZER_CUSTOM_2_BAND_6300;
+import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_EQUALIZER_CUSTOM_2_BAND_16000;
+import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_EQUALIZER_CUSTOM_2_CLEAR_BASS;
+import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_DSEE_HX;
+import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_TOUCH_SENSOR;
+import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_AUTOMATIC_POWER_OFF;
+import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_NOTIFICATION_VOICE_GUIDE;
+import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREFS_ACTIVITY_IN_DEVICE_CARD;
+import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREFS_ACTIVITY_IN_DEVICE_CARD_DISTANCE;
+import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREFS_ACTIVITY_IN_DEVICE_CARD_SLEEP;
+import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREFS_ACTIVITY_IN_DEVICE_CARD_STEPS;
+import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREFS_DEVICE_CHARTS_TABS;
+
 import static nodomain.freeyourgadget.gadgetbridge.devices.huami.HuamiConst.PREF_ACTIVATE_DISPLAY_ON_LIFT;
 import static nodomain.freeyourgadget.gadgetbridge.devices.huami.HuamiConst.PREF_DEVICE_ACTION_FELL_SLEEP_BROADCAST;
 import static nodomain.freeyourgadget.gadgetbridge.devices.huami.HuamiConst.PREF_DEVICE_ACTION_FELL_SLEEP_SELECTION;
@@ -517,35 +526,34 @@ public class DeviceSpecificSettingsFragment extends PreferenceFragmentCompat {
         addPreferenceHandlerFor(PREF_GALAXY_BUDS_LIVE_ANC);
         addPreferenceHandlerFor(PREF_GALAXY_BUDS_PRESSURE_RELIEF);
 
-
-        addPreferenceHandlerFor(PREF_SONY_WH1000XM3_AMBIENT_SOUND_CONTROL);
-        addPreferenceHandlerFor(PREF_SONY_WH1000XM3_FOCUS_VOICE);
-        addPreferenceHandlerFor(PREF_SONY_WH1000XM3_AMBIENT_SOUND_LEVEL);
-        addPreferenceHandlerFor(PREF_SONY_WH1000XM3_SOUND_POSITION);
-        addPreferenceHandlerFor(PREF_SONY_WH1000XM3_SURROUND_MODE);
-        addPreferenceHandlerFor(PREF_SONY_WH1000XM3_EQUALIZER_MODE);
-        addPreferenceHandlerFor(PREF_SONY_WH1000XM3_EQUALIZER_MANUAL_BAND_400);
-        addPreferenceHandlerFor(PREF_SONY_WH1000XM3_EQUALIZER_MANUAL_BAND_1000);
-        addPreferenceHandlerFor(PREF_SONY_WH1000XM3_EQUALIZER_MANUAL_BAND_2500);
-        addPreferenceHandlerFor(PREF_SONY_WH1000XM3_EQUALIZER_MANUAL_BAND_6300);
-        addPreferenceHandlerFor(PREF_SONY_WH1000XM3_EQUALIZER_MANUAL_BAND_16000);
-        addPreferenceHandlerFor(PREF_SONY_WH1000XM3_EQUALIZER_MANUAL_CLEAR_BASS);
-        addPreferenceHandlerFor(PREF_SONY_WH1000XM3_EQUALIZER_CUSTOM_1_BAND_400);
-        addPreferenceHandlerFor(PREF_SONY_WH1000XM3_EQUALIZER_CUSTOM_1_BAND_1000);
-        addPreferenceHandlerFor(PREF_SONY_WH1000XM3_EQUALIZER_CUSTOM_1_BAND_2500);
-        addPreferenceHandlerFor(PREF_SONY_WH1000XM3_EQUALIZER_CUSTOM_1_BAND_6300);
-        addPreferenceHandlerFor(PREF_SONY_WH1000XM3_EQUALIZER_CUSTOM_1_BAND_16000);
-        addPreferenceHandlerFor(PREF_SONY_WH1000XM3_EQUALIZER_CUSTOM_1_CLEAR_BASS);
-        addPreferenceHandlerFor(PREF_SONY_WH1000XM3_EQUALIZER_CUSTOM_2_BAND_400);
-        addPreferenceHandlerFor(PREF_SONY_WH1000XM3_EQUALIZER_CUSTOM_2_BAND_1000);
-        addPreferenceHandlerFor(PREF_SONY_WH1000XM3_EQUALIZER_CUSTOM_2_BAND_2500);
-        addPreferenceHandlerFor(PREF_SONY_WH1000XM3_EQUALIZER_CUSTOM_2_BAND_6300);
-        addPreferenceHandlerFor(PREF_SONY_WH1000XM3_EQUALIZER_CUSTOM_2_BAND_16000);
-        addPreferenceHandlerFor(PREF_SONY_WH1000XM3_EQUALIZER_CUSTOM_2_CLEAR_BASS);
-        addPreferenceHandlerFor(PREF_SONY_WH1000XM3_DSEE_HX);
-        addPreferenceHandlerFor(PREF_SONY_WH1000XM3_TOUCH_SENSOR);
-        addPreferenceHandlerFor(PREF_SONY_WH1000XM3_AUTOMATIC_POWER_OFF);
-        addPreferenceHandlerFor(PREF_SONY_WH1000XM3_NOTIFICATION_VOICE_GUIDE);
+        addPreferenceHandlerFor(PREF_SONY_AMBIENT_SOUND_CONTROL);
+        addPreferenceHandlerFor(PREF_SONY_FOCUS_VOICE);
+        addPreferenceHandlerFor(PREF_SONY_AMBIENT_SOUND_LEVEL);
+        addPreferenceHandlerFor(PREF_SONY_SOUND_POSITION);
+        addPreferenceHandlerFor(PREF_SONY_SURROUND_MODE);
+        addPreferenceHandlerFor(PREF_SONY_EQUALIZER_MODE);
+        addPreferenceHandlerFor(PREF_SONY_EQUALIZER_MANUAL_BAND_400);
+        addPreferenceHandlerFor(PREF_SONY_EQUALIZER_MANUAL_BAND_1000);
+        addPreferenceHandlerFor(PREF_SONY_EQUALIZER_MANUAL_BAND_2500);
+        addPreferenceHandlerFor(PREF_SONY_EQUALIZER_MANUAL_BAND_6300);
+        addPreferenceHandlerFor(PREF_SONY_EQUALIZER_MANUAL_BAND_16000);
+        addPreferenceHandlerFor(PREF_SONY_EQUALIZER_MANUAL_CLEAR_BASS);
+        addPreferenceHandlerFor(PREF_SONY_EQUALIZER_CUSTOM_1_BAND_400);
+        addPreferenceHandlerFor(PREF_SONY_EQUALIZER_CUSTOM_1_BAND_1000);
+        addPreferenceHandlerFor(PREF_SONY_EQUALIZER_CUSTOM_1_BAND_2500);
+        addPreferenceHandlerFor(PREF_SONY_EQUALIZER_CUSTOM_1_BAND_6300);
+        addPreferenceHandlerFor(PREF_SONY_EQUALIZER_CUSTOM_1_BAND_16000);
+        addPreferenceHandlerFor(PREF_SONY_EQUALIZER_CUSTOM_1_CLEAR_BASS);
+        addPreferenceHandlerFor(PREF_SONY_EQUALIZER_CUSTOM_2_BAND_400);
+        addPreferenceHandlerFor(PREF_SONY_EQUALIZER_CUSTOM_2_BAND_1000);
+        addPreferenceHandlerFor(PREF_SONY_EQUALIZER_CUSTOM_2_BAND_2500);
+        addPreferenceHandlerFor(PREF_SONY_EQUALIZER_CUSTOM_2_BAND_6300);
+        addPreferenceHandlerFor(PREF_SONY_EQUALIZER_CUSTOM_2_BAND_16000);
+        addPreferenceHandlerFor(PREF_SONY_EQUALIZER_CUSTOM_2_CLEAR_BASS);
+        addPreferenceHandlerFor(PREF_SONY_DSEE_HX);
+        addPreferenceHandlerFor(PREF_SONY_TOUCH_SENSOR);
+        addPreferenceHandlerFor(PREF_SONY_AUTOMATIC_POWER_OFF);
+        addPreferenceHandlerFor(PREF_SONY_NOTIFICATION_VOICE_GUIDE);
 
         String sleepTimeState = prefs.getString(PREF_SLEEP_TIME, PREF_DO_NOT_DISTURB_OFF);
         boolean sleepTimeScheduled = sleepTimeState.equals(PREF_DO_NOT_DISTURB_SCHEDULED);
@@ -777,6 +785,36 @@ public class DeviceSpecificSettingsFragment extends PreferenceFragmentCompat {
         }
         if (deviceActionsStartNonWearBroadcast != null) {
             deviceActionsStartNonWearBroadcast.setEnabled(deviceActionsStartNonWearSelectionBroadcast);
+        }
+
+        // this is to ensure that Control Center device cards are refreshed on preference changes
+        final Preference activityInDeviceCard = findPreference(PREFS_ACTIVITY_IN_DEVICE_CARD);
+        final Preference activityInDeviceSteps = findPreference(PREFS_ACTIVITY_IN_DEVICE_CARD_STEPS);
+        final Preference activityInDeviceSleep = findPreference(PREFS_ACTIVITY_IN_DEVICE_CARD_SLEEP);
+        final Preference activityInDeviceDistance = findPreference(PREFS_ACTIVITY_IN_DEVICE_CARD_DISTANCE);
+        final Preference chartsTabsOrderSelection = findPreference(PREFS_DEVICE_CHARTS_TABS);
+
+        Preference.OnPreferenceClickListener sendIntentRefreshDeviceListListener = new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference arg0) {
+                Intent refreshIntent = new Intent(DeviceManager.ACTION_REFRESH_DEVICELIST);
+                LocalBroadcastManager.getInstance(getContext()).sendBroadcast(refreshIntent);
+                return true;
+            }
+        };
+
+        Preference[] preferencesInControlCenter = {
+                activityInDeviceCard,
+                activityInDeviceSteps,
+                activityInDeviceSleep,
+                activityInDeviceDistance,
+                chartsTabsOrderSelection,
+        };
+
+        for (Preference preferenceInControlCenter : preferencesInControlCenter) {
+            if (preferenceInControlCenter != null) {
+                preferenceInControlCenter.setOnPreferenceClickListener(sendIntentRefreshDeviceListListener);
+            }
         }
     }
 

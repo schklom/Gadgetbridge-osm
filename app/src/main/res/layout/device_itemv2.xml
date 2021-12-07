@@ -126,6 +126,7 @@
                 card_view:tint="@color/secondarytext" />
 
             <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/device_info_icons"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/device_image"
@@ -462,6 +463,46 @@
 
 
             </com.google.android.flexbox.FlexboxLayout>
+
+            <LinearLayout
+                android:id="@+id/card_view_activity_card_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/device_info_icons"
+                android:layout_marginBottom="10dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <com.github.mikephil.charting.charts.PieChart
+                        android:id="@+id/activity_dashboard_piechart1"
+                        android:layout_width="110dp"
+                        android:layout_height="110dp"
+                        android:layout_gravity="bottom|center"
+                        android:layout_marginBottom="0dp"
+                        android:layout_weight="1" />
+
+                    <com.github.mikephil.charting.charts.PieChart
+                        android:id="@+id/activity_dashboard_piechart2"
+                        android:layout_width="110dp"
+                        android:layout_height="110dp"
+                        android:layout_gravity="bottom|center"
+                        android:layout_marginBottom="0dp"
+                        android:layout_weight="1" />
+
+                    <com.github.mikephil.charting.charts.PieChart
+                        android:id="@+id/activity_dashboard_piechart3"
+                        android:layout_width="110dp"
+                        android:layout_height="110dp"
+                        android:layout_gravity="bottom|center"
+                        android:layout_marginBottom="0dp"
+                        android:layout_weight="1" />
+                </LinearLayout>
+            </LinearLayout>
         </RelativeLayout>
 
     </androidx.cardview.widget.CardView>

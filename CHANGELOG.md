@@ -3,10 +3,20 @@
 ### 0.63.0
 * Galaxy Buds Live: Initial Support
 * Sony WH-1000XM3: Initial Support
+* Add support for Casio GBD-200 and untested support for GBD-100
+* Casio: Fix alarm handling on all devices
+* Fossil Hybrid HR: Add button for removing the watchface background image
+* Fossil Hybrid HR: Support multiple 2nd-TZ and Custom widgets
+* Fossil Hybrid HR: Add support for native DND functionality
+* Nothing Ear (1): Add multiple batteries support
+* Galaxy Buds: Add multiple batteries support
+* Roidmi: New FM Frequency selector with presets
+* Mi Band 6: Try to add Alipay to menu settings, untested
+* FitPro: Support more bands with different bluetooth names
+* Add activity info to device cards
 * Add Nekogram X to Telegram notifications
 * Move location settings out of pebble menu
-* Nothing Ear (1): add multiple batteries support
-* Galaxy Buds: add multiple batteries support
+* Sort devices by alias, if available
 
 ### 0.62.0
 * Iniital support for Galaxy Buds 2019

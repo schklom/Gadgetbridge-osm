@@ -25,6 +25,14 @@
     <string name="controlcenter_snackbar_connecting">Connecting…</string>
     <string name="controlcenter_snackbar_requested_screenshot">Taking a screenshot of the device</string>
     <string name="controlcenter_calibrate_device">Calibrate Device</string>
+    <string name="device_card_activity_card_title">Activity info on device card</string>
+    <string name="device_card_activity_card_title_summary">Choose what activity details are displayed on device card</string>
+    <string name="prefs_activity_in_device_card_title">Show Activity info on device card</string>
+    <string name="prefs_activity_in_device_card_title_summary">Show current steps, distance or sleep on device card</string>
+    <string name="prefs_activity_in_device_card_sleep_title">Sleep</string>
+    <string name="prefs_activity_in_device_card_sleep_title_summary">Show sleep duration</string>
+    <string name="prefs_activity_in_device_card_distance_title_summary">Distance is calculated from steps and step length (adjustable in Settings - About you)</string>
+    <string name="prefs_activity_in_device_card_steps_title_summary">Show total steps</string>
     <!-- Strings related to battery Info Activity -->
     <string name="battery_detail_activity_title">Battery info</string>
     <string name="battery_level">Battery level</string>
@@ -960,6 +968,8 @@
     <string name="pref_invalid_frequency_title">Invalid frequency</string>
     <string name="pref_invalid_frequency_message">Please enter a frequency between 87.5 and 108.0</string>
     <string name="language_and_region_prefs">Language and region settings</string>
+    <string name="prefs_fm_preset_instructions">Long press the button to store preset</string>
+    <string name="prefs_fm_presets_presets">Presets</string>
     <!--Notification Filter Black-/ Whitelist-->
     <string name="title_activity_notification_filter">Notification Filter</string>
     <string name="toast_app_must_not_be_selected">App must not be selected to be configured</string>
@@ -1344,7 +1354,7 @@
     <string name="sony_surround_mode_outdoor_stage">Outdoor Stage</string>
     <string name="sony_surround_mode_concert_hall">Concert Hall</string>
     <string name="sony_surround_position_mutually_exclusive">Warning: The sound position / surround mode settings are mutually exclusive.</string>
-    <string name="sony_warn_sbc_codec">Warning: These settings only work for the SBC audio codec.</string>
+    <string name="sony_warn_sbc_codec">Warning: The equalizer, audio position and surround settings only work for the SBC audio codec.</string>
     <string name="sony_equalizer">Equalizer</string>
     <string name="sony_equalizer_preset_off">Off</string>
     <string name="sony_equalizer_preset_bright">Bright</string>
@@ -1376,6 +1386,11 @@
     <string name="sony_automatic_power_off_30_min">30 minutes</string>
     <string name="sony_automatic_power_off_1_hour">1 hour</string>
     <string name="sony_automatic_power_off_3_hour">3 hours</string>
+    <string name="sony_automatic_power_off_when_taken_off">When taken off</string>
     <string name="watchface_widget_type_custom">Custom widget</string>
+    <string name="watchface_dialog_widget_timezone">Time zone:</string>
+    <string name="watchface_dialog_widget_update_timeout">Update timeout in minutes:</string>
+    <string name="watchface_dialog_widget_timeout_hide_text">Hide text on timeout:</string>
+    <string name="watchface_dialog_widget_timeout_show_circle">Show circle on timeout:</string>
 
 </resources>

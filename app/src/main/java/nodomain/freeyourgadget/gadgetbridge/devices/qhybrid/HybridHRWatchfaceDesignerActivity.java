@@ -99,6 +99,9 @@ public class HybridHRWatchfaceDesignerActivity extends AbstractGBActivity implem
     private int defaultWidgetColor = HybridHRWatchfaceWidget.COLOR_WHITE;
     private boolean readyToCloseActivity = false;
 
+    private final int CHILD_ACTIVITY_IMAGE_CHOOSER = 0;
+    private final int CHILD_ACTIVITY_SETTINGS = 1;
+
     BroadcastReceiver fileUploadReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -157,13 +160,13 @@ public class HybridHRWatchfaceDesignerActivity extends AbstractGBActivity implem
         findViewById(R.id.button_watchface_settings).setOnClickListener(this);
         findViewById(R.id.watchface_rotate_left).setOnClickListener(this);
         findViewById(R.id.watchface_rotate_right).setOnClickListener(this);
-
+        findViewById(R.id.watchface_remove_image).setOnClickListener(this);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
         super.onActivityResult(requestCode, resultCode, resultData);
-        if (requestCode == 42 && resultCode == Activity.RESULT_OK) {
+        if (requestCode == CHILD_ACTIVITY_IMAGE_CHOOSER && resultCode == Activity.RESULT_OK) {
             Uri imageUri = resultData.getData();
             if (imageUri == null) {
                 LOG.warn("No image selected");
@@ -176,6 +179,8 @@ public class HybridHRWatchfaceDesignerActivity extends AbstractGBActivity implem
                 return;
             }
             renderWatchfacePreview();
+        } else if (requestCode == CHILD_ACTIVITY_SETTINGS && resultCode == Activity.RESULT_OK && resultData != null) {
+            watchfaceSettings = (HybridHRWatchfaceSettings) resultData.getSerializableExtra("watchfaceSettings");
         }
     }
 
@@ -233,23 +238,24 @@ public class HybridHRWatchfaceDesignerActivity extends AbstractGBActivity implem
             Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
             intent.addCategory(Intent.CATEGORY_OPENABLE);
             intent.setType("image/*");
-            startActivityForResult(intent, 42);
+            startActivityForResult(intent, CHILD_ACTIVITY_IMAGE_CHOOSER);
         } else if (v.getId() == R.id.button_add_widget) {
             showWidgetEditPopup(-1);
         } else if (v.getId() == R.id.button_watchface_settings) {
             showWatchfaceSettingsPopup();
-        }
-        else if (v.getId() == R.id.watchface_rotate_left) {
+        } else if (v.getId() == R.id.watchface_rotate_left) {
             if (selectedBackgroundImage != null) {
                 selectedBackgroundImage = BitmapUtil.rotateImage(selectedBackgroundImage, -90);
                 renderWatchfacePreview();
             }
-        }
-        else if (v.getId() == R.id.watchface_rotate_right) {
+        } else if (v.getId() == R.id.watchface_rotate_right) {
             if (selectedBackgroundImage != null) {
                 selectedBackgroundImage = BitmapUtil.rotateImage(selectedBackgroundImage, 90);
                 renderWatchfacePreview();
             }
+        } else if (v.getId() == R.id.watchface_remove_image) {
+            deleteWatchfaceBackground();
+            renderWatchfacePreview();
         }
     }
 
@@ -347,6 +353,9 @@ public class HybridHRWatchfaceDesignerActivity extends AbstractGBActivity implem
                         if (layoutItem.getString("type").equals("comp")) {
                             String widgetName = layoutItem.getString("name");
                             String widgetTimezone = null;
+                            int widgetUpdateTimeout = -1;
+                            boolean widgetTimeoutHideText = true;
+                            boolean widgetTimeoutShowCircle = true;
                             switch (widgetName) {
                                 case "dateSSE":
                                     widgetName = "widgetDate";
@@ -376,24 +385,39 @@ public class HybridHRWatchfaceDesignerActivity extends AbstractGBActivity implem
                                     widgetName = "widget2ndTZ";
                                     break;
                             }
+                            int widgetColor = layoutItem.getString("color").equals("white") ? HybridHRWatchfaceWidget.COLOR_WHITE : HybridHRWatchfaceWidget.COLOR_BLACK;
                             if (widgetName.startsWith("widget2ndTZ")) {
                                 try {
                                     widgetName = "widget2ndTZ";
                                     JSONObject widgetData = layoutItem.getJSONObject("data");
                                     widgetTimezone = widgetData.getString("tzName");
+                                    widgets.add(new HybridHRWatchfaceWidget(widgetName,
+                                            layoutItem.getJSONObject("pos").getInt("x"),
+                                            layoutItem.getJSONObject("pos").getInt("y"),
+                                            widgetColor,
+                                            widgetTimezone));
                                 } catch (JSONException e) {
                                     LOG.error("Couldn't determine tzName!", e);
                                 }
-                            }
-                            if (widgetName.startsWith("widgetCustom")) {
+                            } else if (widgetName.startsWith("widgetCustom")) {
                                 widgetName = "widgetCustom";
+                                JSONObject widgetData = layoutItem.getJSONObject("data");
+                                widgetUpdateTimeout = widgetData.getInt("update_timeout");
+                                widgetTimeoutHideText = widgetData.getBoolean("timeout_hide_text");
+                                widgetTimeoutShowCircle = widgetData.getBoolean("timeout_show_circle");
+                                widgets.add(new HybridHRWatchfaceWidget(widgetName,
+                                        layoutItem.getJSONObject("pos").getInt("x"),
+                                        layoutItem.getJSONObject("pos").getInt("y"),
+                                        widgetColor,
+                                        widgetUpdateTimeout,
+                                        widgetTimeoutHideText,
+                                        widgetTimeoutShowCircle));
+                            } else {
+                                widgets.add(new HybridHRWatchfaceWidget(widgetName,
+                                        layoutItem.getJSONObject("pos").getInt("x"),
+                                        layoutItem.getJSONObject("pos").getInt("y"),
+                                        widgetColor));
                             }
-                            int widgetColor = layoutItem.getString("color").equals("white") ? HybridHRWatchfaceWidget.COLOR_WHITE : HybridHRWatchfaceWidget.COLOR_BLACK;
-                            widgets.add(new HybridHRWatchfaceWidget(widgetName,
-                                                                    layoutItem.getJSONObject("pos").getInt("x"),
-                                                                    layoutItem.getJSONObject("pos").getInt("y"),
-                                                                    widgetColor,
-                                                                    widgetTimezone));
                         }
                     }
                 } catch (JSONException e) {
@@ -449,15 +473,7 @@ public class HybridHRWatchfaceDesignerActivity extends AbstractGBActivity implem
             }
         }
         if (selectedBackgroundImage == null) {
-            processedBackgroundImage = Bitmap.createBitmap(displayImageSize, displayImageSize, Bitmap.Config.ARGB_8888);
-            // Paint a gray circle around the watchface
-            Canvas backgroundImageCanvas = new Canvas(processedBackgroundImage);
-            Paint circlePaint = new Paint();
-            circlePaint.setColor(Color.GRAY);
-            circlePaint.setAntiAlias(true);
-            circlePaint.setStrokeWidth(3);
-            circlePaint.setStyle(Paint.Style.STROKE);
-            backgroundImageCanvas.drawCircle(displayImageSize/2f + 2, displayImageSize/2f + 2, displayImageSize/2f - 5, circlePaint);
+            deleteWatchfaceBackground();
         } else {
             processedBackgroundImage = Bitmap.createScaledBitmap(selectedBackgroundImage, displayImageSize, displayImageSize, true);
         }
@@ -478,6 +494,14 @@ public class HybridHRWatchfaceDesignerActivity extends AbstractGBActivity implem
                 onlyPreviewIsRemaining = true;
             }
         }
+        // Paint a gray circle around the watchface
+        Canvas backgroundImageCanvas = new Canvas(processedBackgroundImage);
+        Paint circlePaint = new Paint();
+        circlePaint.setColor(Color.GRAY);
+        circlePaint.setAntiAlias(true);
+        circlePaint.setStrokeWidth(3);
+        circlePaint.setStyle(Paint.Style.STROKE);
+        backgroundImageCanvas.drawCircle(displayImageSize/2f, displayImageSize/2f, displayImageSize/2f - 2, circlePaint);
         // Dynamically add an ImageView for each widget
         Paint widgetPaint = new Paint();
         widgetPaint.setColor(Color.RED);
@@ -591,7 +615,22 @@ public class HybridHRWatchfaceDesignerActivity extends AbstractGBActivity implem
         } else {
             tzSpinner.setSelection(Arrays.asList(timezonesList).indexOf("Etc/UTC"));
         }
-        // Show timezone spinner only when 2nd TZ widget is selected
+        // Set update timeout value
+        final LinearLayout updateTimeoutLayout = layout.findViewById(R.id.watchface_widget_update_timeout_layout);
+        updateTimeoutLayout.setVisibility(View.GONE);
+        final EditText updateTimeout = layout.findViewById(R.id.watchface_widget_update_timeout);
+        if ((widget != null) && (widget.getUpdateTimeout() >= 0)) {
+            updateTimeout.setText(Integer.toString(widget.getUpdateTimeout()));
+        }
+        final CheckBox timeoutHideText = layout.findViewById(R.id.watchface_widget_timeout_hide_text);
+        if ((widget != null) && (widget.getTimeoutHideText())) {
+            timeoutHideText.setChecked(widget.getTimeoutHideText());
+        }
+        final CheckBox timeoutShowCircle = layout.findViewById(R.id.watchface_widget_timeout_show_circle);
+        if ((widget != null) && (widget.getTimeoutShowCircle())) {
+            timeoutShowCircle.setChecked(widget.getTimeoutShowCircle());
+        }
+        // Show certain input fields only when the relevant TZ widget is selected
         typeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -600,6 +639,11 @@ public class HybridHRWatchfaceDesignerActivity extends AbstractGBActivity implem
                     timezoneLayout.setVisibility(View.VISIBLE);
                 } else {
                     timezoneLayout.setVisibility(View.GONE);
+                }
+                if (selectedType.equals("widgetCustom")) {
+                    updateTimeoutLayout.setVisibility(View.VISIBLE);
+                } else {
+                    updateTimeoutLayout.setVisibility(View.GONE);
                 }
             }
             @Override
@@ -636,9 +680,23 @@ public class HybridHRWatchfaceDesignerActivity extends AbstractGBActivity implem
                         if (selectedPosY > 240) selectedPosY = 240;
                         String selectedType = widgetTypesArray.get(typeSpinner.getSelectedItemPosition());
                         String selectedTZ = tzSpinner.getSelectedItem().toString();
+                        int selectedUpdateTimeout = 0;
+                        if (selectedType.equals("widgetCustom")) {
+                            try {
+                                selectedUpdateTimeout = Integer.parseInt(updateTimeout.getText().toString());
+                            } catch (NumberFormatException e) {
+                                GB.toast(getString(R.string.watchface_toast_settings_incomplete), Toast.LENGTH_SHORT, GB.WARN);
+                                LOG.warn("Error parsing input", e);
+                                return;
+                            }
+                        }
+                        boolean selectedTimeoutHideText = timeoutHideText.isChecked();
+                        boolean selectedTimeoutShowCircle = timeoutShowCircle.isChecked();
                         HybridHRWatchfaceWidget widgetConfig;
                         if (selectedType.equals("widget2ndTZ")) {
                             widgetConfig = new HybridHRWatchfaceWidget(selectedType, selectedPosX, selectedPosY, colorSpinner.getSelectedItemPosition(), selectedTZ);
+                        } else if (selectedType.equals("widgetCustom")) {
+                            widgetConfig = new HybridHRWatchfaceWidget(selectedType, selectedPosX, selectedPosY, colorSpinner.getSelectedItemPosition(), selectedUpdateTimeout, selectedTimeoutHideText, selectedTimeoutShowCircle);
                         } else {
                             widgetConfig = new HybridHRWatchfaceWidget(selectedType, selectedPosX, selectedPosY, colorSpinner.getSelectedItemPosition());
                         }
@@ -655,41 +713,9 @@ public class HybridHRWatchfaceDesignerActivity extends AbstractGBActivity implem
     }
 
     private void showWatchfaceSettingsPopup() {
-        View layout = getLayoutInflater().inflate(R.layout.dialog_hybridhr_watchface_settings, null);
-        final EditText displayTimeoutFullInput = layout.findViewById(R.id.watchface_setting_display_full);
-        displayTimeoutFullInput.setText(String.valueOf(watchfaceSettings.getDisplayTimeoutFull()));
-        final EditText displayTimeoutPartialInput = layout.findViewById(R.id.watchface_setting_display_partial);
-        displayTimeoutPartialInput.setText(String.valueOf(watchfaceSettings.getDisplayTimeoutPartial()));
-        final CheckBox wristFlickHandsMoveRelativeInput = layout.findViewById(R.id.watchface_setting_flick_relative);
-        wristFlickHandsMoveRelativeInput.setChecked(watchfaceSettings.isWristFlickHandsMoveRelative());
-        final EditText wristFlickDurationInput = layout.findViewById(R.id.watchface_setting_flick_timeout);
-        wristFlickDurationInput.setText(String.valueOf(watchfaceSettings.getWristFlickDuration()));
-        final EditText wristFlickMoveHourInput = layout.findViewById(R.id.watchface_setting_flick_hour);
-        wristFlickMoveHourInput.setText(String.valueOf(watchfaceSettings.getWristFlickMoveHour()));
-        final EditText wristFlickMoveMinuteInput = layout.findViewById(R.id.watchface_setting_flick_minute);
-        wristFlickMoveMinuteInput.setText(String.valueOf(watchfaceSettings.getWristFlickMoveMinute()));
-        final CheckBox powersaveDisplayInput = layout.findViewById(R.id.watchface_setting_powersave_display);
-        powersaveDisplayInput.setChecked(watchfaceSettings.getPowersaveDisplay());
-        final CheckBox powersaveHandsInput = layout.findViewById(R.id.watchface_setting_powersave_hands);
-        powersaveHandsInput.setChecked(watchfaceSettings.getPowersaveHands());
-        new AlertDialog.Builder(this)
-                .setView(layout)
-                .setNegativeButton(R.string.fossil_hr_new_action_cancel, null)
-                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        watchfaceSettings.setDisplayTimeoutFull(Integer.parseInt(displayTimeoutFullInput.getText().toString()));
-                        watchfaceSettings.setDisplayTimeoutPartial(Integer.parseInt(displayTimeoutPartialInput.getText().toString()));
-                        watchfaceSettings.setWristFlickHandsMoveRelative(wristFlickHandsMoveRelativeInput.isChecked());
-                        watchfaceSettings.setWristFlickDuration(Integer.parseInt(wristFlickDurationInput.getText().toString()));
-                        watchfaceSettings.setWristFlickMoveHour(Integer.parseInt(wristFlickMoveHourInput.getText().toString()));
-                        watchfaceSettings.setWristFlickMoveMinute(Integer.parseInt(wristFlickMoveMinuteInput.getText().toString()));
-                        watchfaceSettings.setPowersaveDisplay(powersaveDisplayInput.isChecked());
-                        watchfaceSettings.setPowersaveHands(powersaveHandsInput.isChecked());
-                    }
-                })
-                .setTitle(R.string.watchface_dialog_title_settings)
-                .show();
+        Intent intent = new Intent(this, HybridHRWatchfaceSettingsActivity.class);
+        intent.putExtra("watchfaceSettings", watchfaceSettings);
+        startActivityForResult(intent, CHILD_ACTIVITY_SETTINGS);
     }
 
     private void calculateDisplayImageSize() {
@@ -721,6 +747,12 @@ public class HybridHRWatchfaceDesignerActivity extends AbstractGBActivity implem
         }
 
         return BitmapUtil.convertToGrayscale(BitmapUtil.getCircularBitmap(bitmap));
+    }
+
+    private void deleteWatchfaceBackground() {
+        selectedBackgroundImage = Bitmap.createBitmap(displayImageSize, displayImageSize, Bitmap.Config.ARGB_8888);
+        selectedBackgroundImage.eraseColor(Color.BLACK);
+        selectedBackgroundImage = BitmapUtil.getCircularBitmap(selectedBackgroundImage);
     }
 
     private void sendToWatch(boolean preview) {

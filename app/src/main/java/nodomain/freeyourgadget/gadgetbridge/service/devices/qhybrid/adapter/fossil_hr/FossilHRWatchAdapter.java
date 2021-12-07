@@ -213,17 +213,21 @@ public class FossilHRWatchAdapter extends FossilWatchAdapter {
     private void initializeAfterAuthentication(boolean authenticated) {
         queueWrite(new SetDeviceStateRequest(GBDevice.State.INITIALIZING));
 
-        if (!authenticated)
+        if (!authenticated) {
             GB.toast(getContext().getString(R.string.fossil_hr_auth_failed), Toast.LENGTH_LONG, GB.ERROR);
-
-        confirmOnWatch(authenticated);
-    }
-
-    private void confirmOnWatch(final boolean authenticated) {
-        if(!authenticated){
             initializeAfterWatchConfirmation(false);
             return;
         }
+        boolean shouldAuthenticateOnWatch = getDeviceSpecificPreferences().getBoolean("enable_on_device_confirmation", true);
+        if(!shouldAuthenticateOnWatch){
+            GB.toast("Skipping on-device confirmation", Toast.LENGTH_SHORT, GB.INFO);
+            initializeAfterWatchConfirmation(false);
+            return;
+        }
+        confirmOnWatch();
+    }
+
+    private void confirmOnWatch() {
         queueWrite(new CheckDeviceNeedsConfirmationRequest() {
             @Override
             public void onResult(boolean needsConfirmation) {

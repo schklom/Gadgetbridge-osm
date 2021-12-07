@@ -3,7 +3,7 @@ package nodomain.freeyourgadget.gadgetbridge.service.devices.qhybrid.requests.fo
 import android.bluetooth.BluetoothGattCharacteristic;
 
 public class ConfirmOnDeviceRequest extends AuthenticationRequest {
-    boolean isFinished = false;
+    protected boolean isFinished = false;
 
     @Override
     public byte[] getStartSequence() {

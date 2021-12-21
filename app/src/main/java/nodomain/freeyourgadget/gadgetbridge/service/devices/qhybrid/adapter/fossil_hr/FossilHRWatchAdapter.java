@@ -1283,23 +1283,13 @@ public class FossilHRWatchAdapter extends FossilWatchAdapter {
 
     @Override
     public void onTestNewFunction() {
-        queueWrite(new FossilRequest() {
+        queueWrite((FileEncryptedInterface) new ConfigurationGetRequest(this){
             @Override
-            public boolean isFinished() {
-                return true;
-            }
-
-            @Override
-            public byte[] getStartSequence() {
-                return new byte[]{0x01, 0x07};
-            }
-
-            @Override
-            public UUID getRequestUUID() {
-                return UUID.fromString("3dda0005-957f-7d4a-34a6-74696673696d");
+            protected void handleConfiguration(nodomain.freeyourgadget.gadgetbridge.service.devices.qhybrid.requests.fossil.configuration.ConfigurationPutRequest.ConfigItem[] items) {
+                super.handleConfiguration(items);
+                LOG.debug(items[items.length - 1].toString());
             }
         });
-        queueWrite(new ConfirmOnDeviceRequest());
     }
 
     public byte[] getSecretKey() throws IllegalAccessException {

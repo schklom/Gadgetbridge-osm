@@ -96,6 +96,10 @@
             android:label="@string/activity_prefs_charts"
             android:parentActivityName=".activities.charts.ChartsPreferencesActivity" />
         <activity
+            android:name=".activities.DiscoveryPairingPreferenceActivity"
+            android:label="@string/activity_prefs_discovery_pairing"
+            android:parentActivityName=".activities.SettingsActivity" />
+        <activity
             android:name=".devices.miband.MiBandPreferencesActivity"
             android:label="@string/preferences_miband_settings"
             android:parentActivityName=".activities.SettingsActivity" />
@@ -120,6 +124,10 @@
             android:name=".activities.CalBlacklistActivity"
             android:label="@string/title_activity_calblacklist"
             android:parentActivityName=".activities.SettingsActivity" />
+        <activity
+            android:name=".devices.vesc.VescControlActivity"
+            android:label="@string/devicetype_vesc"
+            android:parentActivityName=".activities.ControlCenterv2" />
         <activity
             android:name=".activities.FwAppInstallerActivity"
             android:label="@string/title_activity_fw_app_insaller"

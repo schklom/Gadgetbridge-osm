@@ -14,13 +14,30 @@
 
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>. */
-package nodomain.freeyourgadget.gadgetbridge.service.devices.sony.headphones.wh1000xm3;
+package nodomain.freeyourgadget.gadgetbridge.service.devices.sony.headphones.protocol.impl.v1.params;
 
-import nodomain.freeyourgadget.gadgetbridge.impl.GBDevice;
-import nodomain.freeyourgadget.gadgetbridge.service.devices.sony.headphones.SonyHeadphonesProtocol;
+public enum BatteryType {
+    SINGLE(0x00),
+    DUAL(0x01),
+    CASE(0x02);
 
-public class SonyWh1000Xm3Protocol extends SonyHeadphonesProtocol {
-    public SonyWh1000Xm3Protocol(GBDevice device) {
-        super(device);
+    private final byte code;
+
+    BatteryType(final int code) {
+        this.code = (byte) code;
+    }
+
+    public byte getCode() {
+        return this.code;
+    }
+
+    public static BatteryType fromCode(final byte code) {
+        for (final BatteryType batteryType : values()) {
+            if (batteryType.code == code) {
+                return batteryType;
+            }
+        }
+
+        return null;
     }
 }

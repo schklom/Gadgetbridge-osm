@@ -14,18 +14,19 @@
 
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>. */
-package nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones;
+package nodomain.freeyourgadget.gadgetbridge.deviceevents;
 
-public enum SurroundMode {
-    OFF((byte) 0x00),
-    ARENA((byte) 0x02),
-    CLUB((byte) 0x04),
-    OUTDOOR_STAGE((byte) 0x01),
-    CONCERT_HALL((byte) 0x03);
+import nodomain.freeyourgadget.gadgetbridge.model.GenericItem;
+import nodomain.freeyourgadget.gadgetbridge.model.ItemWithDetails;
 
-    public final byte code;
+public class GBDeviceEventUpdateDeviceInfo extends GBDeviceEvent {
+    public ItemWithDetails item;
 
-    SurroundMode(final byte code) {
-        this.code = code;
+    public GBDeviceEventUpdateDeviceInfo(final ItemWithDetails item) {
+        this.item = item;
+    }
+
+    public GBDeviceEventUpdateDeviceInfo(final String name, final String details) {
+        this(new GenericItem(name, details));
     }
 }

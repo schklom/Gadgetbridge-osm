@@ -14,17 +14,32 @@
 
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>. */
-package nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones;
+package nodomain.freeyourgadget.gadgetbridge.service.devices.sony.headphones.protocol;
 
-public enum ButtonMode {
-    OFF((byte) 0xff),
-    AMBIENT_SOUND_CONTROL((byte) 0x00),
-    PLAYBACK_CONTROL((byte) 0x20),
-    VOLUME_CONTROL((byte) 0x10);
+public enum MessageType {
+    ACK(0x01),
+    COMMAND_1(0x0c),
+    COMMAND_2(0x0e),
 
-    public final byte code;
+    UNKNOWN(0xff);
 
-    ButtonMode(final byte code) {
-        this.code = code;
+    private final byte code;
+
+    MessageType(final int code) {
+        this.code = (byte) code;
+    }
+
+    public byte getCode() {
+        return this.code;
+    }
+
+    public static MessageType fromCode(final byte code) {
+        for (final MessageType messageType : values()) {
+            if (messageType.code == code) {
+                return messageType;
+            }
+        }
+
+        return MessageType.UNKNOWN;
     }
 }

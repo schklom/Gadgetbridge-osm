@@ -17,6 +17,7 @@
 package nodomain.freeyourgadget.gadgetbridge.activities.devicesettings;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.InputType;
 import android.widget.EditText;
@@ -27,7 +28,12 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.preference.EditTextPreference;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
+import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceGroup;
+import androidx.preference.PreferenceScreen;
+import androidx.preference.SeekBarPreference;
+import androidx.preference.SwitchPreference;
 
 import com.mobeta.android.dslv.DragSortListPreference;
 import com.mobeta.android.dslv.DragSortListPreferenceFragment;
@@ -45,7 +51,6 @@ import nodomain.freeyourgadget.gadgetbridge.devices.DeviceManager;
 import nodomain.freeyourgadget.gadgetbridge.devices.huami.HuamiConst;
 import nodomain.freeyourgadget.gadgetbridge.devices.makibeshr3.MakibesHR3Constants;
 import nodomain.freeyourgadget.gadgetbridge.devices.miband.MiBandConst;
-import nodomain.freeyourgadget.gadgetbridge.impl.GBDevice;
 import nodomain.freeyourgadget.gadgetbridge.model.CannedMessagesSpec;
 import nodomain.freeyourgadget.gadgetbridge.util.Prefs;
 import nodomain.freeyourgadget.gadgetbridge.util.XTimePreference;
@@ -116,9 +121,9 @@ import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.Dev
 import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONYSWR12_LOW_VIBRATION;
 import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONYSWR12_SMART_INTERVAL;
 import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONYSWR12_STAMINA;
+import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_PAUSE_WHEN_TAKEN_OFF;
 import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SOUNDS;
 import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_TIMEFORMAT;
-import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_TRANSLITERATION_ENABLED;
 import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_VIBRATION_STRENGH_PERCENTAGE;
 import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_WEARLOCATION;
 import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_VIBRATION_ENABLE;
@@ -130,26 +135,16 @@ import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.Dev
 import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_SOUND_POSITION;
 import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_SURROUND_MODE;
 import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_EQUALIZER_MODE;
-import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_EQUALIZER_MANUAL_BAND_400;
-import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_EQUALIZER_MANUAL_BAND_1000;
-import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_EQUALIZER_MANUAL_BAND_2500;
-import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_EQUALIZER_MANUAL_BAND_6300;
-import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_EQUALIZER_MANUAL_BAND_16000;
-import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_EQUALIZER_MANUAL_CLEAR_BASS;
-import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_EQUALIZER_CUSTOM_1_BAND_400;
-import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_EQUALIZER_CUSTOM_1_BAND_1000;
-import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_EQUALIZER_CUSTOM_1_BAND_2500;
-import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_EQUALIZER_CUSTOM_1_BAND_6300;
-import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_EQUALIZER_CUSTOM_1_BAND_16000;
-import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_EQUALIZER_CUSTOM_1_CLEAR_BASS;
-import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_EQUALIZER_CUSTOM_2_BAND_400;
-import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_EQUALIZER_CUSTOM_2_BAND_1000;
-import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_EQUALIZER_CUSTOM_2_BAND_2500;
-import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_EQUALIZER_CUSTOM_2_BAND_6300;
-import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_EQUALIZER_CUSTOM_2_BAND_16000;
-import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_EQUALIZER_CUSTOM_2_CLEAR_BASS;
-import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_DSEE_HX;
+import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_EQUALIZER_BAND_400;
+import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_EQUALIZER_BAND_1000;
+import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_EQUALIZER_BAND_2500;
+import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_EQUALIZER_BAND_6300;
+import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_EQUALIZER_BAND_16000;
+import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_EQUALIZER_BASS;
+import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_AUDIO_UPSAMPLING;
 import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_TOUCH_SENSOR;
+import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_BUTTON_MODE_RIGHT;
+import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_BUTTON_MODE_LEFT;
 import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_AUTOMATIC_POWER_OFF;
 import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_NOTIFICATION_VOICE_GUIDE;
 import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREFS_ACTIVITY_IN_DEVICE_CARD;
@@ -157,6 +152,7 @@ import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.Dev
 import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREFS_ACTIVITY_IN_DEVICE_CARD_SLEEP;
 import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREFS_ACTIVITY_IN_DEVICE_CARD_STEPS;
 import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREFS_DEVICE_CHARTS_TABS;
+import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_QC35_NOISE_CANCELLING_LEVEL;
 
 import static nodomain.freeyourgadget.gadgetbridge.devices.huami.HuamiConst.PREF_ACTIVATE_DISPLAY_ON_LIFT;
 import static nodomain.freeyourgadget.gadgetbridge.devices.huami.HuamiConst.PREF_DEVICE_ACTION_FELL_SLEEP_BROADCAST;
@@ -203,6 +199,8 @@ public class DeviceSpecificSettingsFragment extends PreferenceFragmentCompat imp
     private static final Logger LOG = LoggerFactory.getLogger(DeviceSpecificSettingsFragment.class);
 
     static final String FRAGMENT_TAG = "DEVICE_SPECIFIC_SETTINGS_FRAGMENT";
+
+    private final SharedPreferencesChangeHandler sharedPreferencesChangeHandler = new SharedPreferencesChangeHandler();
 
     private void setSettingsFileSuffix(String settingsFileSuffix, @NonNull int[] supportedSettings, String[] supportedLanguages) {
         Bundle args = new Bundle();
@@ -265,6 +263,24 @@ public class DeviceSpecificSettingsFragment extends PreferenceFragmentCompat imp
             }
         }
         setChangeListener();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        final SharedPreferences sharedPreferences = getPreferenceManager().getSharedPreferences();
+
+        reloadPreferences(sharedPreferences, getPreferenceScreen());
+
+        sharedPreferences.registerOnSharedPreferenceChangeListener(sharedPreferencesChangeHandler);
+    }
+
+    @Override
+    public void onStop() {
+        getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(sharedPreferencesChangeHandler);
+
+        super.onStop();
     }
 
     /*
@@ -540,28 +556,21 @@ public class DeviceSpecificSettingsFragment extends PreferenceFragmentCompat imp
         addPreferenceHandlerFor(PREF_SONY_SOUND_POSITION);
         addPreferenceHandlerFor(PREF_SONY_SURROUND_MODE);
         addPreferenceHandlerFor(PREF_SONY_EQUALIZER_MODE);
-        addPreferenceHandlerFor(PREF_SONY_EQUALIZER_MANUAL_BAND_400);
-        addPreferenceHandlerFor(PREF_SONY_EQUALIZER_MANUAL_BAND_1000);
-        addPreferenceHandlerFor(PREF_SONY_EQUALIZER_MANUAL_BAND_2500);
-        addPreferenceHandlerFor(PREF_SONY_EQUALIZER_MANUAL_BAND_6300);
-        addPreferenceHandlerFor(PREF_SONY_EQUALIZER_MANUAL_BAND_16000);
-        addPreferenceHandlerFor(PREF_SONY_EQUALIZER_MANUAL_CLEAR_BASS);
-        addPreferenceHandlerFor(PREF_SONY_EQUALIZER_CUSTOM_1_BAND_400);
-        addPreferenceHandlerFor(PREF_SONY_EQUALIZER_CUSTOM_1_BAND_1000);
-        addPreferenceHandlerFor(PREF_SONY_EQUALIZER_CUSTOM_1_BAND_2500);
-        addPreferenceHandlerFor(PREF_SONY_EQUALIZER_CUSTOM_1_BAND_6300);
-        addPreferenceHandlerFor(PREF_SONY_EQUALIZER_CUSTOM_1_BAND_16000);
-        addPreferenceHandlerFor(PREF_SONY_EQUALIZER_CUSTOM_1_CLEAR_BASS);
-        addPreferenceHandlerFor(PREF_SONY_EQUALIZER_CUSTOM_2_BAND_400);
-        addPreferenceHandlerFor(PREF_SONY_EQUALIZER_CUSTOM_2_BAND_1000);
-        addPreferenceHandlerFor(PREF_SONY_EQUALIZER_CUSTOM_2_BAND_2500);
-        addPreferenceHandlerFor(PREF_SONY_EQUALIZER_CUSTOM_2_BAND_6300);
-        addPreferenceHandlerFor(PREF_SONY_EQUALIZER_CUSTOM_2_BAND_16000);
-        addPreferenceHandlerFor(PREF_SONY_EQUALIZER_CUSTOM_2_CLEAR_BASS);
-        addPreferenceHandlerFor(PREF_SONY_DSEE_HX);
+        addPreferenceHandlerFor(PREF_SONY_EQUALIZER_BAND_400);
+        addPreferenceHandlerFor(PREF_SONY_EQUALIZER_BAND_1000);
+        addPreferenceHandlerFor(PREF_SONY_EQUALIZER_BAND_2500);
+        addPreferenceHandlerFor(PREF_SONY_EQUALIZER_BAND_6300);
+        addPreferenceHandlerFor(PREF_SONY_EQUALIZER_BAND_16000);
+        addPreferenceHandlerFor(PREF_SONY_EQUALIZER_BASS);
+        addPreferenceHandlerFor(PREF_SONY_AUDIO_UPSAMPLING);
         addPreferenceHandlerFor(PREF_SONY_TOUCH_SENSOR);
+        addPreferenceHandlerFor(PREF_SONY_PAUSE_WHEN_TAKEN_OFF);
+        addPreferenceHandlerFor(PREF_SONY_BUTTON_MODE_LEFT);
+        addPreferenceHandlerFor(PREF_SONY_BUTTON_MODE_RIGHT);
         addPreferenceHandlerFor(PREF_SONY_AUTOMATIC_POWER_OFF);
         addPreferenceHandlerFor(PREF_SONY_NOTIFICATION_VOICE_GUIDE);
+
+        addPreferenceHandlerFor(PREF_QC35_NOISE_CANCELLING_LEVEL);
 
         String sleepTimeState = prefs.getString(PREF_SLEEP_TIME, PREF_DO_NOT_DISTURB_OFF);
         boolean sleepTimeScheduled = sleepTimeState.equals(PREF_DO_NOT_DISTURB_SCHEDULED);
@@ -904,6 +913,66 @@ public class DeviceSpecificSettingsFragment extends PreferenceFragmentCompat imp
                     editText.setInputType(editTypeFlags);
                 }
             });
+        }
+    }
+
+    /**
+     * Reload the preferences in the current screen. This is needed when the user enters or exists a PreferenceScreen,
+     * otherwise the settings won't be reloaded by the {@link SharedPreferencesChangeHandler}, as the preferences return
+     * null, since they're not visible.
+     *
+     * @param sharedPreferences the {@link SharedPreferences} instance
+     * @param preferenceGroup the {@link PreferenceGroup} for which preferences will be reloaded
+     */
+    private void reloadPreferences(final SharedPreferences sharedPreferences, final PreferenceGroup preferenceGroup) {
+        for (int i = 0; i < preferenceGroup.getPreferenceCount(); i++) {
+            final Preference preference = preferenceGroup.getPreference(i);
+
+            LOG.debug("Reloading {}", preference.getKey());
+
+            if (preference instanceof PreferenceCategory) {
+                reloadPreferences(sharedPreferences, (PreferenceCategory) preference);
+                continue;
+            }
+
+            sharedPreferencesChangeHandler.onSharedPreferenceChanged(sharedPreferences, preference.getKey());
+        }
+    }
+
+    /**
+     * Handler for preference changes, update UI accordingly (if device updates the preferences).
+     */
+    private class SharedPreferencesChangeHandler implements SharedPreferences.OnSharedPreferenceChangeListener {
+        @Override
+        public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+            LOG.debug("Preference changed: {}", key);
+
+            if(key == null){
+                LOG.warn("Preference null, ignoring");
+                return;
+            }
+
+            final Preference preference = findPreference(key);
+            if (preference == null) {
+                LOG.warn("Preference {} not found, ignoring", key);
+
+                return;
+            }
+
+            if (preference instanceof SeekBarPreference) {
+                final SeekBarPreference seekBarPreference = (SeekBarPreference) preference;
+                seekBarPreference.setValue(prefs.getInt(key, seekBarPreference.getValue()));
+            } else if (preference instanceof SwitchPreference) {
+                final SwitchPreference switchPreference = (SwitchPreference) preference;
+                switchPreference.setChecked(prefs.getBoolean(key, switchPreference.isChecked()));
+            } else if (preference instanceof ListPreference) {
+                final ListPreference listPreference = (ListPreference) preference;
+                listPreference.setValue(prefs.getString(key, listPreference.getValue()));
+            } else if (preference instanceof PreferenceScreen) {
+                // Ignoring
+            } else {
+                LOG.warn("Unknown preference class {}, ignoring", preference.getClass());
+            }
         }
     }
 }

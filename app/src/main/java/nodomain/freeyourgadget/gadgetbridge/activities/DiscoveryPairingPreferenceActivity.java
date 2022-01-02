@@ -1,4 +1,5 @@
-/*  Copyright (C) 2021 José Rebelo
+/*  Copyright (C) 2015-2020 Andreas Shimokawa, Carsten Pfeiffer, Lem Dulfo,
+    vanous
 
     This file is part of Gadgetbridge.
 
@@ -14,11 +15,20 @@
 
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>. */
-package nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones;
+package nodomain.freeyourgadget.gadgetbridge.activities;
 
-public enum AmbientSoundControl {
-    OFF,
-    NOISE_CANCELLING,
-    WIND_NOISE_REDUCTION,
-    AMBIENT_SOUND
+import android.os.Bundle;
+
+import nodomain.freeyourgadget.gadgetbridge.R;
+
+public class DiscoveryPairingPreferenceActivity extends AbstractSettingsActivity {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        addPreferencesFromResource(R.xml.discovery_pairing_preferences);
+    }
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+    }
 }

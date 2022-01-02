@@ -509,10 +509,10 @@
     <string name="share">שיתוף</string>
     <string name="reset_index">איפוס מועד הקבלה</string>
     <string name="menuitem_status">מצב</string>
-    <string name="menuitem_activity">פעילות</string>
+    <string name="menuitem_activity">היסטוריית אימונים</string>
     <string name="menuitem_weather">מזג אוויר</string>
     <string name="menuitem_alarm">שעון מעורר</string>
-    <string name="menuitem_timer">קוצב זמן</string>
+    <string name="menuitem_timer">ספירה לאחור</string>
     <string name="menuitem_compass">מצפן</string>
     <string name="menuitem_settings">הגדרות</string>
     <string name="menuitem_alipay">Alipay</string>
@@ -931,7 +931,7 @@
 \n
 \nהמשך מעבר לנקודה זו הוא על אחריותך!</string>
     <string name="menuitem_stress">לחץ</string>
-    <string name="menuitem_cycles">משך</string>
+    <string name="menuitem_cycles">מעקב מחזוריות</string>
     <string name="menuitem_breathing">נשימה</string>
     <string name="devicetype_miband5">Mi Band 5</string>
     <string name="ignore_bonded_devices_description">הפעלת אפשרות זו תתעלם ממכשירים שכבר אוגדו/צומדו טרם הסריקה</string>
@@ -1117,7 +1117,7 @@
     <string name="menuitem_stopwatch">שעון עצר</string>
     <string name="menuitem_dnd">לא להפריע</string>
     <string name="menuitem_alexa">Alexa</string>
-    <string name="menuitem_takephoto">צילום תמונה</string>
+    <string name="menuitem_takephoto">שליטה במצלמה</string>
     <string name="menuitem_mutephone">השתקת הטלפון</string>
     <string name="menuitem_findphone">איתור הטלפון</string>
     <string name="movement_intensity">חוזק תנועה</string>
@@ -1481,4 +1481,37 @@
     <string name="reminder_every_year">כל שנה</string>
     <string name="reminder_no_free_slots_title">אין חלונות פנויים</string>
     <string name="prefs_reserve_reminder_calendar_summary">מספר אירועי לוח השנה שיסונכרנו</string>
+    <string name="mi2_prefs_do_not_disturb_lift_wrist">הפעלת התצוגה עקב הנפה במצב לא להפריע</string>
+    <string name="averageAltitude">ממוצע</string>
+    <string name="minCadence">קצב מזערי</string>
+    <string name="minSpeed">מזערי</string>
+    <string name="maxHR">דופק מרבי</string>
+    <string name="minHR">דופק מזערי</string>
+    <string name="averageCadence">קצב ממוצע</string>
+    <string name="maxCadence">קצב מרבי</string>
+    <string name="spm">צעדים לדקה</string>
+    <string name="maxStride">צעד מרבי</string>
+    <string name="minStride">צעד מזערי</string>
+    <string name="pref_header_sony_equalizer_bands">צמידים</string>
+    <string name="sony_audio_upsampling">Upsampling לשמע</string>
+    <string name="controlcenter_power_off_confirm_description">לכבות את ההתקן\?</string>
+    <string name="sony_button_mode_volume_control">בקרת שמע</string>
+    <string name="activity_prefs_discovery_pairing">אפשרויות גילוי וצימוד</string>
+    <string name="sony_button_mode_right">מצב הכפתור (ימין)</string>
+    <string name="discover_unsupported_devices">גילוי התקנים שאינם נתמכים</string>
+    <string name="controlcenter_power_off">כיבוי</string>
+    <string name="controlcenter_power_off_confirm_title">כיבוי</string>
+    <string name="add_test_device">הוספת התקן בדיקה</string>
+    <string name="sony_button_mode_left">מצב כפתור (שמאל)</string>
+    <string name="sony_button_mode_off">כבוי</string>
+    <string name="devicetype_sony_wf_sp800n">Sony WF-SP800N</string>
+    <string name="discover_unsupported_devices_description">הפעלת אפשרות זו תציג התקני Bluetooth בעת הסריקה. נגיעה קצרה תעתיק את שם ההתקן ואת כתובת החומרה שלו ללוח הגזירים. לחיצה ארוכה תפעיל את חלונית `הוספת התקן בדיקה`.</string>
+    <string name="sony_pause_when_taken_off">להשהות כאשר האוזניות מוסרות</string>
+    <string name="sony_button_mode_ambient_sound_control">בקרת שמע אופף</string>
+    <string name="sony_button_mode_playback_control">בקרת נגינה</string>
+    <string name="devicetype_bose_qc35">Bose QC35</string>
+    <string name="devicetype_vesc">VESC</string>
+    <string name="descentDistance">מרחק במורד</string>
+    <string name="ascentDistance">מרחק במעלה</string>
+    <string name="activity_type_hiking">טיול</string>
 </resources>

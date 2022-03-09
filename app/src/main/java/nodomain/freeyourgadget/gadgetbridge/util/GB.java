@@ -187,10 +187,13 @@ public class GB {
         }else{
             StringBuilder contentText = new StringBuilder();
             boolean isConnected = true;
+            boolean anyDeviceSupportesActivityDataFetching = false;
             for(GBDevice device : devices){
                 if(!device.isInitialized()){
                     isConnected = false;
                 }
+
+                anyDeviceSupportesActivityDataFetching |= DeviceHelper.getInstance().getCoordinator(device).supportsActivityDataFetching();
 
                 String deviceName = device.getAliasOrName();
                 String text = device.getStateString();
@@ -201,7 +204,7 @@ public class GB {
             }
 
             SpannableString formated = new SpannableString(
-                    Html.fromHtml(contentText.toString())
+                    Html.fromHtml(contentText.substring(0, contentText.length() - 4)) // cut away last <br>
             );
 
             String title = context.getString(R.string.info_connected_count, devices.size());
@@ -214,6 +217,14 @@ public class GB {
                     .setStyle(new NotificationCompat.BigTextStyle().bigText(formated).setBigContentTitle(title))
                     .setShowWhen(false)
                     .setOngoing(true);
+
+            if (GBApplication.isRunningLollipopOrLater() && anyDeviceSupportesActivityDataFetching) { //for some reason this fails on KK
+                Intent deviceCommunicationServiceIntent = new Intent(context, DeviceCommunicationService.class);
+                deviceCommunicationServiceIntent.setAction(DeviceService.ACTION_FETCH_RECORDED_DATA);
+                deviceCommunicationServiceIntent.putExtra(EXTRA_RECORDED_DATA_TYPES, ActivityKind.TYPE_ACTIVITY);
+                PendingIntent fetchPendingIntent = PendingIntent.getService(context, 1, deviceCommunicationServiceIntent, PendingIntent.FLAG_ONE_SHOT);
+                builder.addAction(R.drawable.ic_refresh, context.getString(R.string.controlcenter_fetch_activity_data), fetchPendingIntent);
+            }
         }
 
         if (GBApplication.isRunningLollipopOrLater()) {

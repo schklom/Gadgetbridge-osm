@@ -41,6 +41,7 @@ vendor's servers.
 	- T-Rex [**\[!\]**](#special-pairing-procedures)
 	- Verge Lite [**\[!\]**](#special-pairing-procedures)
 	- [X ](https://codeberg.org/Freeyourgadget/Gadgetbridge/wiki/Mi-Band-5) [**\[!\]**](#special-pairing-procedures)
+- [Bangle.js](https://codeberg.org/Freeyourgadget/Gadgetbridge/wiki/Bangle.js)
 - BFH-16
 - [Casio](https://codeberg.org/Freeyourgadget/Gadgetbridge/wiki/Casio)
     - Casio GB-X6900B
@@ -142,7 +143,7 @@ Translations can be contributed via https://hosted.weblate.org/projects/freeyour
 ## Community
 
 If you would like to get in touch with other Gadgetbridge users and developers outside of Codeberg, you can do so via:
-* Matrix: `#gadgetbridge:matrix.org` ([web access via Element.io](https://app.element.io/#/room/#gadgetbridge:matrix.org))
+* Matrix: [`#gadgetbridge:matrix.org`](https://matrix.to/#/#gadgetbridge:matrix.org)
 
 ## Do you have further questions or feedback?
 

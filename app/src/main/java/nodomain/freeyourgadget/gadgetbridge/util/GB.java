@@ -146,9 +146,12 @@ public class GB {
             builder.setContentTitle(context.getString(R.string.info_no_devices_connected))
                     .setSmallIcon(R.drawable.ic_notification_disconnected)
                     .setContentIntent(getContentIntent(context))
-                    .setColor(context.getResources().getColor(R.color.accent))
                     .setShowWhen(false)
                     .setOngoing(true);
+
+            if (!GBApplication.isRunningTwelveOrLater()) {
+                builder.setColor(context.getResources().getColor(R.color.accent));
+            }
         }else if(devices.size() == 1) {
             GBDevice device = devices.get(0);
             String deviceName = device.getAliasOrName();
@@ -163,9 +166,12 @@ public class GB {
                     .setContentText(text)
                     .setSmallIcon(connected ? device.getNotificationIconConnected() : device.getNotificationIconDisconnected())
                     .setContentIntent(getContentIntent(context))
-                    .setColor(context.getResources().getColor(R.color.accent))
                     .setShowWhen(false)
                     .setOngoing(true);
+
+            if (!GBApplication.isRunningTwelveOrLater()) {
+                builder.setColor(context.getResources().getColor(R.color.accent));
+            }
 
             Intent deviceCommunicationServiceIntent = new Intent(context, DeviceCommunicationService.class);
             if (connected) {
@@ -213,10 +219,13 @@ public class GB {
                     .setContentText(formated)
                     .setSmallIcon(isConnected ? R.drawable.ic_notification : R.drawable.ic_notification_disconnected)
                     .setContentIntent(getContentIntent(context))
-                    .setColor(context.getResources().getColor(R.color.accent))
                     .setStyle(new NotificationCompat.BigTextStyle().bigText(formated).setBigContentTitle(title))
                     .setShowWhen(false)
                     .setOngoing(true);
+
+            if (!GBApplication.isRunningTwelveOrLater()) {
+                builder.setColor(context.getResources().getColor(R.color.accent));
+            }
 
             if (GBApplication.isRunningLollipopOrLater() && anyDeviceSupportesActivityDataFetching) { //for some reason this fails on KK
                 Intent deviceCommunicationServiceIntent = new Intent(context, DeviceCommunicationService.class);
@@ -242,9 +251,13 @@ public class GB {
                 .setContentText(text)
                 .setSmallIcon(R.drawable.ic_notification_disconnected)
                 .setContentIntent(getContentIntent(context))
-                .setColor(context.getResources().getColor(R.color.accent))
                 .setShowWhen(false)
                 .setOngoing(true);
+
+        if (!GBApplication.isRunningTwelveOrLater()) {
+            builder.setColor(context.getResources().getColor(R.color.accent));
+        }
+
         if (GBApplication.getPrefs().getString("last_device_address", null) != null) {
             Intent deviceCommunicationServiceIntent = new Intent(context, DeviceCommunicationService.class);
             deviceCommunicationServiceIntent.setAction(DeviceService.ACTION_CONNECT);

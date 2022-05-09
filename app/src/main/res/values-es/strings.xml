@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Gadgetbridge</string>
-    <string name="title_activity_controlcenter">Gadgetbridge</string>
+    <string name="application_name_generic">Gadgetbridge</string>
+    <string name="title_activity_controlcenter_generic">Gadgetbridge</string>
     <string name="action_settings">Configuración</string>
     <string name="action_debug">Depuración</string>
     <string name="action_quit">Salir</string>
@@ -161,7 +161,7 @@
     <string name="tap_connected_device_for_vibration">Toque el dispositivo conectado para la vibración</string>
     <string name="tap_a_device_to_connect">Toca un dispositivo para conectarlo</string>
     <string name="cannot_connect_bt_address_invalid_">No se puede conectar. ¿Dirección BT incorrecta?</string>
-    <string name="gadgetbridge_running">Gadgetbridge funcionando</string>
+    <string name="gadgetbridge_running_generic">Gadgetbridge funcionando</string>
     <string name="installing_binary_d_d">Instalando binario %1$d/%2$d</string>
     <string name="installation_failed_">Instalación fallida</string>
     <string name="installation_successful">Instalado</string>
@@ -1093,8 +1093,8 @@
     <string name="about_additional_device_support">Soporte de dispositivos adicionales</string>
     <string name="about_contributors">Colaboradores</string>
     <string name="about_core_team_title">Equipo principal (por orden de primera contribución de código)</string>
-    <string name="about_description">Sustitución sin nube y con copyleft de las aplicaciones de código cerrado para Android de los proveedores.</string>
-    <string name="about_activity_title">Acerca de Gadgetbridge</string>
+    <string name="about_description_generic">Sustitución sin nube y con copyleft de las aplicaciones de código cerrado para Android de los proveedores.</string>
+    <string name="about_activity_title_generic">Acerca de Gadgetbridge</string>
     <string name="about_version">Versión %s</string>
     <string name="about_title">Acerca de</string>
     <string name="hr_widget_last_notification">Última notificación</string>
@@ -1591,4 +1591,13 @@
     <string name="pref_device_action_fitness_app_control_stop">Parada de seguimiento de la aplicación de ejercicio físico</string>
     <string name="pref_title_opentracks_packagename">Nombre del paquete OpenTracks</string>
     <string name="pref_summary_opentracks_packagename">Se usa para iniciar/detener la grabación del seguimiento GPS en la aplicación externa de ejercicio físico.</string>
+    <string name="activity_db_management_autoexport_enabled_yes">La autoexportación está activada.</string>
+    <string name="activity_db_management_autoexport_enabled_no">La autoexportación no está activada.</string>
+    <string name="activity_db_management_autoexport_scheduled_yes">La autoexportación ha sido programada (originalmente) para %1$s</string>
+    <string name="activity_db_management_autoexport_scheduled_no">La autoexportación no ha sido programada.</string>
+    <string name="watchface_dialog_pre_setting_position">preconfigurando la posición a %s</string>
+    <string name="autoExport_lastTime_label">Última autoexportación: %1$s</string>
+    <string name="activity_db_management_autoexport_location">No se ha podido entender la ubicación. Probablemente un problema del nuevo sistema de permisos de Android. Lo más probable es que la autoexportación no funcione ahora.</string>
+    <string name="watchface_setting_light_up_on_notification">Encender al recibir una notificación nueva</string>
+    <string name="menuitem_email">Correo electrónico</string>
 </resources>

@@ -716,7 +716,7 @@ public class DeviceCommunicationService extends Service implements SharedPrefere
                 break;
             case ACTION_SET_PHONE_VOLUME:
                 float phoneVolume = intent.getFloatExtra(EXTRA_PHONE_VOLUME, 0);
-                mDeviceSupport.onSetPhoneVolume(phoneVolume);
+                deviceSupport.onSetPhoneVolume(phoneVolume);
                 break;
             case ACTION_SETMUSICSTATE:
                 MusicStateSpec stateSpec = new MusicStateSpec();
@@ -776,7 +776,7 @@ public class DeviceCommunicationService extends Service implements SharedPrefere
                 break;
             case ACTION_SET_WORLD_CLOCKS:
                 ArrayList<? extends WorldClock> clocks = (ArrayList<? extends WorldClock>) intent.getSerializableExtra(EXTRA_WORLD_CLOCKS);
-                mDeviceSupport.onSetWorldClocks(clocks);
+                deviceSupport.onSetWorldClocks(clocks);
                 break;
             case ACTION_ENABLE_REALTIME_STEPS: {
                 boolean enable = intent.getBooleanExtra(EXTRA_BOOLEAN_ENABLE, false);

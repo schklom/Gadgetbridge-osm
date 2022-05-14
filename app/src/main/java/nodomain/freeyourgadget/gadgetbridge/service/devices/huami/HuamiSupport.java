@@ -26,6 +26,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.widget.Toast;
 
@@ -37,10 +38,16 @@ import net.e175.klaus.solarpositioning.SPA;
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.threeten.bp.Instant;
+import org.threeten.bp.ZoneId;
+import org.threeten.bp.zone.ZoneOffsetTransition;
+import org.threeten.bp.zone.ZoneRules;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -52,6 +59,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.SimpleTimeZone;
+import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
@@ -72,6 +80,7 @@ import nodomain.freeyourgadget.gadgetbridge.deviceevents.GBDeviceEventVersionInf
 import nodomain.freeyourgadget.gadgetbridge.devices.DeviceCoordinator;
 import nodomain.freeyourgadget.gadgetbridge.devices.SampleProvider;
 import nodomain.freeyourgadget.gadgetbridge.devices.huami.ActivateDisplayOnLift;
+import nodomain.freeyourgadget.gadgetbridge.devices.huami.ActivateDisplayOnLiftSensitivity;
 import nodomain.freeyourgadget.gadgetbridge.devices.huami.DisconnectNotificationSetting;
 import nodomain.freeyourgadget.gadgetbridge.devices.huami.HuamiConst;
 import nodomain.freeyourgadget.gadgetbridge.devices.huami.HuamiCoordinator;
@@ -111,6 +120,7 @@ import nodomain.freeyourgadget.gadgetbridge.model.NotificationType;
 import nodomain.freeyourgadget.gadgetbridge.model.Reminder;
 import nodomain.freeyourgadget.gadgetbridge.model.Weather;
 import nodomain.freeyourgadget.gadgetbridge.model.WeatherSpec;
+import nodomain.freeyourgadget.gadgetbridge.model.WorldClock;
 import nodomain.freeyourgadget.gadgetbridge.service.btle.AbstractBTLEDeviceSupport;
 import nodomain.freeyourgadget.gadgetbridge.service.btle.BLETypeConversions;
 import nodomain.freeyourgadget.gadgetbridge.service.btle.BtLEAction;
@@ -151,6 +161,7 @@ import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.Dev
 import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_ALLOW_HIGH_MTU;
 import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_BT_CONNECTED_ADVERTISEMENT;
 import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_DATEFORMAT;
+import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_DISPLAY_ON_LIFT_SENSITIVITY;
 import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_DISPLAY_ON_LIFT_START;
 import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_DISPLAY_ON_LIFT_END;
 import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_DISCONNECT_NOTIFICATION;
@@ -177,10 +188,10 @@ import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.Dev
 import static nodomain.freeyourgadget.gadgetbridge.devices.huami.HuamiConst.PREF_BUTTON_ACTION_SELECTION_BROADCAST;
 import static nodomain.freeyourgadget.gadgetbridge.devices.huami.HuamiConst.PREF_BUTTON_ACTION_SELECTION_FITNESS_APP_START;
 import static nodomain.freeyourgadget.gadgetbridge.devices.huami.HuamiConst.PREF_BUTTON_ACTION_SELECTION_FITNESS_APP_STOP;
+import static nodomain.freeyourgadget.gadgetbridge.devices.huami.HuamiConst.PREF_BUTTON_ACTION_SELECTION_FITNESS_APP_TOGGLE;
 import static nodomain.freeyourgadget.gadgetbridge.devices.huami.HuamiConst.PREF_BUTTON_ACTION_SELECTION_OFF;
 import static nodomain.freeyourgadget.gadgetbridge.devices.huami.HuamiConst.PREF_DEVICE_ACTION_FELL_SLEEP_BROADCAST;
 import static nodomain.freeyourgadget.gadgetbridge.devices.huami.HuamiConst.PREF_DEVICE_ACTION_FELL_SLEEP_SELECTION;
-import static nodomain.freeyourgadget.gadgetbridge.devices.huami.HuamiConst.PREF_DEVICE_ACTION_SELECTION_BROADCAST;
 import static nodomain.freeyourgadget.gadgetbridge.devices.huami.HuamiConst.PREF_DEVICE_ACTION_SELECTION_OFF;
 import static nodomain.freeyourgadget.gadgetbridge.devices.huami.HuamiConst.PREF_DEVICE_ACTION_START_NON_WEAR_BROADCAST;
 import static nodomain.freeyourgadget.gadgetbridge.devices.huami.HuamiConst.PREF_DEVICE_ACTION_START_NON_WEAR_SELECTION;
@@ -921,6 +932,120 @@ public class HuamiSupport extends AbstractBTLEDeviceSupport {
     }
 
     @Override
+    public void onSetWorldClocks(ArrayList<? extends WorldClock> clocks) {
+        final TransactionBuilder builder;
+        try {
+            builder = performInitialized("onSetWorldClocks");
+        } catch (final IOException e) {
+            LOG.error("Unable to send world clocks to device", e);
+            return;
+        }
+
+        sendWorldClocks(builder, clocks);
+
+        builder.queue(getQueue());
+    }
+
+    private void setWorldClocks(final TransactionBuilder builder) {
+        final List<? extends WorldClock> clocks = DBHelper.getWorldClocks(gbDevice);
+        sendWorldClocks(builder, clocks);
+    }
+
+    private void sendWorldClocks(final TransactionBuilder builder, final List<? extends WorldClock> clocks) {
+        final DeviceCoordinator coordinator = DeviceHelper.getInstance().getCoordinator(gbDevice);
+        if (coordinator.getWorldClocksSlotCount() == 0) {
+            return;
+        }
+
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        try {
+            baos.write(0x03);
+            
+            if (clocks.size() != 0) {
+                int i = clocks.size();
+                for (final WorldClock clock : clocks) {
+                    baos.write(i--);
+                    baos.write(encodeWorldClock(clock));
+                }
+            } else {
+                baos.write(0);
+            }
+        } catch (final IOException e) {
+            LOG.error("Unable to send world clocks to device", e);
+            return;
+        }
+
+        writeToChunked2021(builder, (short) 0x0008, getNextHandle(), baos.toByteArray(), force2021Protocol, false);
+    }
+
+    public byte[] encodeWorldClock(final WorldClock clock) {
+        final DeviceCoordinator coordinator = DeviceHelper.getInstance().getCoordinator(gbDevice);
+
+        try {
+            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+            final TimeZone timezone = TimeZone.getTimeZone(clock.getTimeZoneId());
+            final ZoneId zoneId = ZoneId.of(clock.getTimeZoneId());
+
+            // Usually the 3-letter city code (eg. LIS for Lisbon), but doesn't seem to be used in the UI
+            baos.write("   ".getBytes(StandardCharsets.UTF_8));
+            baos.write(0x00);
+
+            // Some other string? Seems to be empty
+            baos.write(0x00);
+
+            // The city name / label that shows up on the band
+            baos.write(StringUtils.truncate(clock.getLabel(), coordinator.getWorldClocksLabelLength()).getBytes(StandardCharsets.UTF_8));
+            baos.write(0x00);
+
+            // The raw offset from UTC, in number of 15-minute blocks
+            baos.write((int) (timezone.getRawOffset() / (1000L * 60L * 15L)));
+
+            // Daylight savings
+            final boolean useDaylightTime = timezone.useDaylightTime();
+            final boolean inDaylightTime = timezone.inDaylightTime(new Date());
+            byte daylightByte = 0;
+            // The daylight savings offset, either currently (the previous transition) or future (the next transition), in minutes
+            byte daylightOffsetMinutes = 0;
+
+            final ZoneRules zoneRules = zoneId.getRules();
+            if (useDaylightTime) {
+                final ZoneOffsetTransition transition;
+                if (inDaylightTime) {
+                    daylightByte = 0x01;
+                    transition = zoneRules.previousTransition(Instant.now());
+                } else {
+                    daylightByte = 0x02;
+                    transition = zoneRules.nextTransition(Instant.now());
+                }
+                daylightOffsetMinutes = (byte) transition.getDuration().toMinutes();
+            }
+
+            baos.write(daylightByte);
+            baos.write(daylightOffsetMinutes);
+
+            // The timestamp of the next daylight savings transition, if any
+            final ZoneOffsetTransition nextTransition = zoneRules.nextTransition(Instant.now());
+            long nextTransitionTs = 0;
+            if (nextTransition != null) {
+                nextTransitionTs = nextTransition
+                        .getDateTimeBefore()
+                        .atZone(zoneId)
+                        .toEpochSecond();
+            }
+
+            for (int i = 0; i < 4; i++) {
+                baos.write((byte) ((nextTransitionTs >> (i * 8)) & 0xff));
+            }
+
+            return baos.toByteArray();
+        } catch (final IOException e) {
+            throw new RuntimeException("This should never happen", e);
+        }
+    }
+
+    @Override
     public void onNotification(NotificationSpec notificationSpec) {
         if (notificationSpec.type == NotificationType.GENERIC_ALARM_CLOCK) {
             onAlarmClock(notificationSpec);
@@ -1103,9 +1228,38 @@ public class HuamiSupport extends AbstractBTLEDeviceSupport {
         }
     }
 
-
     private void sendMusicStateToDevice() {
         sendMusicStateToDevice(bufferMusicSpec, bufferMusicStateSpec);
+    }
+
+    @Override
+    public void onSetPhoneVolume(final float volume) {
+        if (characteristicChunked == null) {
+            return;
+        }
+
+        final byte[] volumeCommand = new byte[]{0x40, (byte) Math.round(volume)};
+
+        try {
+            final TransactionBuilder builder = performInitialized("send volume");
+            writeToChunked(builder, 3, volumeCommand);
+
+            builder.queue(getQueue());
+        } catch (final IOException e) {
+            LOG.error("Unable to send volume", e);
+        }
+
+        LOG.info("sendVolumeStateToDevice: {}", volume);
+    }
+
+    private void sendVolumeStateToDevice() {
+        final AudioManager audioManager = (AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE);
+
+        final int volumeLevel = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+        final int volumeMax = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+        final int volumePercentage = (byte) Math.round(100 * (volumeLevel / (float) volumeMax));
+
+        onSetPhoneVolume(volumePercentage);
     }
 
     protected void sendMusicStateToDevice(MusicSpec musicSpec, MusicStateSpec musicStateSpec) {
@@ -1438,6 +1592,9 @@ public class HuamiSupport extends AbstractBTLEDeviceSupport {
             case PREF_BUTTON_ACTION_SELECTION_FITNESS_APP_STOP:
                 OpenTracksController.stopRecording(this.getContext());
                 break;
+            case PREF_BUTTON_ACTION_SELECTION_FITNESS_APP_TOGGLE:
+                OpenTracksController.toggleRecording(this.getContext());
+                break;
             default:
                 handleMediaButton(buttonPreference);
         }
@@ -1456,6 +1613,9 @@ public class HuamiSupport extends AbstractBTLEDeviceSupport {
                 break;
             case PREF_BUTTON_ACTION_SELECTION_FITNESS_APP_STOP:
                 OpenTracksController.stopRecording(this.getContext());
+                break;
+            case PREF_BUTTON_ACTION_SELECTION_FITNESS_APP_TOGGLE:
+                OpenTracksController.toggleRecording(this.getContext());
                 break;
             default:
                 handleMediaButton(deviceAction);
@@ -1579,6 +1739,7 @@ public class HuamiSupport extends AbstractBTLEDeviceSupport {
                         LOG.info("Music app started");
                         isMusicAppStarted = true;
                         sendMusicStateToDevice();
+                        sendVolumeStateToDevice();
                         break;
                     case (byte) 225:
                         LOG.info("Music app terminated");
@@ -2230,6 +2391,9 @@ public class HuamiSupport extends AbstractBTLEDeviceSupport {
                 case PREF_DISPLAY_ON_LIFT_END:
                     setActivateDisplayOnLiftWrist(builder);
                     break;
+                case PREF_DISPLAY_ON_LIFT_SENSITIVITY:
+                    setActivateDisplayOnLiftWristSensitivity(builder);
+                    break;
                 case PREF_DISCONNECT_NOTIFICATION:
                 case PREF_DISCONNECT_NOTIFICATION_START:
                 case PREF_DISCONNECT_NOTIFICATION_END:
@@ -2242,6 +2406,9 @@ public class HuamiSupport extends AbstractBTLEDeviceSupport {
                 case HuamiConst.PREF_SHORTCUTS:
                 case HuamiConst.PREF_SHORTCUTS_SORTABLE:
                     setShortcuts(builder);
+                    break;
+                case HuamiConst.PREF_WORKOUT_ACTIVITY_TYPES_SORTABLE:
+                    setWorkoutActivityTypes(builder);
                     break;
                 case MiBandConst.PREF_MI2_ROTATE_WRIST_TO_SWITCH_INFO:
                     setRotateWristToSwitchInfo(builder);
@@ -2659,6 +2826,23 @@ public class HuamiSupport extends AbstractBTLEDeviceSupport {
         return this;
     }
 
+    protected HuamiSupport setActivateDisplayOnLiftWristSensitivity(TransactionBuilder builder) {
+        final ActivateDisplayOnLiftSensitivity sensitivity = HuamiCoordinator.getDisplayOnLiftSensitivity(gbDevice.getAddress());
+        LOG.info("Setting activate display on lift wrist sensitivity to " + sensitivity);
+
+        switch (sensitivity) {
+            case SENSITIVE:
+                writeToConfiguration(builder, HuamiService.COMMAND_DISPLAY_ON_LIFT_WRIST_SPEED_SENSITIVE);
+                break;
+            case NORMAL:
+            default:
+                writeToConfiguration(builder, HuamiService.COMMAND_DISPLAY_ON_LIFT_WRIST_SPEED_NORMAL);
+                break;
+        }
+
+        return this;
+    }
+
     protected HuamiSupport setDisplayItems(TransactionBuilder builder) {
         SharedPreferences prefs = GBApplication.getDeviceSpecificSharedPrefs(gbDevice.getAddress());
         Set<String> pages = prefs.getStringSet(HuamiConst.PREF_DISPLAY_ITEMS, new HashSet<>(Arrays.asList(getContext().getResources().getStringArray(R.array.pref_mi2_display_items_default))));
@@ -2805,6 +2989,48 @@ public class HuamiSupport extends AbstractBTLEDeviceSupport {
     }
 
     protected HuamiSupport setShortcuts(TransactionBuilder builder) {
+        return this;
+    }
+
+    protected HuamiSupport setWorkoutActivityTypes(final TransactionBuilder builder) {
+        final SharedPreferences prefs = GBApplication.getDeviceSpecificSharedPrefs(gbDevice.getAddress());
+
+        final List<String> allActivityTypes = Arrays.asList(getContext().getResources().getStringArray(R.array.pref_miband5_workout_activity_types_values));
+        final List<String> defaultActivityTypes = Arrays.asList(getContext().getResources().getStringArray(R.array.pref_miband5_workout_activity_types_default));
+        final String activityTypesPref = prefs.getString(HuamiConst.PREF_WORKOUT_ACTIVITY_TYPES_SORTABLE, null);
+
+        final List<String> enabledActivityTypes;
+        if (activityTypesPref == null || activityTypesPref.equals("")) {
+            enabledActivityTypes = defaultActivityTypes;
+        } else {
+            enabledActivityTypes = Arrays.asList(activityTypesPref.split(","));
+        }
+
+        LOG.info("Setting workout types to {}", enabledActivityTypes);
+
+        final byte[] command = new byte[allActivityTypes.size() * 3 + 2];
+        command[0] = 0x0b;
+        command[1] = 0x00;
+
+        int pos = 2;
+
+        for (final String workoutType : enabledActivityTypes) {
+            command[pos++] = HuamiWorkoutActivityType.fromPrefValue(workoutType).getCode();
+            command[pos++] = 0x00;
+            command[pos++] = 0x01;
+        }
+
+        // Send all the remaining disabled workout types
+        for (final String workoutType : allActivityTypes) {
+            if (!enabledActivityTypes.contains(workoutType)) {
+                command[pos++] = HuamiWorkoutActivityType.fromPrefValue(workoutType).getCode();
+                command[pos++] = 0x00;
+                command[pos++] = 0x00;
+            }
+        }
+
+        writeToChunked(builder, 9, command);
+
         return this;
     }
 
@@ -3320,6 +3546,7 @@ public class HuamiSupport extends AbstractBTLEDeviceSupport {
         setExposeHRThridParty(builder);
         setHeartrateMeasurementInterval(builder, getHeartRateMeasurementInterval());
         sendReminders(builder);
+        setWorldClocks(builder);
         requestAlarms(builder);
     }
 

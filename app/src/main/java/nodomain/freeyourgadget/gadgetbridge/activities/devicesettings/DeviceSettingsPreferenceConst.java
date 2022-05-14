@@ -58,6 +58,7 @@ public class DeviceSettingsPreferenceConst {
     public static final String PREF_ACTIVATE_DISPLAY_ON_LIFT = "activate_display_on_lift_wrist";
     public static final String PREF_DISPLAY_ON_LIFT_START = "display_on_lift_start";
     public static final String PREF_DISPLAY_ON_LIFT_END = "display_on_lift_end";
+    public static final String PREF_DISPLAY_ON_LIFT_SENSITIVITY = "display_on_lift_sensitivity";
 
     public static final String PREF_SLEEP_TIME = "prefs_enable_sleep_time";
     public static final String PREF_SLEEP_TIME_START = "prefs_sleep_time_start";
@@ -110,6 +111,8 @@ public class DeviceSettingsPreferenceConst {
     public static final String PREF_OPERATING_SOUNDS = "operating_sounds";
     public static final String PREF_KEY_VIBRATION = "key_vibration";
     public static final String PREF_FAKE_RING_DURATION = "fake_ring_duration";
+
+    public static final String PREF_WORLD_CLOCKS = "pref_world_clocks";
 
     public static final String PREF_ANTILOST_ENABLED = "pref_antilost_enabled";
     public static final String PREF_HYDRATION_SWITCH = "pref_hydration_switch";
@@ -180,6 +183,9 @@ public class DeviceSettingsPreferenceConst {
 
     public static final String PREF_UM25_SHOW_THRESHOLD_NOTIFICATION = "um25_current_threshold_notify";
     public static final String PREF_UM25_SHOW_THRESHOLD = "um25_current_threshold";
+
+    public static final String PREF_VESC_MINIMUM_VOLTAGE = "vesc_minimum_battery_voltage";
+    public static final String PREF_VESC_MAXIMUM_VOLTAGE = "vesc_maximum_battery_voltage";
 
     public static final String PREF_SOUNDS = "sounds";
     public static final String PREF_AUTH_KEY = "authkey";

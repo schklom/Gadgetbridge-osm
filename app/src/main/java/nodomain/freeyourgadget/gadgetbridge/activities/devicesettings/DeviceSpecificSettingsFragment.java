@@ -47,11 +47,14 @@ import java.util.Objects;
 
 import nodomain.freeyourgadget.gadgetbridge.GBApplication;
 import nodomain.freeyourgadget.gadgetbridge.R;
+import nodomain.freeyourgadget.gadgetbridge.activities.ConfigureWorldClocks;
+import nodomain.freeyourgadget.gadgetbridge.devices.DeviceCoordinator;
 import nodomain.freeyourgadget.gadgetbridge.devices.DeviceManager;
 import nodomain.freeyourgadget.gadgetbridge.devices.huami.HuamiConst;
-import nodomain.freeyourgadget.gadgetbridge.devices.makibeshr3.MakibesHR3Constants;
 import nodomain.freeyourgadget.gadgetbridge.devices.miband.MiBandConst;
+import nodomain.freeyourgadget.gadgetbridge.impl.GBDevice;
 import nodomain.freeyourgadget.gadgetbridge.model.CannedMessagesSpec;
+import nodomain.freeyourgadget.gadgetbridge.util.DeviceHelper;
 import nodomain.freeyourgadget.gadgetbridge.util.Prefs;
 import nodomain.freeyourgadget.gadgetbridge.util.XTimePreference;
 import nodomain.freeyourgadget.gadgetbridge.util.XTimePreferenceFragment;
@@ -70,6 +73,7 @@ import static nodomain.freeyourgadget.gadgetbridge.devices.huami.HuamiConst.PREF
 import static nodomain.freeyourgadget.gadgetbridge.devices.huami.HuamiConst.PREF_EXPOSE_HR_THIRDPARTY;
 import static nodomain.freeyourgadget.gadgetbridge.devices.huami.HuamiConst.PREF_SHORTCUTS;
 import static nodomain.freeyourgadget.gadgetbridge.devices.huami.HuamiConst.PREF_SHORTCUTS_SORTABLE;
+import static nodomain.freeyourgadget.gadgetbridge.devices.huami.HuamiConst.PREF_WORKOUT_ACTIVITY_TYPES_SORTABLE;
 import static nodomain.freeyourgadget.gadgetbridge.devices.miband.MiBandConst.PREF_MI2_DATEFORMAT;
 import static nodomain.freeyourgadget.gadgetbridge.devices.miband.MiBandConst.PREF_MI2_ROTATE_WRIST_TO_SWITCH_INFO;
 import static nodomain.freeyourgadget.gadgetbridge.devices.miband.MiBandConst.PREF_NIGHT_MODE;
@@ -89,6 +93,8 @@ public class DeviceSpecificSettingsFragment extends PreferenceFragmentCompat imp
 
     private DeviceSpecificSettingsCustomizer deviceSpecificSettingsCustomizer;
 
+    private GBDevice device;
+
     private void setSettingsFileSuffix(String settingsFileSuffix, @NonNull int[] supportedSettings, String[] supportedLanguages) {
         Bundle args = new Bundle();
         args.putString("settingsFileSuffix", settingsFileSuffix);
@@ -103,6 +109,12 @@ public class DeviceSpecificSettingsFragment extends PreferenceFragmentCompat imp
         setArguments(args);
     }
 
+    private void setDevice(final GBDevice device) {
+        final Bundle args = getArguments() != null ? getArguments() : new Bundle();
+        args.putParcelable("device", device);
+        setArguments(args);
+    }
+
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         Bundle arguments = getArguments();
@@ -113,6 +125,7 @@ public class DeviceSpecificSettingsFragment extends PreferenceFragmentCompat imp
         int[] supportedSettings = arguments.getIntArray("supportedSettings");
         String[] supportedLanguages = arguments.getStringArray("supportedLanguages");
         this.deviceSpecificSettingsCustomizer = arguments.getParcelable("deviceSpecificSettingsCustomizer");
+        this.device = arguments.getParcelable("device");
 
         if (settingsFileSuffix == null || supportedSettings == null) {
             return;
@@ -334,6 +347,7 @@ public class DeviceSpecificSettingsFragment extends PreferenceFragmentCompat imp
         addPreferenceHandlerFor(PREF_DATEFORMAT);
         addPreferenceHandlerFor(PREF_DISPLAY_ITEMS);
         addPreferenceHandlerFor(PREF_DISPLAY_ITEMS_SORTABLE);
+        addPreferenceHandlerFor(PREF_WORKOUT_ACTIVITY_TYPES_SORTABLE);
         addPreferenceHandlerFor(PREF_SHORTCUTS);
         addPreferenceHandlerFor(PREF_SHORTCUTS_SORTABLE);
         addPreferenceHandlerFor(PREF_LANGUAGE);
@@ -516,6 +530,7 @@ public class DeviceSpecificSettingsFragment extends PreferenceFragmentCompat imp
         }
         String displayOnLiftState = prefs.getString(PREF_ACTIVATE_DISPLAY_ON_LIFT, PREF_DO_NOT_DISTURB_OFF);
         boolean displayOnLiftScheduled = displayOnLiftState.equals(PREF_DO_NOT_DISTURB_SCHEDULED);
+        boolean displayOnLiftOff = displayOnLiftState.equals(PREF_DO_NOT_DISTURB_OFF);
 
         final Preference rotateWristCycleInfo = findPreference(PREF_MI2_ROTATE_WRIST_TO_SWITCH_INFO);
         if (rotateWristCycleInfo != null) {
@@ -553,18 +568,47 @@ public class DeviceSpecificSettingsFragment extends PreferenceFragmentCompat imp
             });
         }
 
+        final Preference displayOnLiftSensitivity = findPreference(PREF_DISPLAY_ON_LIFT_SENSITIVITY);
+        if (displayOnLiftSensitivity != null) {
+            displayOnLiftSensitivity.setEnabled(!displayOnLiftOff);
+            displayOnLiftSensitivity.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newVal) {
+                    notifyPreferenceChanged(PREF_DISPLAY_ON_LIFT_SENSITIVITY);
+                    return true;
+                }
+            });
+        }
+
         final Preference displayOnLift = findPreference(PREF_ACTIVATE_DISPLAY_ON_LIFT);
         if (displayOnLift != null) {
             displayOnLift.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newVal) {
                     final boolean scheduled = PREF_DO_NOT_DISTURB_SCHEDULED.equals(newVal.toString());
+                    final boolean off = PREF_DO_NOT_DISTURB_OFF.equals(newVal.toString());
                     Objects.requireNonNull(displayOnLiftStart).setEnabled(scheduled);
                     Objects.requireNonNull(displayOnLiftEnd).setEnabled(scheduled);
                     if (rotateWristCycleInfo != null) {
-                        rotateWristCycleInfo.setEnabled(!PREF_DO_NOT_DISTURB_OFF.equals(newVal.toString()));
+                        rotateWristCycleInfo.setEnabled(!off);
+                    }
+                    if (displayOnLiftSensitivity != null) {
+                        displayOnLiftSensitivity.setEnabled(!off);
                     }
                     notifyPreferenceChanged(PREF_ACTIVATE_DISPLAY_ON_LIFT);
+                    return true;
+                }
+            });
+        }
+
+        final Preference worldClocks = findPreference(PREF_WORLD_CLOCKS);
+        if (worldClocks != null) {
+            worldClocks.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    final Intent intent = new Intent(getContext(), ConfigureWorldClocks.class);
+                    intent.putExtra(GBDevice.EXTRA_DEVICE, device);
+                    startActivity(intent);
                     return true;
                 }
             });
@@ -687,13 +731,28 @@ public class DeviceSpecificSettingsFragment extends PreferenceFragmentCompat imp
         }
     }
 
-    static DeviceSpecificSettingsFragment newInstance(String settingsFileSuffix,
-                                                      @NonNull int[] supportedSettings,
-                                                      String[] supportedLanguages,
-                                                      DeviceSpecificSettingsCustomizer deviceSpecificSettingsCustomizer) {
+    static DeviceSpecificSettingsFragment newInstance(GBDevice device) {
+        final DeviceCoordinator coordinator = DeviceHelper.getInstance().getCoordinator(device);
+        int[] supportedSettings = coordinator.getSupportedDeviceSpecificSettings(device);
+        String[] supportedLanguages = coordinator.getSupportedLanguageSettings(device);
+
+        if (supportedLanguages != null) {
+            supportedSettings = ArrayUtils.insert(0, supportedSettings, R.xml.devicesettings_language_generic);
+        }
+
+        if (coordinator.supportsActivityTracking()) {
+            supportedSettings = ArrayUtils.addAll(supportedSettings, R.xml.devicesettings_chartstabs);
+            supportedSettings = ArrayUtils.addAll(supportedSettings, R.xml.devicesettings_device_card_activity_card_preferences);
+        }
+
+        final DeviceSpecificSettingsCustomizer deviceSpecificSettingsCustomizer = coordinator.getDeviceSpecificSettingsCustomizer(device);
+
+        final String settingsFileSuffix = device.getAddress();
+
         final DeviceSpecificSettingsFragment fragment = new DeviceSpecificSettingsFragment();
         fragment.setSettingsFileSuffix(settingsFileSuffix, supportedSettings, supportedLanguages);
         fragment.setDeviceSpecificSettingsCustomizer(deviceSpecificSettingsCustomizer);
+        fragment.setDevice(device);
 
         return fragment;
     }

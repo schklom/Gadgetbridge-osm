@@ -143,6 +143,7 @@ import static nodomain.freeyourgadget.gadgetbridge.model.DeviceService.EXTRA_CAL
 import static nodomain.freeyourgadget.gadgetbridge.model.DeviceService.EXTRA_CALENDAREVENT_TYPE;
 import static nodomain.freeyourgadget.gadgetbridge.model.DeviceService.EXTRA_CALL_COMMAND;
 import static nodomain.freeyourgadget.gadgetbridge.model.DeviceService.EXTRA_CALL_DISPLAYNAME;
+import static nodomain.freeyourgadget.gadgetbridge.model.DeviceService.EXTRA_CALL_DNDSUPPRESSED;
 import static nodomain.freeyourgadget.gadgetbridge.model.DeviceService.EXTRA_CALL_PHONENUMBER;
 import static nodomain.freeyourgadget.gadgetbridge.model.DeviceService.EXTRA_CANNEDMESSAGES;
 import static nodomain.freeyourgadget.gadgetbridge.model.DeviceService.EXTRA_CANNEDMESSAGES_TYPE;
@@ -570,7 +571,7 @@ public class DeviceCommunicationService extends Service implements SharedPrefere
 
     private void handleAction(Intent intent, String action, GBDevice device) throws DeviceNotFoundException {
         DeviceSupport deviceSupport = getDeviceSupport(device);
-        
+
         Prefs devicePrefs = new Prefs(GBApplication.getDeviceSpecificSharedPrefs(device.getAddress()));
         boolean transliterate = devicePrefs.getBoolean(PREF_TRANSLITERATION_ENABLED, false);
 
@@ -690,6 +691,7 @@ public class DeviceCommunicationService extends Service implements SharedPrefere
                 callSpec.command = intent.getIntExtra(EXTRA_CALL_COMMAND, CallSpec.CALL_UNDEFINED);
                 callSpec.number = intent.getStringExtra(EXTRA_CALL_PHONENUMBER);
                 callSpec.name = sanitizeNotifText(intent.getStringExtra(EXTRA_CALL_DISPLAYNAME), device);
+                callSpec.dndSuppressed = intent.getIntExtra(EXTRA_CALL_DNDSUPPRESSED, 0);
                 deviceSupport.onSetCallState(callSpec);
                 break;
             case ACTION_SETCANNEDMESSAGES:

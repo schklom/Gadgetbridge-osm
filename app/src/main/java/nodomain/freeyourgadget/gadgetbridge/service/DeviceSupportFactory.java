@@ -164,155 +164,159 @@ public class DeviceSupportFactory {
     private ServiceDeviceSupport createServiceDeviceSupport(GBDevice device){
         switch (device.getType()) {
             case PEBBLE:
-                return new ServiceDeviceSupport(new PebbleSupport()); 
+                return new ServiceDeviceSupport(new PebbleSupport());
             case MIBAND:
-                return new ServiceDeviceSupport(new MiBandSupport(), ServiceDeviceSupport.Flags.THROTTLING, ServiceDeviceSupport.Flags.BUSY_CHECKING); 
+                return new ServiceDeviceSupport(new MiBandSupport(), ServiceDeviceSupport.Flags.THROTTLING, ServiceDeviceSupport.Flags.BUSY_CHECKING);
             case MIBAND2:
-                return new ServiceDeviceSupport(new HuamiSupport(), ServiceDeviceSupport.Flags.THROTTLING, ServiceDeviceSupport.Flags.BUSY_CHECKING); 
+                return new ServiceDeviceSupport(new HuamiSupport(), ServiceDeviceSupport.Flags.THROTTLING, ServiceDeviceSupport.Flags.BUSY_CHECKING);
             case MIBAND3:
-                return new ServiceDeviceSupport(new MiBand3Support()); 
+                return new ServiceDeviceSupport(new MiBand3Support());
             case MIBAND4:
-                return new ServiceDeviceSupport(new MiBand4Support()); 
+                return new ServiceDeviceSupport(new MiBand4Support());
             case MIBAND5:
-                return new ServiceDeviceSupport(new MiBand5Support()); 
+                return new ServiceDeviceSupport(new MiBand5Support());
             case MIBAND6:
-                return new ServiceDeviceSupport(new MiBand6Support()); 
+                return new ServiceDeviceSupport(new MiBand6Support());
             case AMAZFITBIP:
-                return new ServiceDeviceSupport(new AmazfitBipSupport()); 
+                return new ServiceDeviceSupport(new AmazfitBipSupport());
             case AMAZFITBIP_LITE:
-                return new ServiceDeviceSupport(new AmazfitBipLiteSupport()); 
+                return new ServiceDeviceSupport(new AmazfitBipLiteSupport());
             case AMAZFITBIPS:
-                return new ServiceDeviceSupport(new AmazfitBipSSupport()); 
+                return new ServiceDeviceSupport(new AmazfitBipSSupport());
             case AMAZFITBIPS_LITE:
-                return new ServiceDeviceSupport(new AmazfitBipSLiteSupport()); 
+                return new ServiceDeviceSupport(new AmazfitBipSLiteSupport());
             case AMAZFITBIPU:
-                return new ServiceDeviceSupport(new AmazfitBipUSupport()); 
+                return new ServiceDeviceSupport(new AmazfitBipUSupport());
             case AMAZFITBIPUPRO:
-                return new ServiceDeviceSupport(new AmazfitBipUProSupport()); 
+                return new ServiceDeviceSupport(new AmazfitBipUProSupport());
             case AMAZFITPOP:
-                return new ServiceDeviceSupport(new AmazfitPopSupport()); 
+                return new ServiceDeviceSupport(new AmazfitPopSupport());
             case AMAZFITPOPPRO:
-                return new ServiceDeviceSupport(new AmazfitPopProSupport()); 
+                return new ServiceDeviceSupport(new AmazfitPopProSupport());
             case AMAZFITGTR:
-                return new ServiceDeviceSupport(new AmazfitGTRSupport()); 
+                return new ServiceDeviceSupport(new AmazfitGTRSupport());
             case AMAZFITGTR_LITE:
-                return new ServiceDeviceSupport(new AmazfitGTRLiteSupport()); 
+                return new ServiceDeviceSupport(new AmazfitGTRLiteSupport());
             case AMAZFITGTR2:
-                return new ServiceDeviceSupport(new AmazfitGTR2Support()); 
+                return new ServiceDeviceSupport(new AmazfitGTR2Support());
             case ZEPP_E:
-                return new ServiceDeviceSupport(new ZeppESupport()); 
+                return new ServiceDeviceSupport(new ZeppESupport());
             case AMAZFITGTR2E:
-                return new ServiceDeviceSupport(new AmazfitGTR2eSupport()); 
+                return new ServiceDeviceSupport(new AmazfitGTR2eSupport());
             case AMAZFITTREX:
-                return new ServiceDeviceSupport(new AmazfitTRexSupport()); 
+                return new ServiceDeviceSupport(new AmazfitTRexSupport());
             case AMAZFITTREXPRO:
-                return new ServiceDeviceSupport(new AmazfitTRexProSupport()); 
+                return new ServiceDeviceSupport(new AmazfitTRexProSupport());
             case AMAZFITGTS:
-                return new ServiceDeviceSupport(new AmazfitGTSSupport()); 
+                return new ServiceDeviceSupport(new AmazfitGTSSupport());
             case AMAZFITVERGEL:
-                return new ServiceDeviceSupport(new AmazfitVergeLSupport()); 
+                return new ServiceDeviceSupport(new AmazfitVergeLSupport());
             case AMAZFITGTS2:
-                return new ServiceDeviceSupport(new AmazfitGTS2Support()); 
+                return new ServiceDeviceSupport(new AmazfitGTS2Support());
             case AMAZFITGTS2_MINI:
-                return new ServiceDeviceSupport(new AmazfitGTS2MiniSupport()); 
+                return new ServiceDeviceSupport(new AmazfitGTS2MiniSupport());
             case AMAZFITGTS2E:
-                return new ServiceDeviceSupport(new AmazfitGTS2eSupport()); 
+                return new ServiceDeviceSupport(new AmazfitGTS2eSupport());
             case AMAZFITCOR:
-                return new ServiceDeviceSupport(new AmazfitCorSupport()); 
+                return new ServiceDeviceSupport(new AmazfitCorSupport());
             case AMAZFITCOR2:
-                return new ServiceDeviceSupport(new AmazfitCor2Support()); 
+                return new ServiceDeviceSupport(new AmazfitCor2Support());
             case AMAZFITBAND5:
-                return new ServiceDeviceSupport(new AmazfitBand5Support()); 
+                return new ServiceDeviceSupport(new AmazfitBand5Support());
             case AMAZFITX:
-                return new ServiceDeviceSupport(new AmazfitXSupport()); 
+                return new ServiceDeviceSupport(new AmazfitXSupport());
             case AMAZFITNEO:
-                return new ServiceDeviceSupport(new AmazfitNeoSupport()); 
+                return new ServiceDeviceSupport(new AmazfitNeoSupport());
             case VIBRATISSIMO:
-                return new ServiceDeviceSupport(new VibratissimoSupport(), ServiceDeviceSupport.Flags.THROTTLING, ServiceDeviceSupport.Flags.BUSY_CHECKING); 
+                return new ServiceDeviceSupport(new VibratissimoSupport(), ServiceDeviceSupport.Flags.THROTTLING, ServiceDeviceSupport.Flags.BUSY_CHECKING);
             case LIVEVIEW:
-                return new ServiceDeviceSupport(new LiveviewSupport()); 
+                return new ServiceDeviceSupport(new LiveviewSupport());
             case HPLUS:
             case MAKIBESF68:
             case EXRIZUK8:
             case Q8:
                 return new ServiceDeviceSupport(new HPlusSupport(device.getType()));
             case NO1F1:
-                return new ServiceDeviceSupport(new No1F1Support()); 
+                return new ServiceDeviceSupport(new No1F1Support());
             case TECLASTH30:
-                return new ServiceDeviceSupport(new TeclastH30Support()); 
+                return new ServiceDeviceSupport(new TeclastH30Support());
             case XWATCH:
-                return new ServiceDeviceSupport(new XWatchSupport()); 
+                return new ServiceDeviceSupport(new XWatchSupport());
             case FOSSILQHYBRID:
-                return new ServiceDeviceSupport(new QHybridSupport()); 
+                return new ServiceDeviceSupport(new QHybridSupport());
             case ZETIME:
-                return new ServiceDeviceSupport(new ZeTimeDeviceSupport()); 
+                return new ServiceDeviceSupport(new ZeTimeDeviceSupport());
             case ID115:
-                return new ServiceDeviceSupport(new ID115Support()); 
+                return new ServiceDeviceSupport(new ID115Support());
             case WATCH9:
-                return new ServiceDeviceSupport(new Watch9DeviceSupport(), ServiceDeviceSupport.Flags.THROTTLING, ServiceDeviceSupport.Flags.BUSY_CHECKING); 
+                return new ServiceDeviceSupport(new Watch9DeviceSupport(), ServiceDeviceSupport.Flags.THROTTLING, ServiceDeviceSupport.Flags.BUSY_CHECKING);
             case WATCHXPLUS:
-                return new ServiceDeviceSupport(new WatchXPlusDeviceSupport(), ServiceDeviceSupport.Flags.THROTTLING, ServiceDeviceSupport.Flags.BUSY_CHECKING); 
+                return new ServiceDeviceSupport(new WatchXPlusDeviceSupport(), ServiceDeviceSupport.Flags.THROTTLING, ServiceDeviceSupport.Flags.BUSY_CHECKING);
             case ROIDMI:
-                return new ServiceDeviceSupport(new RoidmiSupport()); 
+                return new ServiceDeviceSupport(new RoidmiSupport());
             case ROIDMI3:
-                return new ServiceDeviceSupport(new RoidmiSupport()); 
+                return new ServiceDeviceSupport(new RoidmiSupport());
             case Y5:
-                return new ServiceDeviceSupport(new Y5Support()); 
+                return new ServiceDeviceSupport(new Y5Support());
             case CASIOGB6900:
-                return new ServiceDeviceSupport(new CasioGB6900DeviceSupport()); 
+                return new ServiceDeviceSupport(new CasioGB6900DeviceSupport());
             case CASIOGBX100:
-                return new ServiceDeviceSupport(new CasioGBX100DeviceSupport()); 
+                return new ServiceDeviceSupport(new CasioGBX100DeviceSupport());
             case MISCALE2:
-                return new ServiceDeviceSupport(new MiScale2DeviceSupport()); 
+                return new ServiceDeviceSupport(new MiScale2DeviceSupport());
             case BFH16:
-                return new ServiceDeviceSupport(new BFH16DeviceSupport()); 
+                return new ServiceDeviceSupport(new BFH16DeviceSupport());
             case MIJIA_LYWSD02:
-                return new ServiceDeviceSupport(new MijiaLywsd02Support()); 
+                return new ServiceDeviceSupport(new MijiaLywsd02Support());
             case MAKIBESHR3:
-                return new ServiceDeviceSupport(new MakibesHR3DeviceSupport()); 
+                return new ServiceDeviceSupport(new MakibesHR3DeviceSupport());
             case ITAG:
-                return new ServiceDeviceSupport(new ITagSupport()); 
+                return new ServiceDeviceSupport(new ITagSupport());
             case NUTMINI:
-                return new ServiceDeviceSupport(new NutSupport()); 
+                return new ServiceDeviceSupport(new NutSupport());
             case BANGLEJS:
-                return new ServiceDeviceSupport(new BangleJSDeviceSupport()); 
+                return new ServiceDeviceSupport(new BangleJSDeviceSupport());
             case TLW64:
-                return new ServiceDeviceSupport(new TLW64Support()); 
+                return new ServiceDeviceSupport(new TLW64Support());
             case PINETIME_JF:
-                return new ServiceDeviceSupport(new PineTimeJFSupport()); 
+                return new ServiceDeviceSupport(new PineTimeJFSupport());
             case SG2:
-                return new ServiceDeviceSupport(new HPlusSupport(DeviceType.SG2)); 
+                return new ServiceDeviceSupport(new HPlusSupport(DeviceType.SG2));
             case LEFUN:
-                return new ServiceDeviceSupport(new LefunDeviceSupport()); 
+                return new ServiceDeviceSupport(new LefunDeviceSupport());
             case SONY_SWR12:
-                return new ServiceDeviceSupport(new SonySWR12DeviceSupport()); 
+                return new ServiceDeviceSupport(new SonySWR12DeviceSupport());
             case WASPOS:
-                return new ServiceDeviceSupport(new WaspOSDeviceSupport()); 
+                return new ServiceDeviceSupport(new WaspOSDeviceSupport());
             case SMAQ2OSS:
-                return new ServiceDeviceSupport(new SMAQ2OSSSupport()); 
+                return new ServiceDeviceSupport(new SMAQ2OSSSupport());
             case UM25:
-                return new ServiceDeviceSupport(new UM25Support()); 
+                return new ServiceDeviceSupport(new UM25Support());
             case DOMYOS_T540:
-                return new ServiceDeviceSupport(new DomyosT540Support(), ServiceDeviceSupport.Flags.THROTTLING, ServiceDeviceSupport.Flags.BUSY_CHECKING); 
+                return new ServiceDeviceSupport(new DomyosT540Support(), ServiceDeviceSupport.Flags.THROTTLING, ServiceDeviceSupport.Flags.BUSY_CHECKING);
             case FITPRO:
-                return new ServiceDeviceSupport(new FitProDeviceSupport(), ServiceDeviceSupport.Flags.THROTTLING, ServiceDeviceSupport.Flags.BUSY_CHECKING); 
+                return new ServiceDeviceSupport(new FitProDeviceSupport(), ServiceDeviceSupport.Flags.THROTTLING, ServiceDeviceSupport.Flags.BUSY_CHECKING);
             case NOTHING_EAR1:
-                return new ServiceDeviceSupport(new Ear1Support()); 
+                return new ServiceDeviceSupport(new Ear1Support());
             case GALAXY_BUDS:
-                return new ServiceDeviceSupport(new GalaxyBudsDeviceSupport()); 
+                return new ServiceDeviceSupport(new GalaxyBudsDeviceSupport());
             case GALAXY_BUDS_LIVE:
-                return new ServiceDeviceSupport(new GalaxyBudsDeviceSupport()); 
+                return new ServiceDeviceSupport(new GalaxyBudsDeviceSupport());
+            case GALAXY_BUDS_PRO:
+                return new ServiceDeviceSupport(new GalaxyBudsDeviceSupport(), ServiceDeviceSupport.Flags.BUSY_CHECKING);
             case SONY_WH_1000XM3:
-                return new ServiceDeviceSupport(new SonyHeadphonesSupport()); 
+                return new ServiceDeviceSupport(new SonyHeadphonesSupport());
             case SONY_WH_1000XM4:
-                return new ServiceDeviceSupport(new SonyHeadphonesSupport()); 
+                return new ServiceDeviceSupport(new SonyHeadphonesSupport());
             case SONY_WF_SP800N:
-                return new ServiceDeviceSupport(new SonyHeadphonesSupport()); 
+                return new ServiceDeviceSupport(new SonyHeadphonesSupport(), ServiceDeviceSupport.Flags.BUSY_CHECKING);
+            case SONY_WF_1000XM3:
+                return new ServiceDeviceSupport(new SonyHeadphonesSupport());
             case VESC_NRF:
             case VESC_HM10:
                 return new ServiceDeviceSupport(new VescDeviceSupport(device.getType()));
             case BOSE_QC35:
-                return new ServiceDeviceSupport(new QC35BaseSupport()); 
+                return new ServiceDeviceSupport(new QC35BaseSupport());
         }
         return null;
     }

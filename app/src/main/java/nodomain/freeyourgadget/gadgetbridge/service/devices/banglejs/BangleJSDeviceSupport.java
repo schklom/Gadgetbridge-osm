@@ -18,11 +18,14 @@ package nodomain.freeyourgadget.gadgetbridge.service.devices.banglejs;
 
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -43,18 +46,24 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xml.sax.InputSource;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.SimpleTimeZone;
 import java.util.UUID;
 import java.lang.reflect.Field;
 
+import nodomain.freeyourgadget.gadgetbridge.BuildConfig;
 import nodomain.freeyourgadget.gadgetbridge.GBApplication;
 import nodomain.freeyourgadget.gadgetbridge.R;
+import nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst;
 import nodomain.freeyourgadget.gadgetbridge.database.DBHandler;
 import nodomain.freeyourgadget.gadgetbridge.database.DBHelper;
 import nodomain.freeyourgadget.gadgetbridge.deviceevents.GBDeviceEventBatteryInfo;
@@ -83,12 +92,21 @@ import nodomain.freeyourgadget.gadgetbridge.util.AlarmUtils;
 import nodomain.freeyourgadget.gadgetbridge.util.GB;
 import nodomain.freeyourgadget.gadgetbridge.util.Prefs;
 
+import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_ALLOW_HIGH_MTU;
+import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_DEVICE_INTERNET_ACCESS;
+import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_DEVICE_INTENTS;
+import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_BANGLEJS_TEXT_BITMAP;
 import static nodomain.freeyourgadget.gadgetbridge.database.DBHelper.*;
+
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathFactory;
 
 public class BangleJSDeviceSupport extends AbstractBTLEDeviceSupport {
     private static final Logger LOG = LoggerFactory.getLogger(BangleJSDeviceSupport.class);
+
     private BluetoothGattCharacteristic rxCharacteristic = null;
     private BluetoothGattCharacteristic txCharacteristic = null;
+    private boolean allowHighMTU = false;
     private int mtuSize = 20;
 
     private String receivedLine = "";
@@ -96,9 +114,81 @@ public class BangleJSDeviceSupport extends AbstractBTLEDeviceSupport {
     private boolean realtimeStep = false;
     private int realtimeHRMInterval = 30*60;
 
+    // Local Intents - for app manager communication
+    public static final String BANGLEJS_COMMAND_TX = "banglejs_command_tx";
+    public static final String BANGLEJS_COMMAND_RX = "banglejs_command_rx";
+    // Global Intents
+    private static final String BANGLE_ACTION_UART_TX = "com.banglejs.uart.tx";
+
     public BangleJSDeviceSupport() {
         super(LOG);
         addSupportedService(BangleJSConstants.UUID_SERVICE_NORDIC_UART);
+
+        registerLocalIntents();
+        registerGlobalIntents();
+    }
+
+    private void registerLocalIntents() {
+        IntentFilter commandFilter = new IntentFilter();
+        commandFilter.addAction(BANGLEJS_COMMAND_TX);
+        BroadcastReceiver commandReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                switch (intent.getAction()) {
+                    case BANGLEJS_COMMAND_TX: {
+                        String data = String.valueOf(intent.getExtras().get("DATA"));
+                        try {
+                            TransactionBuilder builder = performInitialized("TX");
+                            uartTx(builder, data);
+                            builder.queue(getQueue());
+                        } catch (IOException e) {
+                            GB.toast(getContext(), "Error in TX: " + e.getLocalizedMessage(), Toast.LENGTH_LONG, GB.ERROR);
+                        }
+                        break;
+                    }
+                }
+            }
+        };
+        LocalBroadcastManager.getInstance(GBApplication.getContext()).registerReceiver(commandReceiver, commandFilter);
+    }
+
+    private void registerGlobalIntents() {
+        IntentFilter commandFilter = new IntentFilter();
+        commandFilter.addAction(BANGLE_ACTION_UART_TX);
+        BroadcastReceiver commandReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                switch (intent.getAction()) {
+                    case BANGLE_ACTION_UART_TX: {
+                        /* In Tasker:
+                          Action: com.banglejs.uart.tx
+                          Cat: None
+                          Extra: line:Terminal.println(%avariable)
+                          Target: Broadcast Receiver
+
+                          Variable: Number, Configure on Import, NOT structured, Value set, Nothing Exported, NOT Same as value
+                         */
+                        Prefs devicePrefs = new Prefs(GBApplication.getDeviceSpecificSharedPrefs(gbDevice.getAddress()));
+                        if (!devicePrefs.getBoolean(PREF_DEVICE_INTENTS, false)) return;
+                        String data = intent.getStringExtra("line");
+                        if (data==null) {
+                            GB.toast(getContext(), "UART TX Intent, but no 'line' supplied", Toast.LENGTH_LONG, GB.ERROR);
+                            return;
+                        }
+                        if (!data.endsWith("\n")) data += "\n";
+                        try {
+                            TransactionBuilder builder = performInitialized("TX");
+                            uartTx(builder, data);
+                            builder.queue(getQueue());
+                        } catch (IOException e) {
+                            GB.toast(getContext(), "Error in TX: " + e.getLocalizedMessage(), Toast.LENGTH_LONG, GB.ERROR);
+                        }
+                        break;
+                    }
+                }
+            }
+        };
+        GBApplication.getContext().registerReceiver(commandReceiver, commandFilter);
     }
 
     @Override
@@ -113,6 +203,9 @@ public class BangleJSDeviceSupport extends AbstractBTLEDeviceSupport {
         txCharacteristic = getCharacteristic(BangleJSConstants.UUID_CHARACTERISTIC_NORDIC_UART_TX);
         builder.setGattCallback(this);
         builder.notify(rxCharacteristic, true);
+
+        Prefs devicePrefs = new Prefs(GBApplication.getDeviceSpecificSharedPrefs(gbDevice.getAddress()));
+        allowHighMTU = devicePrefs.getBoolean(PREF_ALLOW_HIGH_MTU, false);
 
         uartTx(builder, " \u0003"); // clear active line
 
@@ -139,6 +232,7 @@ public class BangleJSDeviceSupport extends AbstractBTLEDeviceSupport {
         LOG.info("UART TX: " + str);
         byte[] bytes;
         bytes = str.getBytes(StandardCharsets.ISO_8859_1);
+        // FIXME: somehow this is still giving us UTF8 data when we put images in strings. Maybe JSON.stringify is converting to UTF-8?
         for (int i=0;i<bytes.length;i+=mtuSize) {
             int l = bytes.length-i;
             if (l>mtuSize) l=mtuSize;
@@ -148,15 +242,49 @@ public class BangleJSDeviceSupport extends AbstractBTLEDeviceSupport {
         }
     }
 
+
     /// Write a string of data, and chunk it up
+    public String jsonToString(JSONObject jsonObj) {
+        String json = jsonObj.toString();
+        // toString creates '\u0000' instead of '\0'
+        // FIXME: there have got to be nicer ways of handling this - maybe we just make our own JSON.toString (see below)
+        json = json.replaceAll("\\\\u000([01234567])", "\\\\$1");
+        json = json.replaceAll("\\\\u00([0123456789abcdef][0123456789abcdef])", "\\\\x$1");
+        return json;
+        /*String json = "{";
+        Iterator<String> iter = jsonObj.keys();
+        while (iter.hasNext()) {
+            String key = iter.next();
+            Object v = jsonObj.get(key);
+            if (v instanceof Integer) {
+                // ...
+            } else // ..
+            if (iter.hasNext()) json+=",";
+        }
+        return json+"}";*/
+    }
+
+    /// Write a JSON object of data
     private void uartTxJSON(String taskName, JSONObject json) {
         try {
             TransactionBuilder builder = performInitialized(taskName);
-            uartTx(builder, "\u0010GB("+json.toString()+")\n");
+            uartTx(builder, "\u0010GB("+jsonToString(json)+")\n");
             builder.queue(getQueue());
         } catch (IOException e) {
             GB.toast(getContext(), "Error in "+taskName+": " + e.getLocalizedMessage(), Toast.LENGTH_LONG, GB.ERROR);
         }
+    }
+
+    /// Write JSON object of the form {t:taskName, err:message}
+    private void uartTxJSONError(String taskName, String message) {
+        JSONObject o = new JSONObject();
+        try {
+            o.put("t", taskName);
+            o.put("err", message);
+        } catch (JSONException e) {
+            GB.toast(getContext(), "uartTxJSONError: " + e.getLocalizedMessage(), Toast.LENGTH_LONG, GB.ERROR);
+        }
+        uartTxJSON(taskName, o);
     }
 
     private void handleUartRxLine(String line) {
@@ -168,15 +296,20 @@ public class BangleJSDeviceSupport extends AbstractBTLEDeviceSupport {
             // JSON - we hope!
             try {
                 JSONObject json = new JSONObject(line);
+                LOG.info("UART RX JSON parsed successfully");
                 handleUartRxJSON(json);
             } catch (JSONException e) {
+                LOG.info("UART RX JSON parse failure: "+ e.getLocalizedMessage());
                 GB.toast(getContext(), "Malformed JSON from Bangle.js: " + e.getLocalizedMessage(), Toast.LENGTH_LONG, GB.ERROR);
             }
+        } else {
+            LOG.info("UART RX line started with "+(int)line.charAt(0)+" - ignoring");
         }
     }
 
     private void handleUartRxJSON(JSONObject json) throws JSONException {
-        switch (json.getString("t")) {
+        String packetType = json.getString("t");
+        switch (packetType) {
             case "info":
                 GB.toast(getContext(), "Bangle.js: " + json.getString("msg"), Toast.LENGTH_LONG, GB.INFO);
                 break;
@@ -278,38 +411,78 @@ public class BangleJSDeviceSupport extends AbstractBTLEDeviceSupport {
                 }
             } break;
             case "http": {
-                // FIXME: This should be behind a default-off option in Gadgetbridge settings
-                RequestQueue queue = Volley.newRequestQueue(getContext());
-                String url = json.getString("url");
-                // Request a string response from the provided URL.
-                StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                        new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                JSONObject o = new JSONObject();
-                                try {
-                                    o.put("t", "http");
-                                    o.put("resp", response);
-                                } catch (JSONException e) {
-                                    GB.toast(getContext(), "HTTP: " + e.getLocalizedMessage(), Toast.LENGTH_LONG, GB.ERROR);
-                                }
-                                uartTxJSON("http", o);
-                            }
-                        }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        JSONObject o = new JSONObject();
-                        try {
-                            o.put("t", "http");
-                            o.put("err", error.toString());
-                        } catch (JSONException e) {
-                            GB.toast(getContext(), "HTTP: " + e.getLocalizedMessage(), Toast.LENGTH_LONG, GB.ERROR);
-                        }
-                        uartTxJSON("http", o);
+                Prefs devicePrefs = new Prefs(GBApplication.getDeviceSpecificSharedPrefs(gbDevice.getAddress()));
+                if (BuildConfig.INTERNET_ACCESS && devicePrefs.getBoolean(PREF_DEVICE_INTERNET_ACCESS, false)) {
+                    RequestQueue queue = Volley.newRequestQueue(getContext());
+                    String url = json.getString("url");
+                    String _xmlPath = "";
+                    try {
+                        _xmlPath = json.getString("xpath");
+                    } catch (JSONException e) {
                     }
-                });
-                queue.add(stringRequest);
+                    final String xmlPath = _xmlPath;
+                    // Request a string response from the provided URL.
+                    StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                            new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+                                    JSONObject o = new JSONObject();
+                                    if (xmlPath.length() != 0) {
+                                        try {
+                                            InputSource inputXML = new InputSource(new StringReader(response));
+                                            XPath xPath = XPathFactory.newInstance().newXPath();
+                                            response = xPath.evaluate(xmlPath, inputXML);
+                                        } catch (Exception error) {
+                                            uartTxJSONError("http", error.toString());
+                                            return;
+                                        }
+                                    }
+                                    try {
+                                        o.put("t", "http");
+                                        o.put("resp", response);
+                                    } catch (JSONException e) {
+                                        GB.toast(getContext(), "HTTP: " + e.getLocalizedMessage(), Toast.LENGTH_LONG, GB.ERROR);
+                                    }
+                                    uartTxJSON("http", o);
+                                }
+                            }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            JSONObject o = new JSONObject();
+                            uartTxJSONError("http", error.toString());
+                        }
+                    });
+                    queue.add(stringRequest);
+                } else {
+                    if (BuildConfig.INTERNET_ACCESS)
+                        uartTxJSONError("http", "Internet access not enabled, check Gadgetbridge Device Settings");
+                    else
+                        uartTxJSONError("http", "Internet access not enabled in this Gadgetbridge build");
+                }
             } break;
+            case "intent": {
+                Prefs devicePrefs = new Prefs(GBApplication.getDeviceSpecificSharedPrefs(gbDevice.getAddress()));
+                if (devicePrefs.getBoolean(PREF_DEVICE_INTENTS, false)) {
+                    String action = json.getString("action");
+                    JSONObject extra = json.getJSONObject("extra");
+                    Intent in = new Intent();
+                    in.setAction(action);
+                    if (extra != null) {
+                        Iterator<String> iter = extra.keys();
+                        while (iter.hasNext()) {
+                            String key = iter.next();
+                            in.putExtra(key, extra.getString(key));
+                        }
+                    }
+                    LOG.info("Sending intent " + action);
+                    this.getContext().getApplicationContext().sendBroadcast(in);
+                } else {
+                    uartTxJSONError("intent", "Android Intents not enabled, check Gadgetbridge Device Settings");
+                }
+            }
+            default : {
+                LOG.info("UART RX JSON packet type '"+packetType+"' not understood.");
+            }
         }
     }
 
@@ -322,7 +495,7 @@ public class BangleJSDeviceSupport extends AbstractBTLEDeviceSupport {
         if (BangleJSConstants.UUID_CHARACTERISTIC_NORDIC_UART_RX.equals(characteristic.getUuid())) {
             byte[] chars = characteristic.getValue();
             // check to see if we get more data - if so, increase out MTU for sending
-            if (chars.length > mtuSize)
+            if (allowHighMTU && chars.length > mtuSize)
                 mtuSize = chars.length;
             String packetStr = new String(chars);
             LOG.info("RX: " + packetStr);
@@ -355,6 +528,29 @@ public class BangleJSDeviceSupport extends AbstractBTLEDeviceSupport {
         return true;
     }
 
+
+
+    public String renderUnicodeAsImage(String txt) {
+        if (txt==null) return null;
+        // If we're not doing conversion, pass this right back
+        Prefs devicePrefs = new Prefs(GBApplication.getDeviceSpecificSharedPrefs(gbDevice.getAddress()));
+        if (!devicePrefs.getBoolean(PREF_BANGLEJS_TEXT_BITMAP, false))
+            return txt;
+        // Otherwise split up and check each word
+        String words[] = txt.split(" ");
+        for (int i=0;i<words.length;i++) {
+            boolean isRenderable = true;
+            for (int j=0;j<words[i].length();j++) {
+                char c = words[i].charAt(j);
+                // TODO: better check?
+                if (c<0 || c>255) isRenderable = false;
+            }
+            if (!isRenderable)
+                words[i] = "\0"+bitmapToEspruinoString(textToBitmap(words[i]));
+        }
+        return String.join(" ", words);
+    }
+
     @Override
     public void onNotification(NotificationSpec notificationSpec) {
         try {
@@ -362,10 +558,10 @@ public class BangleJSDeviceSupport extends AbstractBTLEDeviceSupport {
             o.put("t", "notify");
             o.put("id", notificationSpec.getId());
             o.put("src", notificationSpec.sourceName);
-            o.put("title", notificationSpec.title);
-            o.put("subject", notificationSpec.subject);
-            o.put("body", notificationSpec.body);
-            o.put("sender", notificationSpec.sender);
+            o.put("title", renderUnicodeAsImage(notificationSpec.title));
+            o.put("subject", renderUnicodeAsImage(notificationSpec.subject));
+            o.put("body", renderUnicodeAsImage(notificationSpec.body));
+            o.put("sender", renderUnicodeAsImage(notificationSpec.sender));
             o.put("tel", notificationSpec.phoneNumber);
             uartTxJSON("onNotification", o);
         } catch (JSONException e) {
@@ -434,7 +630,7 @@ public class BangleJSDeviceSupport extends AbstractBTLEDeviceSupport {
                         cmdName = field.getName().substring(5).toLowerCase();
             } catch (IllegalAccessException e) {}
             o.put("cmd", cmdName);
-            o.put("name", callSpec.name);
+            o.put("name", renderUnicodeAsImage(callSpec.name));
             o.put("number", callSpec.number);
             uartTxJSON("onSetCallState", o);
         } catch (JSONException e) {
@@ -471,9 +667,9 @@ public class BangleJSDeviceSupport extends AbstractBTLEDeviceSupport {
         try {
             JSONObject o = new JSONObject();
             o.put("t", "musicinfo");
-            o.put("artist", musicSpec.artist);
-            o.put("album", musicSpec.album);
-            o.put("track", musicSpec.track);
+            o.put("artist", renderUnicodeAsImage(musicSpec.artist));
+            o.put("album", renderUnicodeAsImage(musicSpec.album));
+            o.put("track", renderUnicodeAsImage(musicSpec.track));
             o.put("dur", musicSpec.duration);
             o.put("c", musicSpec.trackCount);
             o.put("n", musicSpec.trackNr);
@@ -638,9 +834,23 @@ public class BangleJSDeviceSupport extends AbstractBTLEDeviceSupport {
         }
     }
 
+    public Bitmap textToBitmap(String text) {
+        Paint paint = new Paint(0); // Paint.ANTI_ALIAS_FLAG not wanted as 1bpp
+        paint.setTextSize(18);
+        paint.setColor(0xFFFFFFFF);
+        paint.setTextAlign(Paint.Align.LEFT);
+        float baseline = -paint.ascent(); // ascent() is negative
+        int width = (int) (paint.measureText(text) + 0.5f); // round
+        int height = (int) (baseline + paint.descent() + 0.5f);
+        Bitmap image = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(image);
+        canvas.drawText(text, 0, baseline, paint);
+        return image;
+    }
+
     /** Convert an Android bitmap to a base64 string for use in Espruino.
      * Currently only 1bpp, no scaling */
-    public static String bitmapToEspruino(Bitmap bitmap) {
+    public static byte[] bitmapToEspruinoArray(Bitmap bitmap) {
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
         byte bmp[] = new byte[((height * width + 7) >> 3) + 3];
@@ -663,7 +873,19 @@ public class BangleJSDeviceSupport extends AbstractBTLEDeviceSupport {
         if (cn > 0) bmp[n++] = (byte)c;
         //LOG.info("BMP: " + width + "x"+height+" n "+n);
         // Convert to base64
-        return Base64.encodeToString(bmp, Base64.DEFAULT).replaceAll("\n","");
+        return bmp;
+    }
+
+    /** Convert an Android bitmap to a base64 string for use in Espruino.
+     * Currently only 1bpp, no scaling */
+    public static String bitmapToEspruinoString(Bitmap bitmap) {
+        return new String(bitmapToEspruinoArray(bitmap), StandardCharsets.ISO_8859_1);
+    }
+
+    /** Convert an Android bitmap to a base64 string for use in Espruino.
+     * Currently only 1bpp, no scaling */
+    public static String bitmapToEspruinoBase64(Bitmap bitmap) {
+        return Base64.encodeToString(bitmapToEspruinoArray(bitmap), Base64.DEFAULT).replaceAll("\n","");
     }
 
     /** Convert a drawable to a bitmap, for use with bitmapToEspruino */

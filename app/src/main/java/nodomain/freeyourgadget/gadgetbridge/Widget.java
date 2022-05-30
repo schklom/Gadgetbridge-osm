@@ -54,11 +54,9 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import nodomain.freeyourgadget.gadgetbridge.activities.ControlCenterv2;
-import nodomain.freeyourgadget.gadgetbridge.activities.SettingsActivity;
 import nodomain.freeyourgadget.gadgetbridge.activities.WidgetAlarmsActivity;
 import nodomain.freeyourgadget.gadgetbridge.activities.charts.ChartsActivity;
 import nodomain.freeyourgadget.gadgetbridge.impl.GBDevice;
@@ -77,30 +75,9 @@ public class Widget extends AppWidgetProvider {
 
     private static final Logger LOG = LoggerFactory.getLogger(Widget.class);
     static BroadcastReceiver broadcastReceiver = null;
-    List<GBDevice> selectedDevices;
-
-    private List<GBDevice> getSelectedDevices() {
-        Context context = GBApplication.getContext();
-        if (!(context instanceof GBApplication)) {
-            return null;
-        }
-        GBApplication gbApp = (GBApplication) context;
-        return gbApp.getDeviceManager().getSelectedDevices();
-    }
-
-    private GBDevice getDeviceByMAC(Context appContext, String HwAddress) {
-        GBApplication gbApp = (GBApplication) appContext;
-        List<? extends GBDevice> devices = gbApp.getDeviceManager().getDevices();
-        for (GBDevice device : devices) {
-            if (device.getAddress().equals(HwAddress)) {
-                return device;
-            }
-        }
-        return null;
-    }
 
 
-    private long[] getSteps(int appWidgetId) {
+    private long[] getSteps(GBDevice gbDevice) {
         Context context = GBApplication.getContext();
         Calendar day = GregorianCalendar.getInstance();
 
@@ -108,21 +85,7 @@ public class Widget extends AppWidgetProvider {
             return new long[]{0, 0, 0};
         }
         DailyTotals ds = new DailyTotals();
-
-        WidgetPreferenceStorage widgetPreferenceStorage = new WidgetPreferenceStorage();
-        String savedDeviceAddress = widgetPreferenceStorage.getSavedDeviceAddress(context, appWidgetId);
-        if (savedDeviceAddress == null) {
-            GB.toast("no device configured", Toast.LENGTH_SHORT, GB.ERROR);
-            return new long[]{0, 0, 0};
-        }
-        GBDevice selectedDevice = getDeviceByMAC(context.getApplicationContext(), savedDeviceAddress);
-
-        if (selectedDevice == null || !selectedDevice.isInitialized()) {
-            GB.toast(context.getString(R.string.device_not_connected), Toast.LENGTH_SHORT, GB.ERROR);
-            return new long[]{0, 0, 0};
-        }
-
-        return ds.getDailyTotalsForDevice(selectedDevice, day);
+        return ds.getDailyTotalsForDevice(gbDevice, day);
         //return ds.getDailyTotalsForAllDevices(day);
     }
 
@@ -133,21 +96,9 @@ public class Widget extends AppWidgetProvider {
     private void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                  int appWidgetId) {
 
-        selectedDevices = getSelectedDevices();
-        GBDevice selectedDevice = null;
-        if(selectedDevices.size() > 0){
-            selectedDevice = selectedDevices.get(0);
-        }
-        WidgetPreferenceStorage widgetPreferenceStorage = new WidgetPreferenceStorage();
-        String savedDeviceAddress = widgetPreferenceStorage.getSavedDeviceAddress(context, appWidgetId);
-        if (savedDeviceAddress != null) {
-            selectedDevice = getDeviceByMAC(context.getApplicationContext(), savedDeviceAddress);
-        }
-
-        if (selectedDevice == null || !selectedDevice.isInitialized()) {
-            GB.toast(context,
-                    context.getString(R.string.device_not_connected),
-                    Toast.LENGTH_SHORT, GB.ERROR);
+        GBDevice deviceForWidget = new WidgetPreferenceStorage().getDeviceForWidget(appWidgetId);
+        if (deviceForWidget == null) {
+            LOG.debug("Widget: no device, bailing out");
             return;
         }
 
@@ -168,17 +119,17 @@ public class Widget extends AppWidgetProvider {
 
         //alarms popup menu
         Intent startAlarmListIntent = new Intent(context, WidgetAlarmsActivity.class);
-        startAlarmListIntent.putExtra(GBDevice.EXTRA_DEVICE, selectedDevice);
+        startAlarmListIntent.putExtra(GBDevice.EXTRA_DEVICE, deviceForWidget);
         PendingIntent startAlarmListPIntent = PendingIntent.getActivity(context, appWidgetId, startAlarmListIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         views.setOnClickPendingIntent(R.id.todaywidget_header_alarm_icon, startAlarmListPIntent);
 
         //charts
         Intent startChartsIntent = new Intent(context, ChartsActivity.class);
-        startChartsIntent.putExtra(GBDevice.EXTRA_DEVICE, selectedDevice);
+        startChartsIntent.putExtra(GBDevice.EXTRA_DEVICE, deviceForWidget);
         PendingIntent startChartsPIntent = PendingIntent.getActivity(context, appWidgetId, startChartsIntent, PendingIntent.FLAG_CANCEL_CURRENT);
         views.setOnClickPendingIntent(R.id.todaywidget_bottom_layout, startChartsPIntent);
 
-        long[] dailyTotals = getSteps(appWidgetId);
+        long[] dailyTotals = getSteps(deviceForWidget);
         int steps = (int) dailyTotals[0];
         int sleep = (int) dailyTotals[1];
         ActivityUser activityUser = new ActivityUser();
@@ -197,17 +148,17 @@ public class Widget extends AppWidgetProvider {
         views.setProgressBar(R.id.todaywidget_sleep_progress, sleepGoalMinutes, sleep, false);
         views.setProgressBar(R.id.todaywidget_distance_progress, distanceGoal, steps * stepLength, false);
         views.setViewVisibility(R.id.todaywidget_battery_icon, View.GONE);
-        if (selectedDevice != null) {
-            String status = String.format("%1s", selectedDevice.getStateString());
-            if (selectedDevice.isConnected()) {
-                if (selectedDevice.getBatteryLevel() > 1) {
+        if (deviceForWidget != null) {
+            String status = String.format("%1s", deviceForWidget.getStateString());
+            if (deviceForWidget.isConnected()) {
+                if (deviceForWidget.getBatteryLevel() > 1) {
                     views.setViewVisibility(R.id.todaywidget_battery_icon, View.VISIBLE);
 
-                    status = String.format("%1s%%", selectedDevice.getBatteryLevel());
+                    status = String.format("%1s%%", deviceForWidget.getBatteryLevel());
                 }
             }
 
-            String deviceName = selectedDevice.getAlias() != null ? selectedDevice.getAlias() : selectedDevice.getName();
+            String deviceName = deviceForWidget.getAlias() != null ? deviceForWidget.getAlias() : deviceForWidget.getName();
             views.setTextViewText(R.id.todaywidget_device_status, status);
             views.setTextViewText(R.id.todaywidget_device_name, deviceName);
         }
@@ -218,18 +169,9 @@ public class Widget extends AppWidgetProvider {
 
     public void refreshData(int appWidgetId) {
         Context context = GBApplication.getContext();
+        GBDevice deviceForWidget = new WidgetPreferenceStorage().getDeviceForWidget(appWidgetId);
 
-        GBDevice device = null;
-        if(selectedDevices.size() > 0){
-            device = selectedDevices.get(0); // fallback
-        }
-        WidgetPreferenceStorage widgetPreferenceStorage = new WidgetPreferenceStorage();
-        String savedDeviceAddress = widgetPreferenceStorage.getSavedDeviceAddress(context, appWidgetId);
-        if (savedDeviceAddress != null) {
-            device = getDeviceByMAC(context.getApplicationContext(), savedDeviceAddress);
-        }
-
-        if (device == null || !device.isInitialized()) {
+        if (deviceForWidget == null || !deviceForWidget.isInitialized()) {
             GB.toast(context,
                     context.getString(R.string.device_not_connected),
                     Toast.LENGTH_SHORT, GB.ERROR);
@@ -304,11 +246,6 @@ public class Widget extends AppWidgetProvider {
             appWidgetId = extras.getInt(
                     AppWidgetManager.EXTRA_APPWIDGET_ID,
                     AppWidgetManager.INVALID_APPWIDGET_ID);
-        }
-
-        if(appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID){
-            GB.toast("invalid widget id", Toast.LENGTH_LONG, GB.ERROR);
-            return;
         }
 
         //this handles widget re-connection after apk updates

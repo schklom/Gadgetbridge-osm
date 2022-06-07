@@ -55,13 +55,18 @@ android {
         multiDexEnabled true
 
         // Note: always bump BOTH versionCode and versionName!
-        versionName "0.66.0"
-        versionCode 210
+        versionName "0.67.1"
+        versionCode 212
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
         buildConfigField "String", "GIT_HASH_SHORT", "\"${getGitHashShort()}\""
         buildConfigField "boolean", "INTERNET_ACCESS", "false"
         resValue "string", "pebble_content_provider", "com.getpebble.android.provider"
+        resValue "string", "app_name", "@string/application_name_generic"
+        resValue "string", "title_activity_controlcenter", "@string/title_activity_controlcenter_generic"
+        resValue "string", "about_activity_title", "@string/about_activity_title_generic"
+        resValue "string", "about_description", "@string/about_description_generic"
+        resValue "string", "gadgetbridge_running", "@string/gadgetbridge_running_generic"
     }
     signingConfigs {
         nightly {
@@ -91,6 +96,11 @@ android {
             }
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
             resValue "string", "pebble_content_provider", "com.getpebble.android.provider"
+            resValue "string", "app_name", "@string/application_name_main_nightly"
+            resValue "string", "title_activity_controlcenter", "@string/title_activity_controlcenter_main_nightly"
+            resValue "string", "about_activity_title", "@string/about_activity_title_main_nightly"
+            resValue "string", "about_description", "@string/about_description_main_nightly"
+            resValue "string", "gadgetbridge_running", "@string/gadgetbridge_running_main_nightly"
             debuggable true
         }
         nopebble {
@@ -104,6 +114,11 @@ android {
             }
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
             resValue "string", "pebble_content_provider", "com.getpebble.android.nopebble.provider"
+            resValue "string", "app_name", "@string/application_name_main_nopebble"
+            resValue "string", "title_activity_controlcenter", "@string/title_activity_controlcenter_main_nopebble"
+            resValue "string", "about_activity_title", "@string/about_activity_title_main_nopebble"
+            resValue "string", "about_description", "@string/about_description_main_nopebble"
+            resValue "string", "gadgetbridge_running", "@string/gadgetbridge_running_main_nopebble"
             debuggable true
         }
 
@@ -139,7 +154,12 @@ android {
             versionNameSuffix "-banglejs"
             buildConfigField "boolean", "INTERNET_ACCESS", "true"
             // Disable pebble provider to allow Bangle.js Gadgetbridge to coexist with Gadgetbridge
-            resValue "string", "pebble_content_provider", "com.getpebble.android.nopebble.provider"
+            resValue "string", "pebble_content_provider", "com.getpebble.android.nopebble.bangle.provider"
+            resValue "string", "app_name", "@string/application_name_banglejs_main"
+            resValue "string", "title_activity_controlcenter", "@string/title_activity_controlcenter_banglejs_main"
+            resValue "string", "about_activity_title", "@string/about_activity_title_banglejs_main"
+            resValue "string", "about_description", "@string/about_description_banglejs_main"
+            resValue "string", "gadgetbridge_running", "@string/gadgetbridge_running_banglejs_main"
         }
     }
 
@@ -218,6 +238,10 @@ dependencies {
     implementation 'com.google.protobuf:protobuf-lite:3.0.1'
     implementation "androidx.multidex:multidex:2.0.1"
     implementation 'com.android.volley:volley:1.2.1'
+
+    // JSR-310 timezones backport for Android, since we're still on java 7
+    implementation 'com.jakewharton.threetenabp:threetenabp:1.4.0'
+    testImplementation 'org.threeten:threetenbp:1.6.0'
 }
 
 preBuild.dependsOn(":GBDaoGenerator:genSources")

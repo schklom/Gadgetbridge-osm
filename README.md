@@ -89,7 +89,7 @@ vendor's servers.
 - PineTime (InfiniTime Firmware)
 - Roidmi, Roidmi 3, Mojietu 3 (Bluetooth FM Transmitters)
 - [SMA](https://codeberg.org/Freeyourgadget/Gadgetbridge/wiki/SMA) Q2 (SMA-Q2-OSS Firmware)
-- [Sony WH-1000XM3, WH-1000XM4, WF-SP800N](https://codeberg.org/Freeyourgadget/Gadgetbridge/wiki/Sony-Headphones)
+- [Sony WH-1000XM3, WH-1000XM4, WF-SP800N, WF-1000XM3](https://codeberg.org/Freeyourgadget/Gadgetbridge/wiki/Sony-Headphones)
 - Teclast H10, H30
 - TLW64
 - Vibratissimo (Experimental)
@@ -149,7 +149,7 @@ Translations can be contributed via https://hosted.weblate.org/projects/freeyour
 ## Community
 
 If you would like to get in touch with other Gadgetbridge users and developers outside of Codeberg, you can do so via:
-* Matrix: `#gadgetbridge:matrix.org` ([web access via Element.io](https://app.element.io/#/room/#gadgetbridge:matrix.org))
+* Matrix: [`#gadgetbridge:matrix.org`](https://matrix.to/#/#gadgetbridge:matrix.org)
 
 ## Do you have further questions or feedback?
 

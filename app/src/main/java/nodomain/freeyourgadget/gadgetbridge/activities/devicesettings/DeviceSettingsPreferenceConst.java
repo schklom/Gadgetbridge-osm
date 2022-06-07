@@ -41,6 +41,11 @@ public class DeviceSettingsPreferenceConst {
     public static final String PREF_VIBRATION_STRENGH_PERCENTAGE = "vibration_strength";
     public static final String PREF_RELAX_FIRMWARE_CHECKS = "relax_firmware_checks";
 
+    public static final String PREF_DEVICE_INTERNET_ACCESS = "device_internet_access";
+    public static final String PREF_DEVICE_INTENTS = "device_intents";
+
+    public static final String PREF_BANGLEJS_TEXT_BITMAP = "banglejs_text_bitmap";
+
     public static final String PREF_DISCONNECT_NOTIFICATION = "disconnect_notification";
     public static final String PREF_DISCONNECT_NOTIFICATION_START = "disconnect_notification_start";
     public static final String PREF_DISCONNECT_NOTIFICATION_END = "disconnect_notification_end";
@@ -58,6 +63,7 @@ public class DeviceSettingsPreferenceConst {
     public static final String PREF_ACTIVATE_DISPLAY_ON_LIFT = "activate_display_on_lift_wrist";
     public static final String PREF_DISPLAY_ON_LIFT_START = "display_on_lift_start";
     public static final String PREF_DISPLAY_ON_LIFT_END = "display_on_lift_end";
+    public static final String PREF_DISPLAY_ON_LIFT_SENSITIVITY = "display_on_lift_sensitivity";
 
     public static final String PREF_SLEEP_TIME = "prefs_enable_sleep_time";
     public static final String PREF_SLEEP_TIME_START = "prefs_sleep_time_start";
@@ -71,6 +77,7 @@ public class DeviceSettingsPreferenceConst {
     public static final String PREF_INACTIVITY_START = "inactivity_warnings_start";
     public static final String PREF_INACTIVITY_END = "inactivity_warnings_end";
     public static final String PREF_INACTIVITY_THRESHOLD = "inactivity_warnings_threshold";
+    public static final String PREF_INACTIVITY_THRESHOLD_EXTENDED = "inactivity_warnings_threshold_extended";
     public static final String PREF_INACTIVITY_MO = "inactivity_warnings_mo";
     public static final String PREF_INACTIVITY_TU = "inactivity_warnings_tu";
     public static final String PREF_INACTIVITY_WE = "inactivity_warnings_we";
@@ -81,6 +88,13 @@ public class DeviceSettingsPreferenceConst {
     public static final String PREF_INACTIVITY_DND = "inactivity_warnings_dnd";
     public static final String PREF_INACTIVITY_DND_START = "inactivity_warnings_dnd_start";
     public static final String PREF_INACTIVITY_DND_END = "inactivity_warnings_dnd_end";
+
+    public static final String PREF_HEARTRATE_USE_FOR_SLEEP_DETECTION = "heartrate_sleep_detection";
+    public static final String PREF_HEARTRATE_MEASUREMENT_INTERVAL = "heartrate_measurement_interval";
+    public static final String PREF_HEARTRATE_ACTIVITY_MONITORING = "heartrate_activity_monitoring";
+    public static final String PREF_HEARTRATE_ALERT_ENABLED = "heartrate_alert_enabled";
+    public static final String PREF_HEARTRATE_ALERT_THRESHOLD = "heartrate_alert_threshold";
+    public static final String PREF_HEARTRATE_STRESS_MONITORING = "heartrate_stress_monitoring";
 
     public static final String PREF_AUTOHEARTRATE_SWITCH = "pref_autoheartrate_switch";
     public static final String PREF_AUTOHEARTRATE_SLEEP = "pref_autoheartrate_sleep";
@@ -111,6 +125,8 @@ public class DeviceSettingsPreferenceConst {
     public static final String PREF_KEY_VIBRATION = "key_vibration";
     public static final String PREF_FAKE_RING_DURATION = "fake_ring_duration";
 
+    public static final String PREF_WORLD_CLOCKS = "pref_world_clocks";
+
     public static final String PREF_ANTILOST_ENABLED = "pref_antilost_enabled";
     public static final String PREF_HYDRATION_SWITCH = "pref_hydration_switch";
     public static final String PREF_HYDRATION_PERIOD = "pref_hydration_period";
@@ -136,8 +152,25 @@ public class DeviceSettingsPreferenceConst {
     public static final String PREF_GALAXY_BUDS_EQUALIZER_MODE = "pref_galaxy_buds_equalizer_mode";
     public static final String PREF_GALAXY_BUDS_TOUCH_LEFT = "pref_galaxy_buds_touch_left";
     public static final String PREF_GALAXY_BUDS_TOUCH_RIGHT = "pref_galaxy_buds_touch_right";
+    public static final String PREF_GALAXY_BUDS_TOUCH_RIGHT_SWITCH = "pref_galaxy_buds_touch_right_switch";
+    public static final String PREF_GALAXY_BUDS_TOUCH_LEFT_SWITCH = "pref_galaxy_buds_touch_left_switch";
     public static final String PREF_GALAXY_BUDS_LIVE_ANC = "pref_galaxy_buds_live_anc";
     public static final String PREF_GALAXY_BUDS_PRESSURE_RELIEF = "pref_galaxy_buds_live_pressure_relief";
+    public static final String PREF_GALAXY_BUDS_AMBIENT_SOUND = "pref_galaxy_buds_ambient_sound";
+    public static final String PREF_GALAXY_BUDS_PRO_NOISE_CONTROL="pref_galaxy_buds_pro_noise_control";
+    public static final String PREF_GALAXY_PRO_DOUBLE_TAP_EDGE ="pref_galaxy_pro_double_tap_edge";
+    public static final String PREF_GALAXY_BUDS_PRO_IN_EAR_DETECTION ="pref_galaxy_buds_pro_in_ear_detection";
+    public static final String PREF_GALAXY_BUDS_PRO_VOICE_DETECT ="pref_galaxy_buds_pro_voice_detect";
+    public static final String PREF_GALAXY_BUDS_PRO_VOICE_DETECT_DURATION ="pref_galaxy_buds_pro_voice_detect_duration";
+    public static final String PREF_GALAXY_BUDS_PRO_BALANCE="pref_galaxy_buds_pro_balance";
+    public static final String PREF_GALAXY_BUDS_PRO_READ_NOTIFICATIONS_OUTLOUD ="pref_galaxy_buds_pro_read_notifications_outloud";
+    public static final String PREF_GALAXY_BUDS_AMBIENT_MODE_DURING_CALL ="pref_galaxy_buds_ambient_mode_during_call";
+    public static final String PREF_GALAXY_BUDS_PRO_AMBIENT_VOLUME_RIGHT ="pref_galaxy_buds_pro_ambient_volume_right";
+    public static final String PREF_GALAXY_BUDS_PRO_AMBIENT_VOLUME_LEFT="pref_galaxy_buds_pro_ambient_volume_left";
+    public static final String PREF_GALAXY_BUDS_PRO_AMBIENT_SOUND_TONE ="pref_galaxy_buds_pro_ambient_sound_tone";
+    public static final String PREFS_NOISE_CONTROL_WITH_ONE_EARBUD ="pref_galaxy_buds_noise_controls_with_one_earbud";
+    public static final String PREF_GALAXY_BUDS_PRO_ANC_LEVEL="pref_galaxy_buds_pro_anc_level";
+    public static final String PREFS_GALAXY_BUDS_SEAMLESS_CONNECTION="prefs_galaxy_buds_seamless_connection";
 
     public static final String PREF_SONY_AUDIO_CODEC = "pref_sony_audio_codec";
     public static final String PREF_SONY_AMBIENT_SOUND_CONTROL = "pref_sony_ambient_sound_control";
@@ -178,7 +211,14 @@ public class DeviceSettingsPreferenceConst {
     public static final String PREFS_ACTIVITY_IN_DEVICE_CARD_DISTANCE = "prefs_activity_in_device_card_distance";
     public static final String PREFS_DEVICE_CHARTS_TABS = "charts_tabs";
 
+    public static final String PREF_UM25_SHOW_THRESHOLD_NOTIFICATION = "um25_current_threshold_notify";
+    public static final String PREF_UM25_SHOW_THRESHOLD = "um25_current_threshold";
+
+    public static final String PREF_VESC_MINIMUM_VOLTAGE = "vesc_minimum_battery_voltage";
+    public static final String PREF_VESC_MAXIMUM_VOLTAGE = "vesc_maximum_battery_voltage";
+
     public static final String PREF_SOUNDS = "sounds";
     public static final String PREF_AUTH_KEY = "authkey";
     public static final String PREF_USER_FITNESS_GOAL = "fitness_goal";
+    public static final String PREF_USER_FITNESS_GOAL_NOTIFICATION = "fitness_goal_notification";
 }

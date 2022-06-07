@@ -29,6 +29,7 @@ import nodomain.freeyourgadget.gadgetbridge.model.CallSpec;
 import nodomain.freeyourgadget.gadgetbridge.model.CannedMessagesSpec;
 import nodomain.freeyourgadget.gadgetbridge.model.MusicSpec;
 import nodomain.freeyourgadget.gadgetbridge.model.MusicStateSpec;
+import nodomain.freeyourgadget.gadgetbridge.model.NavigationInfoSpec;
 import nodomain.freeyourgadget.gadgetbridge.model.NotificationSpec;
 import nodomain.freeyourgadget.gadgetbridge.model.Reminder;
 import nodomain.freeyourgadget.gadgetbridge.model.WeatherSpec;
@@ -66,6 +67,8 @@ public interface EventHandler {
      * @param volume the volume percentage (0 to 100).
      */
     void onSetPhoneVolume(final float volume);
+  
+    void onSetNavigationInfo(NavigationInfoSpec navigationInfoSpec);
 
     void onEnableRealtimeSteps(boolean enable);
 

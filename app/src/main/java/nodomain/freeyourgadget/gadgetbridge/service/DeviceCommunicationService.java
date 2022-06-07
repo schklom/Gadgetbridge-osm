@@ -58,6 +58,7 @@ import nodomain.freeyourgadget.gadgetbridge.externalevents.CalendarReceiver;
 import nodomain.freeyourgadget.gadgetbridge.externalevents.LineageOsWeatherReceiver;
 import nodomain.freeyourgadget.gadgetbridge.externalevents.MusicPlaybackReceiver;
 import nodomain.freeyourgadget.gadgetbridge.externalevents.OmniJawsObserver;
+import nodomain.freeyourgadget.gadgetbridge.externalevents.OsmandEventReceiver;
 import nodomain.freeyourgadget.gadgetbridge.externalevents.PebbleReceiver;
 import nodomain.freeyourgadget.gadgetbridge.externalevents.PhoneCallReceiver;
 import nodomain.freeyourgadget.gadgetbridge.externalevents.SMSReceiver;
@@ -71,6 +72,7 @@ import nodomain.freeyourgadget.gadgetbridge.model.CallSpec;
 import nodomain.freeyourgadget.gadgetbridge.model.CannedMessagesSpec;
 import nodomain.freeyourgadget.gadgetbridge.model.MusicSpec;
 import nodomain.freeyourgadget.gadgetbridge.model.MusicStateSpec;
+import nodomain.freeyourgadget.gadgetbridge.model.NavigationInfoSpec;
 import nodomain.freeyourgadget.gadgetbridge.model.NotificationSpec;
 import nodomain.freeyourgadget.gadgetbridge.model.NotificationType;
 import nodomain.freeyourgadget.gadgetbridge.model.Reminder;
@@ -114,6 +116,7 @@ import static nodomain.freeyourgadget.gadgetbridge.model.DeviceService.ACTION_SE
 import static nodomain.freeyourgadget.gadgetbridge.model.DeviceService.ACTION_SETCANNEDMESSAGES;
 import static nodomain.freeyourgadget.gadgetbridge.model.DeviceService.ACTION_SETMUSICINFO;
 import static nodomain.freeyourgadget.gadgetbridge.model.DeviceService.ACTION_SETMUSICSTATE;
+import static nodomain.freeyourgadget.gadgetbridge.model.DeviceService.ACTION_SETNAVIGATIONINFO;
 import static nodomain.freeyourgadget.gadgetbridge.model.DeviceService.ACTION_SETTIME;
 import static nodomain.freeyourgadget.gadgetbridge.model.DeviceService.ACTION_SET_ALARMS;
 import static nodomain.freeyourgadget.gadgetbridge.model.DeviceService.ACTION_SET_CONSTANT_VIBRATION;
@@ -162,6 +165,9 @@ import static nodomain.freeyourgadget.gadgetbridge.model.DeviceService.EXTRA_MUS
 import static nodomain.freeyourgadget.gadgetbridge.model.DeviceService.EXTRA_MUSIC_TRACK;
 import static nodomain.freeyourgadget.gadgetbridge.model.DeviceService.EXTRA_MUSIC_TRACKCOUNT;
 import static nodomain.freeyourgadget.gadgetbridge.model.DeviceService.EXTRA_MUSIC_TRACKNR;
+import static nodomain.freeyourgadget.gadgetbridge.model.DeviceService.EXTRA_NAVIGATION_DISTANCE_TO_TURN;
+import static nodomain.freeyourgadget.gadgetbridge.model.DeviceService.EXTRA_NAVIGATION_INSTRUCTION;
+import static nodomain.freeyourgadget.gadgetbridge.model.DeviceService.EXTRA_NAVIGATION_NEXT_ACTION;
 import static nodomain.freeyourgadget.gadgetbridge.model.DeviceService.EXTRA_NOTIFICATION_ACTIONS;
 import static nodomain.freeyourgadget.gadgetbridge.model.DeviceService.EXTRA_NOTIFICATION_BODY;
 import static nodomain.freeyourgadget.gadgetbridge.model.DeviceService.EXTRA_NOTIFICATION_DNDSUPPRESSED;
@@ -206,7 +212,7 @@ public class DeviceCommunicationService extends Service implements SharedPrefere
     private BluetoothPairingRequestReceiver mBlueToothPairingRequestReceiver = null;
     private AlarmClockReceiver mAlarmClockReceiver = null;
     private GBAutoFetchReceiver mGBAutoFetchReceiver = null;
-    private AutoConnectIntervalReceiver mAutoConnectInvervalReceiver= null;
+    private AutoConnectIntervalReceiver mAutoConnectInvervalReceiver = null;
 
     private AlarmReceiver mAlarmReceiver = null;
     private CalendarReceiver mCalendarReceiver = null;
@@ -214,6 +220,8 @@ public class DeviceCommunicationService extends Service implements SharedPrefere
     private LineageOsWeatherReceiver mLineageOsWeatherReceiver = null;
     private TinyWeatherForecastGermanyReceiver mTinyWeatherForecastGermanyReceiver = null;
     private OmniJawsObserver mOmniJawsObserver = null;
+
+    private OsmandEventReceiver mOsmandAidlHelper = null;
 
     private final String[] mMusicActions = {
             "com.android.music.metachanged",
@@ -550,6 +558,13 @@ public class DeviceCommunicationService extends Service implements SharedPrefere
                 stateSpec.state = intent.getByteExtra(EXTRA_MUSIC_STATE, (byte) 0);
                 mDeviceSupport.onSetMusicState(stateSpec);
                 break;
+            case ACTION_SETNAVIGATIONINFO:
+                NavigationInfoSpec navigationInfoSpec = new NavigationInfoSpec();
+                navigationInfoSpec.instruction = intent.getStringExtra(EXTRA_NAVIGATION_INSTRUCTION);
+                navigationInfoSpec.nextAction = intent.getIntExtra(EXTRA_NAVIGATION_NEXT_ACTION,0);
+                navigationInfoSpec.distanceToTurn = intent.getIntExtra(EXTRA_NAVIGATION_DISTANCE_TO_TURN,0);
+                mDeviceSupport.onSetNavigationInfo(navigationInfoSpec);
+                break;
             case ACTION_REQUEST_APPINFO:
                 mDeviceSupport.onAppInfoReq();
                 break;
@@ -782,15 +797,18 @@ public class DeviceCommunicationService extends Service implements SharedPrefere
                 registerReceiver(mAlarmClockReceiver, filter);
             }
 
+            if (mOsmandAidlHelper == null && coordinator != null && coordinator.supportsNavigation(mGBDevice)) {
+                mOsmandAidlHelper = new OsmandEventReceiver(this.getApplication());
+            }
+
             // Weather receivers
-            if ( coordinator != null && coordinator.supportsWeather()) {
+            if (coordinator != null && coordinator.supportsWeather()) {
                 if (GBApplication.isRunningOreoOrLater()) {
                     if (mLineageOsWeatherReceiver == null) {
                         mLineageOsWeatherReceiver = new LineageOsWeatherReceiver();
                         registerReceiver(mLineageOsWeatherReceiver, new IntentFilter("GB_UPDATE_WEATHER"));
                     }
-                }
-                else {
+                } else {
                     if (mCMWeatherReceiver == null) {
                         mCMWeatherReceiver = new CMWeatherReceiver();
                         registerReceiver(mCMWeatherReceiver, new IntentFilter("GB_UPDATE_WEATHER"));
@@ -868,6 +886,10 @@ public class DeviceCommunicationService extends Service implements SharedPrefere
             if (mTinyWeatherForecastGermanyReceiver != null) {
                 unregisterReceiver(mTinyWeatherForecastGermanyReceiver);
                 mTinyWeatherForecastGermanyReceiver = null;
+            }
+            if (mOsmandAidlHelper != null) {
+                mOsmandAidlHelper.cleanupResources();
+                mOsmandAidlHelper = null;
             }
             if (mGBAutoFetchReceiver != null) {
                 unregisterReceiver(mGBAutoFetchReceiver);

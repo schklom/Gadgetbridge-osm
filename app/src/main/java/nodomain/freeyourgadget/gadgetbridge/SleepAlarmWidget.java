@@ -126,7 +126,7 @@ public class SleepAlarmWidget extends AppWidgetProvider {
                     context.getString(R.string.appwidget_setting_alarm, hours, minutes),
                     Toast.LENGTH_SHORT, GB.INFO);
 
-            Alarm alarm = AlarmUtils.createSingleShot(0, true, false, calendar);
+            Alarm alarm = AlarmUtils.createSingleShot(0, false, false, calendar);
             ArrayList<Alarm> alarms = new ArrayList<>(1);
             alarms.add(alarm);
             GBApplication.deviceService().onSetAlarms(alarms);

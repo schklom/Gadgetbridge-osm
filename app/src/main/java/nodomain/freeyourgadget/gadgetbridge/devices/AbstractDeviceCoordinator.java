@@ -293,4 +293,9 @@ public abstract class AbstractDeviceCoordinator implements DeviceCoordinator {
     public boolean supportsPowerOff() {
         return false;
     }
+
+    @Override
+    public boolean supportsNavigation(GBDevice gbDevice) {
+        return false;
+    }
 }

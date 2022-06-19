@@ -18,6 +18,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 package nodomain.freeyourgadget.gadgetbridge.activities;
 
+import static nodomain.freeyourgadget.gadgetbridge.util.GB.log;
 import static nodomain.freeyourgadget.gadgetbridge.util.GB.toast;
 
 import android.Manifest;
@@ -237,6 +238,7 @@ public class DiscoveryActivity extends AbstractGBActivity implements AdapterView
             public void onScanResult(int callbackType, ScanResult result) {
                 super.onScanResult(callbackType, result);
                 try {
+                    log("found device le: " + result.getDevice().getName(), GB.INFO, null);
                     ScanRecord scanRecord = result.getScanRecord();
                     ParcelUuid[] uuids = null;
                     if (scanRecord != null) {

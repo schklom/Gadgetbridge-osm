@@ -26,10 +26,8 @@ public class DataActivity extends AbstractGBActivity {
             if (countView == null) {
                 return;
             }
-            SensorState state = (SensorState) intent.getSerializableExtra("EXTRA_SENSOR_STATE");
+            boolean is_closed = intent.getBooleanExtra("EXTRA_SENSOR_CLOSED", false);
             int count = intent.getIntExtra("EXTRA_SENSOR_COUNT", -1);
-
-            boolean is_closed = state == SensorState.SENSOR_STATE_CLOSED;
 
             stateView.setText(is_closed ? "CLOSED" : "OPEN");
             stateView.setBackgroundResource(is_closed ? android.R.color.holo_green_light : android.R.color.holo_red_light);
@@ -44,19 +42,22 @@ public class DataActivity extends AbstractGBActivity {
 
         stateView = findViewById(R.id.text_sensor_state);
         countView = findViewById(R.id.text_sensor_count);
-
-        LocalBroadcastManager.getInstance(getApplicationContext())
-                .sendBroadcast(new Intent(BinarySensorSupport.ACTION_SENSOR_STATE_REQUEST));
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(BinarySensorSupport.ACTION_SENSOR_STATE_CHANGED);
+        filter.addAction(BinarySensorSupport.ACTION_SENSOR_STATE_RESPONSE);
         LocalBroadcastManager.getInstance(getApplicationContext())
                 .registerReceiver(
                         stateReceiver,
-                        new IntentFilter(BinarySensorSupport.ACTION_SENSOR_STATE_CHANGED)
+                        filter
                 );
+
+        LocalBroadcastManager.getInstance(getApplicationContext())
+                .sendBroadcast(new Intent(BinarySensorSupport.ACTION_SENSOR_STATE_REQUEST));
     }
 
     @Override

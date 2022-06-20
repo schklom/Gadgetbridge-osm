@@ -38,7 +38,6 @@ public class BinarySensorSupport extends BinarySensorBaseSupport {
 
     final public static String ACTION_SENSOR_STATE_CHANGED = "nodomain.freeyourgadget.gadgetbridge.binary_sensor.STATE_CHANGED";
     final public static String ACTION_SENSOR_STATE_REQUEST = "nodomain.freeyourgadget.gadgetbridge.binary_sensor.STATE_REQUEST";
-    final public static String ACTION_SENSOR_STATE_RESPONSE = "nodomain.freeyourgadget.gadgetbridge.binary_sensor.STATE_RESPONSE";
 
     private static final Logger logger = LoggerFactory.getLogger(BinarySensorSupport.class);
 
@@ -67,7 +66,7 @@ public class BinarySensorSupport extends BinarySensorBaseSupport {
     BroadcastReceiver stateRequestReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            sendStateChangeIntent(true, false);
+            sendStateChangeIntent(false);
         }
     };
 
@@ -112,12 +111,8 @@ public class BinarySensorSupport extends BinarySensorBaseSupport {
         );
     }
 
-    void sendStateChangeIntent(boolean isResponse, boolean sendGlobally){
-        String action = ACTION_SENSOR_STATE_CHANGED;
-        if(isResponse){
-            action = ACTION_SENSOR_STATE_RESPONSE;
-        }
-        Intent intent = new Intent(action);
+    void sendStateChangeIntent(boolean sendGlobally){
+        Intent intent = new Intent(ACTION_SENSOR_STATE_CHANGED);
 
         intent.putExtra("EXTRA_SENSOR_CLOSED", sensorState == nodomain.freeyourgadget.gadgetbridge.service.devices.binary_sensor.protocol.constants.SensorState.SENSOR_STATE_CLOSED);
         intent.putExtra("EXTRA_SENSOR_COUNT", sensorCount);
@@ -139,7 +134,7 @@ public class BinarySensorSupport extends BinarySensorBaseSupport {
                 this.sensorState = stateParameter.getSensorState();
                 this.sensorCount = stateParameter.getCount();
 
-                sendStateChangeIntent(false, response.getMessageId() == MessageId.MESSAGE_ID_SENSOR_STATUS_EVENT);
+                sendStateChangeIntent(true);
             }
         }
     }

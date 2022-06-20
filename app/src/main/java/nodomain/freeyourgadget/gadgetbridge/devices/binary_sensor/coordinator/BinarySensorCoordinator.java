@@ -56,7 +56,7 @@ public class BinarySensorCoordinator extends AbstractBLEDeviceCoordinator {
 
     @Override
     public int[] getSupportedDeviceSpecificSettings(GBDevice device) {
-        return null;
+        return new int[0];
     }
 
     @Override

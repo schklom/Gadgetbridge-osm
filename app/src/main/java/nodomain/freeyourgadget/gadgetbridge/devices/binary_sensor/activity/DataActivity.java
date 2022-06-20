@@ -49,7 +49,6 @@ public class DataActivity extends AbstractGBActivity {
         super.onResume();
         IntentFilter filter = new IntentFilter();
         filter.addAction(BinarySensorSupport.ACTION_SENSOR_STATE_CHANGED);
-        filter.addAction(BinarySensorSupport.ACTION_SENSOR_STATE_RESPONSE);
         LocalBroadcastManager.getInstance(getApplicationContext())
                 .registerReceiver(
                         stateReceiver,

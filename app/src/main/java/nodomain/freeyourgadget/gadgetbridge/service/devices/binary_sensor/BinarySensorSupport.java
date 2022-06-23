@@ -128,6 +128,12 @@ public class BinarySensorSupport extends BinarySensorBaseSupport {
 
         for (Parameter parameter : response.getParameters()) {
             if (parameter instanceof SensorState) {
+                if(getDevice().getState() != GBDevice.State.INITIALIZED){
+                    new TransactionBuilder("set device state")
+                            .add(new SetDeviceStateAction(getDevice(), GBDevice.State.INITIALIZED, getContext()))
+                            .queue(getQueue());
+                }
+
                 SensorState stateParameter = (SensorState) parameter;
                 logger.debug("sensor state: " + stateParameter.getSensorState() + "  count: " + stateParameter.getCount());
 
@@ -176,7 +182,6 @@ public class BinarySensorSupport extends BinarySensorBaseSupport {
         sendPacketToDevice(getSensorRequest.encode(), builder);
         sendPacketToDevice(setSensorRequest.encode(), builder);
 
-        return builder
-                .add(new SetDeviceStateAction(getDevice(), GBDevice.State.INITIALIZED, getContext()));
+        return builder;
     }
 }

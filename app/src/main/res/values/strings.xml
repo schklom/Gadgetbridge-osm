@@ -1678,5 +1678,14 @@
 
     <string name="info_no_devices_connected">no devices connected</string>
     <string name="info_connected_count">%d devices connected</string>
+    <string name="controlcenter_set_parent_folder">Set parent folder</string>
+    <string name="controlcenter_toggle_details">Toggle details</string>
+    <string name="controlcenter_connected_fraction">Connected: %d/%d</string>
+    <string name="error_setting_parent_folder">Error setting parent folder: %s</string>
+    <string name="error_deleting_device">Error deleting device: %s</string>
+    <string name="controlcenter_folder_name">Folder name:</string>
+    <string name="controlcenter_add_new_folder">Add new folder</string>
+    <string name="controlcenter_unset_folder">Unset folder</string>
+    <string name="controlcenter_set_folder_title">Set or create new folder</string>
     <string name="devicetype_binary_sensor">Binary sensor</string>
 </resources>

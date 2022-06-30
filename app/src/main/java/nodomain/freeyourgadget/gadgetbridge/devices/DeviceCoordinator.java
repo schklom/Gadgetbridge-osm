@@ -424,4 +424,6 @@ public interface DeviceCoordinator {
     BatteryConfig[] getBatteryConfig();
 
     boolean supportsPowerOff();
+
+    boolean supportsNavigation(GBDevice mGBDevice);
 }

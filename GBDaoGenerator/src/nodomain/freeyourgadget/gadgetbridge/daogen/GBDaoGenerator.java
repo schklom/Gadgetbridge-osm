@@ -43,7 +43,7 @@ public class GBDaoGenerator {
 
 
     public static void main(String[] args) throws Exception {
-        final Schema schema = new Schema(37, MAIN_PACKAGE + ".entities");
+        final Schema schema = new Schema(42, MAIN_PACKAGE + ".entities");
 
         Entity userAttributes = addUserAttributes(schema);
         Entity user = addUserInfo(schema, userAttributes);
@@ -87,6 +87,7 @@ public class GBDaoGenerator {
         addCalendarSyncState(schema, device);
         addAlarms(schema, user, device);
         addReminders(schema, user, device);
+        addWorldClocks(schema, user, device);
 
         Entity notificationFilter = addNotificationFilters(schema);
 
@@ -180,8 +181,9 @@ public class GBDaoGenerator {
         device.addStringProperty("manufacturer").notNull();
         device.addStringProperty("identifier").notNull().unique().javaDocGetterAndSetter("The fixed identifier, i.e. MAC address of the device.");
         device.addIntProperty("type").notNull().javaDocGetterAndSetter("The DeviceType key, i.e. the GBDevice's type.");
-        device.addStringProperty("model").javaDocGetterAndSetter("An optional model, further specifying the kind of device-");
+        device.addStringProperty("model").javaDocGetterAndSetter("An optional model, further specifying the kind of device.");
         device.addStringProperty("alias");
+        device.addStringProperty("parentFolder").javaDocGetterAndSetter("Folder name containing this device.");
         Property deviceId = deviceAttributes.addLongProperty("deviceId").notNull().getProperty();
         // sorted by the from-date, newest first
         Property deviceAttributesSortProperty = getPropertyByName(deviceAttributes, VALID_FROM_UTC);
@@ -559,6 +561,24 @@ public class GBDaoGenerator {
         reminder.addIntProperty("repetition").notNull();
         reminder.addToOne(user, userId);
         reminder.addToOne(device, deviceId);
+    }
+
+    private static void addWorldClocks(Schema schema, Entity user, Entity device) {
+        Entity worldClock = addEntity(schema, "WorldClock");
+        worldClock.implementsInterface("nodomain.freeyourgadget.gadgetbridge.model.WorldClock");
+        Property deviceId = worldClock.addLongProperty("deviceId").notNull().getProperty();
+        Property userId = worldClock.addLongProperty("userId").notNull().getProperty();
+        Property worldClockId = worldClock.addStringProperty("worldClockId").notNull().primaryKey().getProperty();
+        Index indexUnique = new Index();
+        indexUnique.addProperty(deviceId);
+        indexUnique.addProperty(userId);
+        indexUnique.addProperty(worldClockId);
+        indexUnique.makeUnique();
+        worldClock.addIndex(indexUnique);
+        worldClock.addStringProperty("label").notNull();
+        worldClock.addStringProperty("timeZoneId").notNull();
+        worldClock.addToOne(user, userId);
+        worldClock.addToOne(device, deviceId);
     }
 
     private static void addNotificationFilterEntry(Schema schema, Entity notificationFilterEntity) {

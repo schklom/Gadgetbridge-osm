@@ -17,6 +17,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 package nodomain.freeyourgadget.gadgetbridge.service.serial;
 
+import android.location.Location;
+
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -31,6 +33,7 @@ import nodomain.freeyourgadget.gadgetbridge.model.MusicStateSpec;
 import nodomain.freeyourgadget.gadgetbridge.model.NotificationSpec;
 import nodomain.freeyourgadget.gadgetbridge.model.Reminder;
 import nodomain.freeyourgadget.gadgetbridge.model.WeatherSpec;
+import nodomain.freeyourgadget.gadgetbridge.model.WorldClock;
 import nodomain.freeyourgadget.gadgetbridge.service.AbstractDeviceSupport;
 
 /**
@@ -158,6 +161,12 @@ public abstract class AbstractSerialDeviceSupport extends AbstractDeviceSupport 
     }
 
     @Override
+    public void onSetPhoneVolume(final float volume) {
+        byte[] bytes = gbDeviceProtocol.encodeVolume(volume);
+        sendToDevice(bytes);
+    }
+
+    @Override
     public void onAppInfoReq() {
         byte[] bytes = gbDeviceProtocol.encodeAppInfoReq();
         sendToDevice(bytes);
@@ -274,6 +283,18 @@ public abstract class AbstractSerialDeviceSupport extends AbstractDeviceSupport 
     @Override
     public void onSetReminders(ArrayList<? extends Reminder> reminders) {
         byte[] bytes = gbDeviceProtocol.encodeReminders(reminders);
+        sendToDevice(bytes);
+    }
+
+    @Override
+    public void onSetWorldClocks(ArrayList<? extends WorldClock> clocks) {
+        byte[] bytes = gbDeviceProtocol.encodeWorldClocks(clocks);
+        sendToDevice(bytes);
+    }
+
+    @Override
+    public void onSetGpsLocation(Location location) {
+        byte[] bytes = gbDeviceProtocol.encodeGpsLocation(location);
         sendToDevice(bytes);
     }
 }

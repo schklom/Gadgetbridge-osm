@@ -943,6 +943,10 @@ public class FossilHRWatchAdapter extends FossilWatchAdapter {
 
     @Override
     public void setMusicInfo(MusicSpec musicSpec) {
+        musicSpec = new MusicSpec(musicSpec);
+        if(musicSpec.album == null) musicSpec.album = "";
+        if(musicSpec.artist == null) musicSpec.artist = "";
+        if(musicSpec.track == null) musicSpec.track = "";
         if (
                 currentSpec != null
                         && currentSpec.album.equals(musicSpec.album)
@@ -1157,10 +1161,10 @@ public class FossilHRWatchAdapter extends FossilWatchAdapter {
         boolean quickRepliesEnabled = quickReplies.length > 0 && callSpec.number != null && callSpec.number.matches("^\\+(?:[0-9] ?){6,14}[0-9]$");
         if (callSpec.command == CallSpec.CALL_INCOMING) {
             currentCallSpec = callSpec;
-            queueWrite(new PlayCallNotificationRequest(StringUtils.getFirstOf(callSpec.name, callSpec.number), true, quickRepliesEnabled, this));
+            queueWrite(new PlayCallNotificationRequest(StringUtils.getFirstOf(callSpec.name, callSpec.number), true, quickRepliesEnabled, callSpec.dndSuppressed, this));
         } else {
             currentCallSpec = null;
-            queueWrite(new PlayCallNotificationRequest(StringUtils.getFirstOf(callSpec.name, callSpec.number), false, quickRepliesEnabled, this));
+            queueWrite(new PlayCallNotificationRequest(StringUtils.getFirstOf(callSpec.name, callSpec.number), false, quickRepliesEnabled, callSpec.dndSuppressed, this));
         }
     }
 
@@ -1376,7 +1380,9 @@ public class FossilHRWatchAdapter extends FossilWatchAdapter {
             outerLoop:
             for (ButtonConfiguration config : configs) {
                 for (ApplicationInformation installedApp : installedApplications) {
-                    if (installedApp.getAppName().equals(config.getAction())) {
+                    if (installedApp.getAppName().equals(config.getAction()) ||
+                            config.getAction().equals("workoutApp") //workoutApp is part of internal firmware
+                    ) {
                         availableConfigs.add(config);
                         continue outerLoop;
                     }
@@ -1578,6 +1584,18 @@ public class FossilHRWatchAdapter extends FossilWatchAdapter {
                             );
                         queueWrite(new JsonPutRequest(responseObject, this));
                     }
+                } else if (request.optString("custom_menu").equals("request_config")) {
+                    // watchface requests custom menu data to be initialized
+                    LOG.info("Got custom_menu config request, sending intent to HR Menu Companion app...");
+                    Intent intent = new Intent();
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.setClassName("d.d.hrmenucompanion", "d.d.hrmenucompanion.MainActivity");
+                    intent.putExtra("SEND_CONFIG", true);
+                    try {
+                        getContext().startActivity(intent);
+                    } catch (Exception e) {
+                        LOG.info("Couldn't send intent to Fossil-HR-Menu-Companion app, is it installed?");
+                    }
                 } else {
                     LOG.warn("Unhandled request from watch: " + requestJson.toString());
                 }
@@ -1616,7 +1634,7 @@ public class FossilHRWatchAdapter extends FossilWatchAdapter {
 
     private void handleCallRequest(byte[] value) {
         boolean acceptCall = value[7] == (byte) 0x00;
-        queueWrite(new PlayCallNotificationRequest("", false, false, this));
+        queueWrite(new PlayCallNotificationRequest("", false, false, 0,this));
 
         GBDeviceEventCallControl callControlEvent = new GBDeviceEventCallControl();
         callControlEvent.event = acceptCall ? GBDeviceEventCallControl.Event.START : GBDeviceEventCallControl.Event.REJECT;

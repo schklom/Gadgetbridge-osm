@@ -272,6 +272,15 @@
         <item>@string/p_scheduled</item>
     </string-array>
 
+    <string-array name="activate_display_on_lift_sensitivity">
+        <item>@string/normal</item>
+        <item>@string/sensitive</item>
+    </string-array>
+    <string-array name="activate_display_on_lift_sensitivity_values">
+        <item>@string/p_normal</item>
+        <item>@string/p_sensitive</item>
+    </string-array>
+
     <string-array name="mi3_night_mode">
         <item>@string/off</item>
         <!--
@@ -396,6 +405,7 @@
         <item>@string/menuitem_status</item>
         <item>@string/menuitem_pai</item>
         <item>@string/menuitem_hr</item>
+        <item>@string/menuitem_breathing</item>
         <item>@string/menuitem_stress</item>
         <item>@string/menuitem_eventreminder</item>
         <item>@string/menuitem_dnd</item>
@@ -418,6 +428,7 @@
         <item>@string/p_menuitem_status</item>
         <item>@string/p_menuitem_pai</item>
         <item>@string/p_menuitem_hr</item>
+        <item>@string/p_menuitem_breathing</item>
         <item>@string/p_menuitem_stress</item>
         <item>@string/p_menuitem_eventreminder</item>
         <item>@string/p_menuitem_dnd</item>
@@ -453,6 +464,7 @@
         <item>@string/menuitem_activity</item>
         <item>@string/menuitem_eventreminder</item>
         <item>@string/menuitem_pai</item>
+        <item>@string/menuitem_sleep</item>
         <item>@string/menuitem_worldclock</item>
         <item>@string/menuitem_stress</item>
         <item>@string/menuitem_cycles</item>
@@ -480,6 +492,7 @@
         <item>@string/p_menuitem_activity</item>
         <item>@string/p_menuitem_eventreminder</item>
         <item>@string/p_menuitem_pai</item>
+        <item>@string/p_menuitem_sleep</item>
         <item>@string/p_menuitem_worldclock</item>
         <item>@string/p_menuitem_stress</item>
         <item>@string/p_menuitem_cycles</item>
@@ -507,6 +520,7 @@
         <item>@string/p_menuitem_activity</item>
         <item>@string/p_menuitem_eventreminder</item>
         <item>@string/p_menuitem_pai</item>
+        <item>@string/p_menuitem_sleep</item>
         <item>@string/p_menuitem_worldclock</item>
         <item>@string/p_menuitem_stress</item>
         <item>@string/p_menuitem_cycles</item>
@@ -531,6 +545,7 @@
         <item>@string/menuitem_mutephone</item>
         <item>@string/menuitem_eventreminder</item>
         <item>@string/menuitem_pai</item>
+        <item>@string/menuitem_sleep</item>
         <item>@string/menuitem_worldclock</item>
         <item>@string/menuitem_stress</item>
         <item>@string/menuitem_cycles</item>
@@ -556,6 +571,7 @@
         <item>@string/p_menuitem_mutephone</item>
         <item>@string/p_menuitem_eventreminder</item>
         <item>@string/p_menuitem_pai</item>
+        <item>@string/p_menuitem_sleep</item>
         <item>@string/p_menuitem_worldclock</item>
         <item>@string/p_menuitem_stress</item>
         <item>@string/p_menuitem_cycles</item>
@@ -569,6 +585,48 @@
         <item>@string/p_menuitem_notifications</item>
         <item>@string/p_menuitem_weather</item>
         <item>@string/p_menuitem_music</item>
+    </string-array>
+
+    <string-array name="pref_miband5_workout_activity_types">
+        <item>@string/activity_type_outdoor_running</item>
+        <item>@string/activity_type_walking</item>
+        <item>@string/activity_type_treadmill</item>
+        <item>@string/activity_type_outdoor_cycling</item>
+        <item>@string/activity_type_indoor_cycling</item>
+        <item>@string/activity_type_elliptical</item>
+        <item>@string/activity_type_swimming</item>
+        <item>@string/activity_type_freestyle</item>
+        <item>@string/activity_type_jump_roping</item>
+        <item>@string/activity_type_rowing_machine</item>
+        <item>@string/activity_type_yoga</item>
+    </string-array>
+
+    <string-array name="pref_miband5_workout_activity_types_values">
+        <item>outdoor_running</item>
+        <item>walking</item>
+        <item>treadmill</item>
+        <item>outdoor_cycling</item>
+        <item>indoor_cycling</item>
+        <item>elliptical</item>
+        <item>pool_swimming</item>
+        <item>freestyle</item>
+        <item>jump_rope</item>
+        <item>rowing_machine</item>
+        <item>yoga</item>
+    </string-array>
+
+    <string-array name="pref_miband5_workout_activity_types_default">
+        <item>outdoor_running</item>
+        <item>walking</item>
+        <item>treadmill</item>
+        <item>outdoor_cycling</item>
+        <item>indoor_cycling</item>
+        <item>elliptical</item>
+        <item>pool_swimming</item>
+        <item>freestyle</item>
+        <item>jump_rope</item>
+        <item>rowing_machine</item>
+        <item>yoga</item>
     </string-array>
 
     <string-array name="pref_neo_display_items">
@@ -670,6 +728,7 @@
         <item>@string/menuitem_pai</item>
         <item>@string/menuitem_hr</item>
         <item>@string/menuitem_spo2</item>
+        <item>@string/menuitem_breathing</item>
         <item>@string/menuitem_stress</item>
         <item>@string/menuitem_eventreminder</item>
         <item>@string/menuitem_dnd</item>
@@ -693,6 +752,7 @@
         <item>@string/p_menuitem_pai</item>
         <item>@string/p_menuitem_hr</item>
         <item>@string/p_menuitem_spo2</item>
+        <item>@string/p_menuitem_breathing</item>
         <item>@string/p_menuitem_stress</item>
         <item>@string/p_menuitem_eventreminder</item>
         <item>@string/p_menuitem_dnd</item>
@@ -1375,7 +1435,8 @@
         <item name="de_DE">@string/german</item>
         <item name="it_IT">@string/italian</item>
         <item name="fr_FR">@string/french</item>
-        <item name="pt_BR">@string/portuguese</item>
+        <item name="pt_BR">@string/portuguese_br</item>
+        <item name="pt_PT">@string/portuguese_pt</item>
         <item name="nl_NL">@string/dutch</item>
         <item name="pl_PL">@string/polish</item>
         <item name="cs_CZ">@string/czesh</item>
@@ -1402,6 +1463,7 @@
         <item>it_IT</item>
         <item>fr_FR</item>
         <item>pt_BR</item>
+        <item>pt_PT</item>
         <item>nl_NL</item>
         <item>pl_PL</item>
         <item>cs_CZ</item>
@@ -1530,6 +1592,34 @@
         <item>3600</item>
     </string-array>
 
+    <string-array name="prefs_miband_heartrate_alert_threshold">
+        <item name="100">@string/heartrate_bpm_100</item>
+        <item name="105">@string/heartrate_bpm_105</item>
+        <item name="110">@string/heartrate_bpm_110</item>
+        <item name="112">@string/heartrate_bpm_112</item>
+        <item name="120">@string/heartrate_bpm_120</item>
+        <item name="125">@string/heartrate_bpm_125</item>
+        <item name="130">@string/heartrate_bpm_130</item>
+        <item name="135">@string/heartrate_bpm_135</item>
+        <item name="140">@string/heartrate_bpm_140</item>
+        <item name="145">@string/heartrate_bpm_145</item>
+        <item name="150">@string/heartrate_bpm_150</item>
+    </string-array>
+
+    <string-array name="prefs_miband_heartrate_alert_threshold_values">
+        <item>100</item>
+        <item>105</item>
+        <item>110</item>
+        <item>112</item>
+        <item>120</item>
+        <item>125</item>
+        <item>130</item>
+        <item>135</item>
+        <item>140</item>
+        <item>145</item>
+        <item>150</item>
+    </string-array>
+
     <string-array name="prefs_zetime_heartrate_measurement_interval">
         <item name="0">@string/off</item>
         <item name="300">@string/interval_five_minutes</item>
@@ -1655,11 +1745,8 @@
         <item>@string/pref_media_rewind</item>
         <item>@string/pref_device_action_broadcast</item>
         <item>@string/pref_device_action_fitness_app_control_start</item>
-        <!--
-        Enable when OpenTracks allows to be stopped via intent
-        https://github.com/OpenTracksApp/OpenTracks/issues/1103
         <item>@string/pref_device_action_fitness_app_control_stop</item>
-        -->
+        <item>@string/pref_device_action_fitness_app_control_toggle</item>
     </string-array>
 
     <string-array name="button_action_values">
@@ -1675,11 +1762,8 @@
         <item>@string/pref_media_rewind_value</item>
         <item>@string/pref_device_action_broadcast_value</item>
         <item>@string/pref_device_action_fitness_app_control_start_value</item>
-        <!--
-        Enable when OpenTracks allows to be stopped via intent
-        https://github.com/OpenTracksApp/OpenTracks/issues/1103
         <item>@string/pref_device_action_fitness_app_control_stop_value</item>
-        -->
+        <item>@string/pref_device_action_fitness_app_control_toggle_value</item>
     </string-array>
 
     <string-array name="device_action_options">
@@ -1689,11 +1773,8 @@
         <item>@string/pref_media_playpause</item>
         <item>@string/pref_device_action_broadcast</item>
         <item>@string/pref_device_action_fitness_app_control_start</item>
-        <!--
-        Enable when OpenTracks allows to be stopped via intent
-        https://github.com/OpenTracksApp/OpenTracks/issues/1103
         <item>@string/pref_device_action_fitness_app_control_stop</item>
-        -->
+        <item>@string/pref_device_action_fitness_app_control_toggle</item>
     </string-array>
 
     <string-array name="device_action_values">
@@ -1703,11 +1784,8 @@
         <item>@string/pref_media_playpause_value</item>
         <item>@string/pref_device_action_broadcast_value</item>
         <item>@string/pref_device_action_fitness_app_control_start_value</item>
-        <!--
-        Enable when OpenTracks allows to be stopped via intent
-        https://github.com/OpenTracksApp/OpenTracks/issues/1103
         <item>@string/pref_device_action_fitness_app_control_stop_value</item>
-        -->
+        <item>@string/pref_device_action_fitness_app_control_toggle_value</item>
     </string-array>
 
     <string-array name="pref_hybridhr_buttonfunctions">
@@ -1818,6 +1896,7 @@
         <item>@string/menuitem_notifications</item>
         <item>@string/mi2_prefs_inactivity_warnings</item>
         <item>@string/pref_title_notifications_sms</item>
+        <item>@string/menuitem_email</item>
         <item>@string/menuitem_goal</item>
     </string-array>
 
@@ -1828,6 +1907,7 @@
         <item>@string/p_menuitem_notifications</item>
         <item>@string/p_menuitem_inactivity_warning</item>
         <item>@string/p_menuitem_sms</item>
+        <item>@string/p_menuitem_email</item>
         <item>@string/p_menuitem_goal</item>
     </string-array>
 
@@ -1916,10 +1996,85 @@
         <item>5</item>
     </string-array>
 
-    <string-array name="galaxy_touch_options">
+    <string-array name="galaxy_pro_noise_controls_options_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
+    <string-array name="galaxy_pro_noise_controls_options">
+        <item>@string/off</item>
+        <item>@string/prefs_active_noise_cancelling</item>
+        <item>@string/prefs_ambient_sound</item>
+    </string-array>
+
+    <string-array name="galaxy_pro_anc_level_values">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+
+    <string-array name="galaxy_pro_anc_level_options">
+        <item>@string/prefs_active_noise_cancelling_level_low</item>
+        <item>@string/prefs_active_noise_cancelling_level_high</item>
+    </string-array>
+
+
+    <string-array name="galaxy_pro_touch_options_left">
+        <item>@string/pref_switch_noise_control</item>
+        <item>@string/pref_title_touch_voice_assistant</item>
+        <item>@string/pref_media_volumedown</item>
+        <item>@string/pref_title_touch_spotify</item>
+    </string-array>
+
+    <string-array name="galaxy_pro_touch_options_right">
+        <item>@string/pref_switch_noise_control</item>
+        <item>@string/pref_title_touch_voice_assistant</item>
+        <item>@string/pref_media_volumeup</item>
+        <item>@string/pref_title_touch_spotify</item>
+    </string-array>
+
+    <string-array name="galaxy_pro_touch_options_values">
+        <item>2</item>
+        <item>1</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+
+    <string-array name="galaxy_pro_touch_switch_controls_options">
+        <item>@string/pref_switch_controls_anc_ambient</item>
+        <item>@string/pref_switch_controls_anc_off</item>
+        <item>@string/pref_switch_controls_ambient_off</item>
+    </string-array>
+
+    <string-array name="galaxy_pro_touch_switch_controls_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
+    <string-array name="galaxy_pro_voice_detect_duration_options">
+        <item>@string/pref_voice_detect_duration_5</item>
+        <item>@string/pref_voice_detect_duration_10</item>
+        <item>@string/pref_voice_detect_duration_15</item>
+    </string-array>
+
+    <string-array name="galaxy_pro_voice_detect_duration_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
+    <string-array name="galaxy_touch_options_left">
         <item>@string/pref_title_touch_voice_assistant</item>
         <item>@string/pref_title_touch_quick_ambient</item>
-        <item>@string/pref_title_touch_volume</item>
+        <item>@string/pref_media_volumedown</item>
+        <item>@string/pref_title_touch_ambient</item>
+    </string-array>
+
+    <string-array name="galaxy_touch_options_right">
+        <item>@string/pref_title_touch_voice_assistant</item>
+        <item>@string/pref_title_touch_quick_ambient</item>
+        <item>@string/pref_media_volumeup</item>
         <item>@string/pref_title_touch_ambient</item>
     </string-array>
 
@@ -1930,10 +2085,16 @@
         <item>3</item>
     </string-array>
 
-    <string-array name="galaxy_buds_live_touch_options">
+    <string-array name="galaxy_buds_live_touch_options_left">
         <item>@string/pref_title_touch_voice_assistant</item>
         <item>@string/pref_title_touch_anc</item>
-        <item>@string/pref_title_touch_volume</item>
+        <item>@string/pref_media_volumedown</item>
+    </string-array>
+
+    <string-array name="galaxy_buds_live_touch_options_right">
+        <item>@string/pref_title_touch_voice_assistant</item>
+        <item>@string/pref_title_touch_anc</item>
+        <item>@string/pref_media_volumeup</item>
     </string-array>
 
     <string-array name="galaxy_buds_live_touch_options_values">
@@ -2117,5 +2278,47 @@
         <item>de.dennisguse.opentracks.nightly</item>
     </string-array>
 
-</resources>
+    <string-array name="pref_transliteration_languages">
+        <item>@string/arabic</item>
+        <item>@string/bengali</item>
+        <item>@string/czech</item>
+        <item>@string/estonian</item>
+        <item>@string/extended_ascii</item>
+        <item>@string/german</item>
+        <item>@string/greek</item>
+        <item>@string/hebrew</item>
+        <item>@string/icelandic</item>
+        <item>@string/korean</item>
+        <item>@string/lithuanian</item>
+        <item>@string/persian</item>
+        <item>@string/polish</item>
+        <item>@string/russian</item>
+        <item>@string/scandinavian</item>
+        <item>@string/turkish</item>
+        <item>@string/ukranian</item>
+    </string-array>
 
+    <string-array name="pref_transliteration_languages_values">
+        <item>arabic</item>
+        <item>bengali</item>
+        <item>czech</item>
+        <item>estonian</item>
+        <item>extended_ascii</item>
+        <item>german</item>
+        <item>greek</item>
+        <item>hebrew</item>
+        <item>icelandic</item>
+        <item>korean</item>
+        <item>lithuanian</item>
+        <item>persian</item>
+        <item>polish</item>
+        <item>russian</item>
+        <item>scandinavian</item>
+        <item>turkish</item>
+        <item>ukranian</item>
+    </string-array>
+
+    <string-array name="pref_transliteration_languages_default">
+        <!-- transliteration disabled by default -->
+    </string-array>
+</resources>

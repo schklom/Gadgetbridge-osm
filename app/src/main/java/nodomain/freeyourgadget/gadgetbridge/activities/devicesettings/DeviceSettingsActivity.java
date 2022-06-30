@@ -17,6 +17,7 @@
 package nodomain.freeyourgadget.gadgetbridge.activities.devicesettings;
 
 import android.os.Bundle;
+import android.view.MenuItem;
 
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceFragmentCompat;
@@ -48,20 +49,7 @@ public class DeviceSettingsActivity extends AbstractGBActivity implements
         if (savedInstanceState == null) {
             Fragment fragment = getSupportFragmentManager().findFragmentByTag(DeviceSpecificSettingsFragment.FRAGMENT_TAG);
             if (fragment == null) {
-                DeviceCoordinator coordinator = DeviceHelper.getInstance().getCoordinator(device);
-                int[] supportedSettings = coordinator.getSupportedDeviceSpecificSettings(device);
-                String[] supportedLanguages = coordinator.getSupportedLanguageSettings(device);
-
-                if (supportedLanguages != null) {
-                    supportedSettings = ArrayUtils.insert(0, supportedSettings, R.xml.devicesettings_language_generic);
-                }
-                if (coordinator.supportsActivityTracking()) {
-                    supportedSettings = ArrayUtils.addAll(supportedSettings, R.xml.devicesettings_chartstabs);
-                    supportedSettings = ArrayUtils.addAll(supportedSettings, R.xml.devicesettings_device_card_activity_card_preferences);
-                }
-
-                final DeviceSpecificSettingsCustomizer deviceSpecificSettingsCustomizer = coordinator.getDeviceSpecificSettingsCustomizer(device);
-                fragment = DeviceSpecificSettingsFragment.newInstance(device.getAddress(), supportedSettings, supportedLanguages, deviceSpecificSettingsCustomizer);
+                fragment = DeviceSpecificSettingsFragment.newInstance(device);
             }
             getSupportFragmentManager()
                     .beginTransaction()
@@ -73,21 +61,7 @@ public class DeviceSettingsActivity extends AbstractGBActivity implements
 
     @Override
     public boolean onPreferenceStartScreen(PreferenceFragmentCompat caller, PreferenceScreen preferenceScreen) {
-        DeviceCoordinator coordinator = DeviceHelper.getInstance().getCoordinator(device);
-        int[] supportedSettings = coordinator.getSupportedDeviceSpecificSettings(device);
-        String[] supportedLanguages = coordinator.getSupportedLanguageSettings(device);
-
-        if (supportedLanguages != null) {
-            supportedSettings = ArrayUtils.insert(0, supportedSettings, R.xml.devicesettings_language_generic);
-        }
-
-        if (coordinator.supportsActivityTracking()) {
-            supportedSettings = ArrayUtils.addAll(supportedSettings, R.xml.devicesettings_chartstabs);
-            supportedSettings = ArrayUtils.addAll(supportedSettings, R.xml.devicesettings_device_card_activity_card_preferences);
-        }
-
-        final DeviceSpecificSettingsCustomizer deviceSpecificSettingsCustomizer = coordinator.getDeviceSpecificSettingsCustomizer(device);
-        PreferenceFragmentCompat fragment = DeviceSpecificSettingsFragment.newInstance(device.getAddress(), supportedSettings, supportedLanguages, deviceSpecificSettingsCustomizer);
+        final PreferenceFragmentCompat fragment = DeviceSpecificSettingsFragment.newInstance(device);
         Bundle args = fragment.getArguments();
         args.putString(PreferenceFragmentCompat.ARG_PREFERENCE_ROOT, preferenceScreen.getKey());
         fragment.setArguments(args);
@@ -98,5 +72,18 @@ public class DeviceSettingsActivity extends AbstractGBActivity implements
                 .addToBackStack(preferenceScreen.getKey())
                 .commit();
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                // Simulate a back press, so that we don't actually exit the activity when
+                // in a nested PreferenceScreen
+                this.onBackPressed();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

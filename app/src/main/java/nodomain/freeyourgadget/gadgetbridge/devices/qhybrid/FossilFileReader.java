@@ -82,8 +82,8 @@ public class FossilFileReader {
             buf.order(ByteOrder.LITTLE_ENDIAN);
 
             short handle = buf.getShort();
-            short version = buf.getShort();
-            if ((handle == 5630) && (version == 3)) {
+            byte version = buf.get();
+            if (handle == 5630 && version == 3) {
                 // This is a watch app or watch face
                 isValid = true;
                 isApp = true;
@@ -165,7 +165,7 @@ public class FossilFileReader {
         } else {
             mAppKeys.put("type", "APP_GENERIC");
         }
-        app = new GBDeviceApp(mAppKeys, false);
+        app = new GBDeviceApp(mAppKeys, false, null);
     }
 
     private ArrayList<String> parseAppFilenames(ByteBuffer buf, int untilPosition, boolean cutTrailingNull) {

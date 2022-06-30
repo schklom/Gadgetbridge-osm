@@ -69,7 +69,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:requestLegacyExternalStorage="true"
-        android:theme="@style/GadgetbridgeTheme">
+        android:theme="@style/GadgetbridgeTheme"
+        tools:replace="android:label">
         <activity
             android:name=".activities.ControlCenterv2"
             android:label="@string/title_activity_controlcenter"
@@ -468,6 +469,11 @@
             android:name=".activities.AndroidPairingActivity"
             android:label="@string/title_activity_android_pairing" />
         <activity
+            android:name=".devices.banglejs.AppsManagementActivity"
+            android:label="@string/title_activity_appmanager"
+            android:launchMode="singleTop"
+            android:parentActivityName=".activities.ControlCenterv2" />
+        <activity
             android:name=".devices.miband.MiBandPairingActivity"
             android:label="@string/title_activity_mi_band_pairing" />
         <activity
@@ -498,6 +504,10 @@
             android:label="@string/title_activity_set_reminders"
             android:parentActivityName=".activities.ControlCenterv2" />
         <activity
+            android:name=".activities.ConfigureWorldClocks"
+            android:label="@string/pref_world_clocks_title"
+            android:parentActivityName=".activities.ControlCenterv2" />
+        <activity
             android:name=".activities.devicesettings.DeviceSettingsActivity"
             android:label="@string/title_activity_device_specific_settings"
             android:parentActivityName=".activities.ControlCenterv2" />
@@ -510,6 +520,12 @@
             android:name=".activities.ReminderDetails"
             android:label="@string/title_activity_reminder_details"
             android:parentActivityName=".activities.ConfigureReminders"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".activities.WorldClockDetails"
+            android:label="@string/title_activity_world_clock_details"
+            android:parentActivityName=".activities.ConfigureWorldClocks"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
         <activity
@@ -574,6 +590,12 @@
             android:theme="@style/Theme.AppCompat.Light.Dialog" />
 
         <activity android:name=".activities.WidgetConfigurationActivity">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".activities.SleepAlarmWidgetConfigurationActivity">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
             </intent-filter>
@@ -670,7 +692,7 @@
         </activity>
 
         <activity
-            android:name=".externalevents.OpenTracksController"
+            android:name=".externalevents.opentracks.OpenTracksController"
             android:label="OpenTracks controller and intent receiver"
             android:exported="true"/>
     </application>

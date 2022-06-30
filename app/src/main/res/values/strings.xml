@@ -1,7 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
-    <string name="app_name">Gadgetbridge</string>
-    <string name="title_activity_controlcenter">Gadgetbridge</string>
+    <string name="application_name_generic">Gadgetbridge</string>
+    <string name="title_activity_controlcenter_generic">Gadgetbridge</string>
+    <string name="about_activity_title_generic">About Gadgetbridge</string>
+    <string name="about_description_generic">Cloudless copylefted libre replacement for closed source Android gadget apps from vendors.</string>
+    <string name="gadgetbridge_running_generic">Gadgetbridge running</string>
+
+    <string name="application_name_banglejs_main">Bangle.js Gadgetbridge</string>
+    <string name="title_activity_controlcenter_banglejs_main">Bangle.js Gadgetbridge</string>
+    <string name="about_activity_title_banglejs_main">About Bangle.js Gadgetbridge</string>
+    <string name="about_description_banglejs_main">Android companion app for Bangle.js built on top of the Gadgetbridge project, with added Internet Access.\n\nDue to Google Play Store policies, we are not allowed a donation link in the app itself, but if you like this app please consider donating via the Gadgetbridge homepage below.</string>
+    <string name="gadgetbridge_running_banglejs_main">Bangle.js running</string>
+
+    <string name="application_name_banglejs_nopebble">Bangle.js Gadgetbridge</string>
+    <string name="title_activity_controlcenter_banglejs_nopebble">Bangle.js Gadgetbridge</string>
+    <string name="about_activity_title_banglejs_nopebble">About Bangle.js Gadgetbridge</string>
+    <string name="about_description_banglejs_nopebble">Android companion app for Bangle.js built on top of the Gadgetbridge project, with added Internet Access.\n\nDue to Google Play Store policies, we are not allowed a donation link in the app itself, but if you like this app please consider donating via the Gadgetbridge homepage below.</string>
+    <string name="gadgetbridge_running_banglejs_nopebble">Bangle.js running</string>
+
+    <string name="application_name_main_nightly">Gadgetbridge (Nightly)</string>
+    <string name="title_activity_controlcenter_main_nightly">Gadgetbridge Nightly</string>
+    <string name="about_activity_title_main_nightly">About Gadgetbridge Nightly</string>
+    <string name="about_description_main_nightly">Cloudless copylefted libre replacement for closed source Android gadget apps from vendors. Nightly releases of Gadgetbridge. It cannot be installed if you already have either the Gadgetbridge or the Pebble app installed, due to a conflict in the Pebble provider.</string>
+    <string name="gadgetbridge_running_main_nightly">Nightly GB running</string>
+
+    <string name="application_name_main_nopebble">Gadgetbridge (Nightly, No Pebble provider)</string>
+    <string name="title_activity_controlcenter_main_nopebble">Gadgetbridge Nightly No Pebble </string>
+    <string name="about_activity_title_main_nopebble">About Gadgetbridge Nightly No Pebble</string>
+    <string name="about_description_main_nopebble">Cloudless copylefted libre replacement for closed source Android gadget apps from vendors. Nightly releases of Gadgetbridge. This version has the Pebble provider renamed to prevent conflicts, so some Pebble related integrations will not work, but it can be installed alongside existing Gadgetbridge installation.</string>
+    <string name="gadgetbridge_running_main_nopebble">Nightly NoPebble GB running</string>
+
     <string name="action_settings">Settings</string>
     <string name="action_debug">Debug</string>
     <string name="action_quit">Quit</string>
@@ -152,6 +180,10 @@
     <string name="pref_title_notification_use_as_allow">Allow notifications from selected apps</string>
     <string name="pref_title_transliteration">Transliteration</string>
     <string name="pref_summary_transliteration">Enable this if your device has no support for your language\'s font</string>
+    <string name="pref_title_banglejs_text_bitmap">Text as Bitmaps</string>
+    <string name="pref_summary_banglejs_text_bitmap">If a word cannot be rendered with the watch\'s font, render it to a bitmap in Gadgetbridge and display the bitmap on the watch</string>
+    <string name="pref_title_banglejs_webview_url">App loader URL</string>
+    <string name="pref_summary_banglejs_webview_url">If you want a custom app loader put your https://…/android.html URL here. Otherwise leave blank for https://banglejs.com/apps</string>
     <string name="pref_title_rtl">Right-To-Left</string>
     <string name="pref_summary_rtl">Enable this if your device can not show right-to-left languages</string>
     <string name="pref_rtl_max_line_length">Right-To-Left Max Line Length</string>
@@ -236,6 +268,10 @@
     <string name="pref_summary_use_custom_font">Enable this if your device has a custom font firmware for emoji support</string>
     <string name="pref_title_allow_high_mtu">Allow high MTU</string>
     <string name="pref_summary_allow_high_mtu">Increases transfer speed, but might not work on some Android devices.</string>
+    <string name="pref_title_device_internet_access">Allow Internet Access</string>
+    <string name="pref_summary_device_internet_access">Allow apps on this device to access the internet</string>
+    <string name="pref_title_device_intents">Allow Intents</string>
+    <string name="pref_summary_device_intents">Allow Bangle.js watch apps to send Android Intents, and allow other apps on Android (like Tasker) to send data to Bangle.js with the com.banglejs.uart.tx Intent.</string>
     <string name="pref_summary_sync_calendar">Enables calendar alerts, even when disconnected</string>
     <string name="pref_title_sync_caldendar">Sync calendar events</string>
     <string name="pref_summary_relax_firmware_checks">Relax firmware checks</string>
@@ -336,6 +372,10 @@
     <string name="prefs_hr_alarm_activity">Heart rate alarm during sports activity</string>
     <string name="prefs_hr_alarm_low">Low limit</string>
     <string name="prefs_hr_alarm_high">High limit</string>
+    <string name="pref_workout_start_on_phone_title">Fitness app tracking</string>
+    <string name="pref_workout_start_on_phone_summary">Start/stop fitness app tracking on phone when a GPS workout is started on the band</string>
+    <string name="pref_workout_send_gps_title">Send GPS during workout</string>
+    <string name="pref_workout_send_gps_summary">Send the current GPS location to the band during a workout</string>
     <!-- Auto export preferences -->
     <string name="pref_header_auto_export">Auto export</string>
     <string name="pref_title_auto_export_enabled">Auto export enabled</string>
@@ -349,6 +389,8 @@
     <string name="pref_auto_fetch_limit_fetches">Minimum time between fetches</string>
     <string name="pref_auto_fetch_limit_fetches_summary">Fetches every %d minutes</string>
     <!-- developer/debug preferences-->
+    <string name="discovery_scanning_intensity">Scanning intensity</string>
+    <string name="discovery_scanning_intensity_warning">If you experience freezing or unresponsiveness, try to set Scanning intensity to lower level. If your device is not being discovered, try to set Scanning intensity to higher level.</string>
     <string name="pref_disable_new_ble_scanning">Disable new BLE scanning</string>
     <string name="pref_summary_disable_new_ble_scanning">Check this option if your device cannot be found during discovery</string>
     <string name="not_connected">Not connected</string>
@@ -368,7 +410,6 @@
     <string name="tap_connected_device_for_vibration">Tap connected device for vibration</string>
     <string name="tap_a_device_to_connect">Tap a device to connect</string>
     <string name="cannot_connect_bt_address_invalid_">Cannot connect. Bluetooth address invalid?</string>
-    <string name="gadgetbridge_running">Gadgetbridge running</string>
     <string name="installing_binary_d_d">Installing binary %1$d/%2$d</string>
     <string name="installation_failed_">Installation failed</string>
     <string name="installation_successful">Installed</string>
@@ -444,12 +485,28 @@
     <string name="pref_screen_notification_profile_low_power">Low power warning</string>
     <string name="pref_screen_notification_profile_anti_loss">Anti-loss warning</string>
     <string name="prefs_title_heartrate_measurement_interval">Whole day HR measurement</string>
+    <string name="pref_screen_notification_profile_event_reminder">Event reminder</string>
+    <string name="pref_screen_notification_profile_find_device">Find device</string>
+    <string name="pref_screen_notification_idle_alerts">Idle Alerts</string>
+    <string name="pref_screen_vibration_patterns_title">Vibration Patterns</string>
+    <string name="pref_screen_vibration_patterns_summary">Configure the vibration patterns for different notifications</string>
     <string name="interval_one_minute">once a minute</string>
     <string name="interval_five_minutes">every 5 minutes</string>
     <string name="interval_ten_minutes">every 10 minutes</string>
     <string name="interval_fifteen_minutes">every 15 minutes</string>
     <string name="interval_thirty_minutes">every 30 minutes</string>
     <string name="interval_forty_five_minutes">every 45 minutes</string>
+    <string name="heartrate_bpm_100">100 bpm</string>
+    <string name="heartrate_bpm_105">105 bpm</string>
+    <string name="heartrate_bpm_110">110 bpm</string>
+    <string name="heartrate_bpm_112">112 bpm</string>
+    <string name="heartrate_bpm_120">120 bpm</string>
+    <string name="heartrate_bpm_125">125 bpm</string>
+    <string name="heartrate_bpm_130">130 bpm</string>
+    <string name="heartrate_bpm_135">135 bpm</string>
+    <string name="heartrate_bpm_140">140 bpm</string>
+    <string name="heartrate_bpm_145">145 bpm</string>
+    <string name="heartrate_bpm_150">150 bpm</string>
     <string name="interval_one_hour">once an hour</string>
     <string name="stats_title">Speed zones</string>
     <string name="stats_x_axis_label">Total minutes</string>
@@ -459,6 +516,8 @@
     <string name="title_activity_charts">Activity and Sleep</string>
     <string name="title_activity_set_alarm">Configure alarms</string>
     <string name="title_activity_set_reminders">Configure reminders</string>
+    <string name="pref_world_clocks_title">World Clocks</string>
+    <string name="pref_world_clocks_summary">Configure clocks for other timezones</string>
     <string name="controlcenter_start_configure_alarms">Configure alarms</string>
     <string name="controlcenter_start_configure_reminders">Configure reminders</string>
     <string name="reminder_repeat">Repeat</string>
@@ -479,8 +538,15 @@
     <string name="reminder_delete_confirm_description">Are you sure you want to delete the reminder?</string>
     <string name="reminder_no_free_slots_title">No free slots</string>
     <string name="reminder_no_free_slots_description">The device has no free slots for reminders (total slots: %1$s)</string>
+    <string name="world_clock_delete_confirm_title">Delete \'%1$s\'</string>
+    <string name="world_clock_delete_confirm_description">Are you sure you want to delete the world clock?</string>
+    <string name="world_clock_no_free_slots_title">No free slots</string>
+    <string name="world_clock_no_free_slots_description">The device has no free slots for world clocks (total slots: %1$s)</string>
+    <string name="world_clock_timezone">Time Zone</string>
+    <string name="world_clock_label">Label</string>
     <string name="title_activity_alarm_details">Alarm details</string>
     <string name="title_activity_reminder_details">Reminder details</string>
+    <string name="title_activity_world_clock_details">World Clock details</string>
     <string name="alarm_sun_short">Sun</string>
     <string name="alarm_mon_short">Mon</string>
     <string name="alarm_tue_short">Tue</string>
@@ -497,6 +563,13 @@
     <string name="chart_get_active_and_synchronize">Do some activity and synchronize device.</string>
     <string name="user_feedback_miband_activity_data_transfer">About to transfer %1$s of data starting from %2$s</string>
     <string name="miband_prefs_fitness_goal">Daily step target</string>
+    <string name="prefs_heartrate_alert_experimental_title">Heart rate alert (experimental)</string>
+    <string name="prefs_heartrate_alert_experimental_description">Vibrate the band when the heart rate is over a threshold, without any obvious physical activity in the last 10 minutes. This feature is experimental, and was not extensively tested.</string>
+    <string name="prefs_heartrate_alert_threshold">Heart rate alert threshold</string>
+    <string name="prefs_stress_monitoring_title">Stress monitoring</string>
+    <string name="prefs_stress_monitoring_description">Monitor stress level while resting</string>
+    <string name="prefs_activity_monitoring_title">Activity monitoring</string>
+    <string name="prefs_activity_monitoring_description">Automatically increase the heart rate detection frequency when the band detects physical exercise, to increase heart rate capture accuracy.</string>
     <string name="dbaccess_error_executing">Error executing \'%1$s\'</string>
     <string name="controlcenter_start_activitymonitor">Your activity (ALPHA)</string>
     <string name="cannot_connect">Cannot connect: %1$s</string>
@@ -642,6 +715,9 @@
     <string name="mi2_prefs_inactivity_warnings_summary">The band will vibrate when you have been inactive for a while</string>
     <string name="mi2_prefs_inactivity_warnings_threshold">Inactivity threshold (in minutes)</string>
     <string name="mi2_prefs_inactivity_warnings_dnd_summary">Disable inactivity warnings for a time interval</string>
+    <string name="mi2_prefs_heart_rate_monitoring">Heart Rate Monitoring</string>
+    <string name="mi2_prefs_heart_rate_monitoring_summary">Configure heart rate monitoring</string>
+    <string name="mi2_prefs_heart_rate_monitoring_alerts_summary">Configure heart rate monitoring and alert thresholds</string>
     <string name="mi2_prefs_do_not_disturb_start">Start time</string>
     <string name="mi2_prefs_do_not_disturb_end">End time</string>
     <string name="mi2_prefs_do_not_disturb_lift_wrist">Activate display upon lift during Do Not Disturb</string>
@@ -651,6 +727,9 @@
     <string name="mi3_prefs_night_mode_summary">Lower band screen brightness automatically at night</string>
     <string name="bip_prefs_shortcuts">Shortcuts</string>
     <string name="bip_prefs_shotcuts_summary">Choose the shortcuts on the band screen</string>
+    <string name="prefs_activate_display_on_lift_sensitivity">Sensitivity</string>
+    <string name="mi5_prefs_workout_activity_types">Workout Activity Types</string>
+    <string name="mi5_prefs_workout_activity_types_summary">Choose the activity types to display on the workouts screen</string>
     <string name="pref_title_force_white_color_scheme">Force black on white color scheme</string>
     <string name="pref_summary_force_white_color_scheme">Useful if you your watch has dark hands</string>
     <string name="lefun_prefs_hydration_reminder_title">Hydration reminder</string>
@@ -667,6 +746,15 @@
     <string name="spanish">Spanish</string>
     <string name="russian">Russian</string>
     <string name="german">German</string>
+    <string name="bengali">Bengali</string>
+    <string name="czech">Czech</string>
+    <string name="estonian">Estonian</string>
+    <string name="extended_ascii">Extended ASCII</string>
+    <string name="icelandic">Icelandic</string>
+    <string name="lithuanian">Lithuanian</string>
+    <string name="persian">Persian</string>
+    <string name="scandinavian">Scandinavian</string>
+    <string name="ukranian">Ukranian</string>
     <string name="italian">Italian</string>
     <string name="french">French</string>
     <string name="polish">Polish</string>
@@ -680,6 +768,8 @@
     <string name="thai">Thai</string>
     <string name="vietnamese">Vietnamese</string>
     <string name="portuguese">Portuguese</string>
+    <string name="portuguese_br">Portuguese (Brazil)</string>
+    <string name="portuguese_pt">Portuguese (Portugal)</string>
     <string name="romanian">Romanian</string>
     <string name="hungarian">Hungarian</string>
     <string name="greek">Greek</string>
@@ -811,6 +901,8 @@
     <string name="mi2_enable_text_notifications_summary"><![CDATA[Needs firmware >= 1.0.1.28 and Mili_pro.ft* installed.]]></string>
     <string name="on">On</string>
     <string name="off">Off</string>
+    <string name="normal">Normal</string>
+    <string name="sensitive">Sensitive</string>
     <string name="mi2_dnd_off">Off</string>
     <string name="mi3_night_mode_sunset">At sunset</string>
     <string name="mi2_dnd_automatic">Automatic (sleep detection)</string>
@@ -836,13 +928,17 @@
     <string name="activity_type_deep_sleep">Deep sleep</string>
     <string name="activity_type_not_worn">Device not worn</string>
     <string name="activity_type_running">Running</string>
+    <string name="activity_type_outdoor_running">Outdoor Running</string>
     <string name="activity_type_walking">Walking</string>
+    <string name="activity_type_freestyle">Freestyle</string>
     <string name="activity_type_hiking">Hiking</string>
     <string name="activity_type_climbing">Climbing</string>
     <string name="activity_type_swimming">Swimming</string>
     <string name="activity_type_swimming_openwater">Swimming (Open water)</string>
     <string name="activity_type_indoor_cycling">Indoor Cycling</string>
+    <string name="activity_type_outdoor_cycling">Outdoor Cycling</string>
     <string name="activity_type_elliptical_trainer">Elliptical Trainer</string>
+    <string name="activity_type_elliptical">Elliptical</string>
     <string name="activity_type_jump_roping">Jumping Rope</string>
     <string name="activity_type_yoga">Yoga</string>
     <string name="activity_type_soccer">Soccer</string>
@@ -946,11 +1042,15 @@
     <string name="devicetype_sony_wh_1000xm3">Sony WH-1000XM3</string>
     <string name="devicetype_sony_wh_1000xm4">Sony WH-1000XM4</string>
     <string name="devicetype_sony_wf_sp800n">Sony WF-SP800N</string>
+    <string name="devicetype_sony_wf_1000xm3">Sony WF-1000XM3</string>
     <string name="choose_auto_export_location">Choose export location</string>
     <string name="notification_channel_name">General</string>
     <string name="notification_channel_high_priority_name">High-priority</string>
     <string name="notification_channel_transfer_name">Data transfer</string>
     <string name="notification_channel_low_battery_name">Low battery</string>
+    <string name="notification_channel_gps">GPS tracking</string>
+    <string name="notification_gps_title">Gadgetbridge GPS</string>
+    <string name="notification_gps_text">Sending GPS location to %1$d devices</string>
     <string name="devicetype_amazfit_gts">Amazfit GTS</string>
     <string name="devicetype_amazfit_vergel">Amazfit Verge Lite</string>
     <string name="devicetype_sg2">Lemfo SG2</string>
@@ -994,6 +1094,7 @@
     <string name="menuitem_temperature">Temperature</string>
     <string name="menuitem_barometer">Barometer</string>
     <string name="menuitem_flashlight">Flashlight</string>
+    <string name='menuitem_email'>E-mail</string>
     <string name="watch9_time_minutes">Minutes:</string>
     <string name="watch9_time_hours">Hours:</string>
     <string name="watch9_time_seconds">Seconds:</string>
@@ -1045,6 +1146,8 @@
     <string name="widget_10_minutes">10 minutes</string>
     <string name="widget_20_minutes">20 minutes</string>
     <string name="widget_1_hour">1 hour</string>
+    <string name="quick_alarm">Quick alarm</string>
+    <string name="quick_alarm_description">Alarm from widget</string>
     <string name="icon_placeholder" translatable="false">Icon</string>
     <string name="watch_not_connected">Watch not connected</string>
     <string name="qhybrid_vibration_strength">vibration strength:</string>
@@ -1095,11 +1198,9 @@
     <string name="about_title">About</string>
     <string name="about_version">Version %s</string>
     <string name="about_hash">Commit %s</string>
-    <string name="about_activity_title">About Gadgetbridge</string>
     <string name="gpx_receiver_activity_title">GPX Receiver Gadgetbridge</string>
     <string name="gpx_receiver_files_received">GPX file(s) received:</string>
     <string name="gpx_receiver_overwrite_some_files">Some file(s) already exist. Overwrite?</string>
-    <string name="about_description">Cloudless copylefted libre replacement for closed source Android gadget apps from vendors.</string>
     <string name="about_core_team_title">Core Team (in order of first code contribution)</string>
     <string name="about_contributors">Contributors</string>
     <string name="about_core_team_members" translatable="false">Andreas Shimokawa\nCarsten Pfeiffer\nDaniele Gobbetti</string>
@@ -1108,6 +1209,9 @@
     <string name="about_additional_contributions">Many thanks to all unlisted contributors for contributing code, translations, support, ideas, motivation, bug reports, money… ✊</string>
     <string name="about_links">Links</string>
     <string name="permission_granting_mandatory">All these permissions are required and instability might occur if not granted</string>
+    <string name="permission_notification_listener">%1$s needs access to Notifications in order to display them on your watch when your phone\'s screen is off.\n\nPlease tap \'%2$s\' then \'%1$s\' and enable \'Allow Notification Access\', then tap \'Back\' to return to %1$s</string>
+    <string name="permission_notification_policy_access">%1$s needs access to Do Not Disturb settings in order to honour them on your watch when your phone\'s screen is off.\n\nPlease tap \'%2$s\' then \'%1$s\' and enable \'Allow Do Not Disturb\', then tap \'Back\' to return to %1$s</string>
+    <string name="permission_location">%1$s needs access to your location in the background to allow it to stay connected to your watch even when your screen is off.\n\nPlease tap \'%2$s\' to agree.</string>
     <string name="error_version_check_extreme_caution">CAUTION: Error when checking version information! You should not continue! Saw version name \"%s\"</string>
     <string name="require_location_provider">Location must be enabled</string>
     <string name="companiondevice_pairing">CompanionDevice Pairing</string>
@@ -1361,8 +1465,10 @@
     <string name="devicetype_nothingear1">Nothing Ear (1)</string>
     <string name="devicetype_galaxybuds">Galaxy Buds</string>
     <string name="devicetype_galaxybuds_live">Galaxy Buds Live</string>
+    <string name="devicetype_galaxybuds_pro">Galaxy Buds Pro</string>
     <string name="nothing_prefs_inear_summary">Play/pause the music depending if you wear the earbuds</string>
     <string name="nothing_prefs_inear_title">In-Ear detection</string>
+    <string name="prefs_in_ear_detection_summary">Play calls through your earbuds when they are in your ears</string>
     <string name="nothing_prefs_audiomode_title">Audio mode</string>
     <string name="prefs_equalizer_preset">Equalizer Preset</string>
     <string name="pref_title_equalizer_normal">Normal</string>
@@ -1380,22 +1486,60 @@
     <string name="prefs_touch_lock">Touch Lock</string>
     <string name="prefs_touch_lock_summary">Disable touch events</string>
     <string name="prefs_galaxy_buds_experimental">Experimental</string>
+    <string name="prefs_seamless_connection_switch_title">Seamless connection switch</string>
+    <string name="prefs_seamless_connection_switch_summary">Switches the buds between paired devices automatically</string>
     <string name="prefs_ambient_volume">Ambient volume</string>
+    <string name="prefs_ambient_volume_left">Ambient Volume Left</string>
+    <string name="prefs_ambient_volume_right">Ambient Volume Right</string>
     <string name="prefs_ambient_voice_focus">Voice Focus</string>
     <string name="prefs_ambient_voice_summary">Make voice stand out</string>
     <string name="prefs_ambient_sound">Ambient Sound</string>
+    <string name="prefs_customize_ambient_sound_summary">Customize Ambient Sound</string>
+    <string name="prefs_ambient_sound_during_call_title">Ambient Sound during call</string>
+    <string name="prefs_ambient_sound_during_call_summary">Hear own voice during call</string>
     <string name="prefs_ambient_mode">Ambient Mode</string>
+    <string name="prefs_ambient_settings_title">Ambient Sound Options</string>
     <string name="prefs_active_noise_cancelling">Active Noise Cancelling</string>
+    <string name="prefs_active_noise_cancelling_level">Active Noise Cancelling Level</string>
+    <string name="prefs_active_noise_cancelling_level_high">High</string>
+    <string name="prefs_active_noise_cancelling_level_low">Low</string>
     <string name="prefs_active_noise_cancelling_summary">Block noises of the surroundings</string>
     <string name="prefs_pressure_relief">Pressure relief with ambient sound</string>
     <string name="pressure_relief_summary">Prevent feeling of pressure in ears when not using Active Noise Cancelling</string>
     <string name="prefs_left">Left</string>
     <string name="prefs_right">Right</string>
+    <string name="prefs_switch_control_left">Switch control left</string>
+    <string name="prefs_switch_control_right">Switch control right</string>
     <string name="prefs_galaxy_touch_options">Touch Options</string>
     <string name="battery_case">Battery case</string>
     <string name="left_earbud">Left earbud</string>
     <string name="right_earbud">Right earbud</string>
     <string name="audio_codec">Audio Codec</string>
+    <string name="pref_title_touch_voice_assistant">Voice Assistant</string>
+    <string name="pref_title_touch_anc">Active Noise Cancelling</string>
+    <string name="pref_title_touch_quick_ambient">Quick Ambient Sound</string>
+    <string name="pref_title_touch_volume">Volume</string>
+    <string name="pref_title_touch_ambient">Ambient Sound</string>
+    <string name="pref_title_touch_spotify">Spotify</string>
+    <string name="pref_switch_noise_control">Switch Noise Control</string>
+    <string name="prefs_noise_control_with_one_earbud">Noise Control with one earbud</string>
+    <string name="prefs_noise_control_with_one_earbud_summary">Allow noise control when using one earbud only</string>
+    <string name="pref_ambient_sound_tone">Ambient Sound Tone</string>
+    <string name="pref_ambient_sound_tone_summary">From Soft to Clear</string>
+    <string name="pref_balance">Balance</string>
+    <string name="pref_switch_controls_anc_ambient">Noise cancelling ←→ Ambient</string>
+    <string name="pref_switch_controls_anc_off">Noise cancelling ←→ Off</string>
+    <string name="pref_switch_controls_ambient_off">Ambient ←→ Off</string>
+    <string name="prefs_noise_control">Noise control</string>
+    <string name="prefs_voice_detect">Voice detect</string>
+    <string name="prefs_voice_detect_summary">Enable Ambient sound and lower playback automatically after voice has been detected</string>
+    <string name="prefs_double_tap_edge">Double tap edge</string>
+    <string name="prefs_double_tap_edge_summary">Detect double tap even when not taped on touch pad</string>
+    <string name="prefs_voice_detect_duration">End after quiet for:</string>
+    <string name="pref_voice_detect_duration_5">5 seconds</string>
+    <string name="pref_voice_detect_duration_10">10 seconds</string>
+    <string name="pref_voice_detect_duration_15">15 seconds</string>
+
     <string name="pref_header_sony_ambient_sound_control">Ambient Sound Control</string>
     <string name="pref_header_sony_device_info">Device Information</string>
     <string name="sony_ambient_sound">Mode</string>
@@ -1504,6 +1648,8 @@
     <string name="pref_device_action_broadcast">Send Broadcast</string>
     <string name="pref_device_action_fitness_app_control_start">Fitness App Tracking Start</string>
     <string name="pref_device_action_fitness_app_control_stop">Fitness App Tracking Stop</string>
+    <string name="pref_device_action_fitness_app_control_toggle">Toggle Fitness App Tracking</string>
+    <string name="pref_device_action_phone_gps_location_listener_stop">GPS Location Listener Stop</string>
     <!-- Translators: the ### indicate number of digits, keep intact -->
     <string name="distance_format_meters">###m</string>
     <!-- Translators: the ### indicate number of digits, keep intact -->
@@ -1529,4 +1675,16 @@
     <string name="pref_summary_opentracks_packagename">Used for starting/stopping GPS track recording in external fitness app.</string>
     <string name="watchface_dialog_pre_setting_position">pre-setting position to %s</string>
     <string name="watchface_setting_light_up_on_notification">Light up on new notification</string>
+
+    <string name="info_no_devices_connected">no devices connected</string>
+    <string name="info_connected_count">%d devices connected</string>
+    <string name="controlcenter_set_parent_folder">Set parent folder</string>
+    <string name="controlcenter_toggle_details">Toggle details</string>
+    <string name="controlcenter_connected_fraction">Connected: %d/%d</string>
+    <string name="error_setting_parent_folder">Error setting parent folder: %s</string>
+    <string name="error_deleting_device">Error deleting device: %s</string>
+    <string name="controlcenter_folder_name">Folder name:</string>
+    <string name="controlcenter_add_new_folder">Add new folder</string>
+    <string name="controlcenter_unset_folder">Unset folder</string>
+    <string name="controlcenter_set_folder_title">Set or create new folder</string>
 </resources>

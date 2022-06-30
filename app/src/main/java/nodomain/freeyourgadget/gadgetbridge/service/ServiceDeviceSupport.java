@@ -20,12 +20,14 @@ package nodomain.freeyourgadget.gadgetbridge.service;
 
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
+import android.location.Location;
 import android.net.Uri;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.UUID;
 
@@ -40,6 +42,7 @@ import nodomain.freeyourgadget.gadgetbridge.model.NavigationInfoSpec;
 import nodomain.freeyourgadget.gadgetbridge.model.NotificationSpec;
 import nodomain.freeyourgadget.gadgetbridge.model.Reminder;
 import nodomain.freeyourgadget.gadgetbridge.model.WeatherSpec;
+import nodomain.freeyourgadget.gadgetbridge.model.WorldClock;
 
 /**
  * Wraps another device support instance and supports busy-checking and throttling of events.
@@ -60,9 +63,14 @@ public class ServiceDeviceSupport implements DeviceSupport {
     private String lastNotificationKind;
     private final EnumSet<Flags> flags;
 
-    public ServiceDeviceSupport(DeviceSupport delegate, EnumSet<Flags> flags) {
+    public ServiceDeviceSupport(DeviceSupport delegate, Flags... flags) {
         this.delegate = delegate;
-        this.flags = flags;
+        this.flags = EnumSet.noneOf(Flags.class);
+        this.flags.addAll(Arrays.asList(flags));
+    }
+
+    public ServiceDeviceSupport(DeviceSupport delegate){
+        this(delegate, Flags.BUSY_CHECKING);
     }
 
     @Override
@@ -214,6 +222,14 @@ public class ServiceDeviceSupport implements DeviceSupport {
         }
         delegate.onSetNavigationInfo(navigationInfoSpec);
     }
+    
+    @Override
+    public void onSetPhoneVolume(float volume) {
+        if (checkBusy("set phone volume")) {
+            return;
+        }
+        delegate.onSetPhoneVolume(volume);
+    }
 
     @Override
     public void onInstallApp(Uri uri) {
@@ -328,6 +344,14 @@ public class ServiceDeviceSupport implements DeviceSupport {
     }
 
     @Override
+    public void onSetWorldClocks(ArrayList<? extends WorldClock> clocks) {
+        if (checkBusy("set world clocks")) {
+            return;
+        }
+        delegate.onSetWorldClocks(clocks);
+    }
+
+    @Override
     public void onEnableRealtimeSteps(boolean enable) {
         if (checkBusy("enable realtime steps: " + enable)) {
             return;
@@ -429,5 +453,13 @@ public class ServiceDeviceSupport implements DeviceSupport {
             return;
         }
         delegate.onPowerOff();
+    }
+
+    @Override
+    public void onSetGpsLocation(Location location) {
+        if (checkBusy("set gps location")) {
+            return;
+        }
+        delegate.onSetGpsLocation(location);
     }
 }

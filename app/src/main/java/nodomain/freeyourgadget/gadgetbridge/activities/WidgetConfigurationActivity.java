@@ -31,7 +31,7 @@ import nodomain.freeyourgadget.gadgetbridge.util.DeviceHelper;
 import nodomain.freeyourgadget.gadgetbridge.util.WidgetPreferenceStorage;
 
 public class WidgetConfigurationActivity extends Activity {
-    private static final Logger LOG = LoggerFactory.getLogger(Widget.class);
+    private static final Logger LOG = LoggerFactory.getLogger(WidgetConfigurationActivity.class);
     int mAppWidgetId;
 
     LinkedHashMap<String, Pair<String, Integer>> allDevices;
@@ -44,6 +44,7 @@ public class WidgetConfigurationActivity extends Activity {
 
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
+
         if (extras != null) {
             mAppWidgetId = extras.getInt(
                     AppWidgetManager.EXTRA_APPWIDGET_ID,

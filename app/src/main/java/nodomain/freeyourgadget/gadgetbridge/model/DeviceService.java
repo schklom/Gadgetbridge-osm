@@ -40,6 +40,7 @@ public interface DeviceService extends EventHandler {
     String ACTION_SETMUSICINFO = PREFIX + ".action.setmusicinfo";
     String ACTION_SETMUSICSTATE = PREFIX + ".action.setmusicstate";
     String ACTION_SETNAVIGATIONINFO = PREFIX + ".action.setnavigationinfo";
+    String ACTION_SET_PHONE_VOLUME = PREFIX + ".action.set_phone_volume";
     String ACTION_REQUEST_DEVICEINFO = PREFIX + ".action.request_deviceinfo";
     String ACTION_REQUEST_APPINFO = PREFIX + ".action.request_appinfo";
     String ACTION_REQUEST_SCREENSHOT = PREFIX + ".action.request_screenshot";
@@ -57,6 +58,7 @@ public interface DeviceService extends EventHandler {
     String ACTION_SET_ALARMS = PREFIX + ".action.set_alarms";
     String ACTION_SAVE_ALARMS = PREFIX + ".action.save_alarms";
     String ACTION_SET_REMINDERS = PREFIX + ".action.set_reminders";
+    String ACTION_SET_WORLD_CLOCKS = PREFIX + ".action.set_world_clocks";
     String ACTION_ENABLE_REALTIME_STEPS = PREFIX + ".action.enable_realtime_steps";
     String ACTION_REALTIME_SAMPLES = PREFIX + ".action.realtime_samples";
     String ACTION_ENABLE_REALTIME_HEARTRATE_MEASUREMENT = PREFIX + ".action.realtime_hr_measurement";
@@ -69,6 +71,7 @@ public interface DeviceService extends EventHandler {
     String ACTION_SEND_WEATHER = PREFIX + ".action.send_weather";
     String ACTION_TEST_NEW_FUNCTION = PREFIX + ".action.test_new_function";
     String ACTION_SET_FM_FREQUENCY = PREFIX + ".action.set_fm_frequency";
+    String ACTION_SET_GPS_LOCATION = PREFIX + ".action.set_gps_location";
     String ACTION_SET_LED_COLOR = PREFIX + ".action.set_led_color";
     String ACTION_POWER_OFF = PREFIX + ".action.power_off";
     String EXTRA_NOTIFICATION_BODY = "notification_body";
@@ -90,6 +93,7 @@ public interface DeviceService extends EventHandler {
     String EXTRA_CALL_COMMAND = "call_command";
     String EXTRA_CALL_PHONENUMBER = "call_phonenumber";
     String EXTRA_CALL_DISPLAYNAME = "call_displayname";
+    String EXTRA_CALL_DNDSUPPRESSED = "call_dndsuppressed";
     String EXTRA_CANNEDMESSAGES = "cannedmessages";
     String EXTRA_CANNEDMESSAGES_TYPE = "cannedmessages_type";
     String EXTRA_MUSIC_ARTIST = "music_artist";
@@ -106,6 +110,7 @@ public interface DeviceService extends EventHandler {
     String EXTRA_NAVIGATION_INSTRUCTION = "navigation_instruction";
     String EXTRA_NAVIGATION_DISTANCE_TO_TURN = "navigation_distance_to_turn";
     String EXTRA_NAVIGATION_NEXT_ACTION = "navigation_next_action";
+    String EXTRA_PHONE_VOLUME = "phone_volume";
     String EXTRA_APP_UUID = "app_uuid";
     String EXTRA_APP_START = "app_start";
     String EXTRA_APP_CONFIG = "app_config";
@@ -114,6 +119,7 @@ public interface DeviceService extends EventHandler {
     String EXTRA_CONFIG = "config";
     String EXTRA_ALARMS = "alarms";
     String EXTRA_REMINDERS = "reminders";
+    String EXTRA_WORLD_CLOCKS = "world_clocks";
     String EXTRA_CONNECT_FIRST_TIME = "connect_first_time";
     String EXTRA_BOOLEAN_ENABLE = "enable_realtime_steps";
     String EXTRA_INTERVAL_SECONDS = "interval_seconds";
@@ -121,6 +127,7 @@ public interface DeviceService extends EventHandler {
     String EXTRA_RECORDED_DATA_TYPES = "data_types";
     String EXTRA_FM_FREQUENCY = "fm_frequency";
     String EXTRA_LED_COLOR = "led_color";
+    String EXTRA_GPS_LOCATION = "gps_location";
     String EXTRA_RESET_FLAGS = "reset_flags";
 
     /**
@@ -150,6 +157,8 @@ public interface DeviceService extends EventHandler {
     void connect(@Nullable GBDevice device);
 
     void connect(@Nullable GBDevice device, boolean firstTime);
+
+    void disconnect(@Nullable GBDevice device);
 
     void disconnect();
 

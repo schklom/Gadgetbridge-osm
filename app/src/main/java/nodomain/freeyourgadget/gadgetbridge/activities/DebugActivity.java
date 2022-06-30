@@ -57,6 +57,7 @@ import android.widget.Toast;
 import androidx.core.app.NavUtils;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.RemoteInput;
+import androidx.core.content.FileProvider;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import org.slf4j.Logger;
@@ -67,12 +68,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.TreeMap;
 
 import nodomain.freeyourgadget.gadgetbridge.GBApplication;
@@ -86,8 +86,9 @@ import nodomain.freeyourgadget.gadgetbridge.devices.DeviceCoordinator;
 import nodomain.freeyourgadget.gadgetbridge.devices.DeviceManager;
 import nodomain.freeyourgadget.gadgetbridge.entities.DaoSession;
 import nodomain.freeyourgadget.gadgetbridge.entities.Device;
-import nodomain.freeyourgadget.gadgetbridge.externalevents.OpenTracksContentObserver;
-import nodomain.freeyourgadget.gadgetbridge.externalevents.OpenTracksController;
+import nodomain.freeyourgadget.gadgetbridge.externalevents.gps.GBLocationManager;
+import nodomain.freeyourgadget.gadgetbridge.externalevents.opentracks.OpenTracksContentObserver;
+import nodomain.freeyourgadget.gadgetbridge.externalevents.opentracks.OpenTracksController;
 import nodomain.freeyourgadget.gadgetbridge.impl.GBDevice;
 import nodomain.freeyourgadget.gadgetbridge.model.ActivitySample;
 import nodomain.freeyourgadget.gadgetbridge.model.CallSpec;
@@ -272,26 +273,28 @@ public class DebugActivity extends AbstractGBActivity {
 
                 if (context instanceof GBApplication) {
                     GBApplication gbApp = (GBApplication) context;
-                    final GBDevice device = gbApp.getDeviceManager().getSelectedDevice();
-                    if (device != null) {
-                        new DatePickerDialog(DebugActivity.this, new DatePickerDialog.OnDateSetListener() {
-                            @Override
-                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                Calendar date = Calendar.getInstance();
-                                date.set(year, monthOfYear, dayOfMonth);
+                    final List<GBDevice> devices = gbApp.getDeviceManager().getSelectedDevices();
+                    if(devices.size() == 0){
+                        GB.toast("Device not selected/connected", Toast.LENGTH_LONG, GB.INFO);
+                        return;
+                    }
+                    new DatePickerDialog(DebugActivity.this, new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                            Calendar date = Calendar.getInstance();
+                            date.set(year, monthOfYear, dayOfMonth);
 
-                                long timestamp = date.getTimeInMillis() - 1000;
-                                GB.toast("Setting lastSyncTimeMillis: " + timestamp, Toast.LENGTH_LONG, GB.INFO);
+                            long timestamp = date.getTimeInMillis() - 1000;
+                            GB.toast("Setting lastSyncTimeMillis: " + timestamp, Toast.LENGTH_LONG, GB.INFO);
 
+                            for(GBDevice device : devices){
                                 SharedPreferences.Editor editor = GBApplication.getDeviceSpecificSharedPrefs(device.getAddress()).edit();
                                 editor.remove("lastSyncTimeMillis"); //FIXME: key reconstruction is BAD
                                 editor.putLong("lastSyncTimeMillis", timestamp);
                                 editor.apply();
                             }
-                        }, currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DATE)).show();
-                    } else {
-                        GB.toast("Device not selected/connected", Toast.LENGTH_LONG, GB.INFO);
-                    }
+                        }
+                    }, currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DATE)).show();
                 }
 
 
@@ -411,8 +414,8 @@ public class DebugActivity extends AbstractGBActivity {
             public void onClick(View v) {
                 Context context = getApplicationContext();
                 GBApplication gbApp = (GBApplication) context;
-                final GBDevice device = gbApp.getDeviceManager().getSelectedDevice();
-                if (device != null) {
+                List<GBDevice> devices = gbApp.getDeviceManager().getSelectedDevices();
+                for(GBDevice device : devices){
                     GBApplication.deleteDeviceSpecificSharedPrefs(device.getAddress());
                 }
             }
@@ -526,6 +529,14 @@ public class DebugActivity extends AbstractGBActivity {
             @Override
             public void onClick(View v) {
                 OpenTracksController.stopRecording(DebugActivity.this);
+            }
+        });
+
+        Button stopPhoneGpsLocationListener = findViewById(R.id.stopPhoneGpsLocationListener);
+        stopPhoneGpsLocationListener.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GBLocationManager.stopAll(getBaseContext());
             }
         });
 
@@ -674,10 +685,17 @@ public class DebugActivity extends AbstractGBActivity {
                 return;
             }
 
+            final Uri providerUri = FileProvider.getUriForFile(
+                    this,
+                    getApplicationContext().getPackageName() + ".screenshot_provider",
+                    logFile
+            );
+
             Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+            emailIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             emailIntent.setType("*/*");
             emailIntent.putExtra(EXTRA_SUBJECT, "Gadgetbridge log file");
-            emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(logFile));
+            emailIntent.putExtra(Intent.EXTRA_STREAM, providerUri);
             startActivity(Intent.createChooser(emailIntent, "Share File"));
         }
     }
@@ -751,7 +769,7 @@ public class DebugActivity extends AbstractGBActivity {
         try (
             DBHandler db = GBApplication.acquireDB()) {
             DaoSession daoSession = db.getDaoSession();
-            GBDevice gbDevice = new GBDevice(deviceMac, deviceType.name(), "", deviceType);
+            GBDevice gbDevice = new GBDevice(deviceMac, deviceType.name(), "", null, deviceType);
             gbDevice.setFirmwareVersion("N/A");
             gbDevice.setFirmwareVersion2("N/A");
 

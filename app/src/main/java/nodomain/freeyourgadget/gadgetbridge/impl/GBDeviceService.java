@@ -23,6 +23,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.ContactsContract;
@@ -44,6 +45,7 @@ import nodomain.freeyourgadget.gadgetbridge.model.NavigationInfoSpec;
 import nodomain.freeyourgadget.gadgetbridge.model.NotificationSpec;
 import nodomain.freeyourgadget.gadgetbridge.model.Reminder;
 import nodomain.freeyourgadget.gadgetbridge.model.WeatherSpec;
+import nodomain.freeyourgadget.gadgetbridge.model.WorldClock;
 import nodomain.freeyourgadget.gadgetbridge.service.DeviceCommunicationService;
 import nodomain.freeyourgadget.gadgetbridge.util.RtlUtils;
 
@@ -114,6 +116,13 @@ public class GBDeviceService implements DeviceService {
         Intent intent = createIntent().setAction(ACTION_CONNECT)
                 .putExtra(GBDevice.EXTRA_DEVICE, device)
                 .putExtra(EXTRA_CONNECT_FIRST_TIME, firstTime);
+        invokeService(intent);
+    }
+
+    @Override
+    public void disconnect(@Nullable GBDevice device) {
+        Intent intent = createIntent().setAction(ACTION_DISCONNECT)
+                .putExtra(GBDevice.EXTRA_DEVICE, device);
         invokeService(intent);
     }
 
@@ -201,7 +210,8 @@ public class GBDeviceService implements DeviceService {
         Intent intent = createIntent().setAction(ACTION_CALLSTATE)
                 .putExtra(EXTRA_CALL_PHONENUMBER, callSpec.number)
                 .putExtra(EXTRA_CALL_DISPLAYNAME, callSpec.name)
-                .putExtra(EXTRA_CALL_COMMAND, callSpec.command);
+                .putExtra(EXTRA_CALL_COMMAND, callSpec.command)
+                .putExtra(EXTRA_CALL_DNDSUPPRESSED, callSpec.dndSuppressed);
         invokeService(intent);
     }
 
@@ -225,9 +235,23 @@ public class GBDeviceService implements DeviceService {
     }
 
     @Override
+    public void onSetPhoneVolume(final float volume) {
+        Intent intent = createIntent().setAction(ACTION_SET_PHONE_VOLUME)
+                .putExtra(EXTRA_PHONE_VOLUME, volume);
+        invokeService(intent);
+    }
+
+    @Override
     public void onSetReminders(ArrayList<? extends Reminder> reminders) {
         Intent intent = createIntent().setAction(ACTION_SET_REMINDERS)
                 .putExtra(EXTRA_REMINDERS, reminders);
+        invokeService(intent);
+    }
+
+    @Override
+    public void onSetWorldClocks(ArrayList<? extends WorldClock> clocks) {
+        Intent intent = createIntent().setAction(ACTION_SET_WORLD_CLOCKS)
+                .putExtra(EXTRA_WORLD_CLOCKS, clocks);
         invokeService(intent);
     }
 
@@ -463,6 +487,13 @@ public class GBDeviceService implements DeviceService {
     @Override
     public void onPowerOff() {
         Intent intent = createIntent().setAction(ACTION_POWER_OFF);
+        invokeService(intent);
+    }
+
+    @Override
+    public void onSetGpsLocation(Location location) {
+        Intent intent = createIntent().setAction(ACTION_SET_GPS_LOCATION);
+        intent.putExtra(EXTRA_GPS_LOCATION, location);
         invokeService(intent);
     }
 }

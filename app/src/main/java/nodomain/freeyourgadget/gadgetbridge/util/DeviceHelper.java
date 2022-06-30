@@ -51,6 +51,7 @@ import nodomain.freeyourgadget.gadgetbridge.devices.casio.gbx100.CasioGBX100Devi
 import nodomain.freeyourgadget.gadgetbridge.devices.domyos.DomyosT540Cooridnator;
 import nodomain.freeyourgadget.gadgetbridge.devices.galaxy_buds.GalaxyBudsDeviceCoordinator;
 import nodomain.freeyourgadget.gadgetbridge.devices.galaxy_buds.GalaxyBudsLiveDeviceCoordinator;
+import nodomain.freeyourgadget.gadgetbridge.devices.galaxy_buds.GalaxyBudsProDeviceCoordinator;
 import nodomain.freeyourgadget.gadgetbridge.devices.hplus.EXRIZUK8Coordinator;
 import nodomain.freeyourgadget.gadgetbridge.devices.hplus.HPlusCoordinator;
 import nodomain.freeyourgadget.gadgetbridge.devices.hplus.MakibesF68Coordinator;
@@ -120,6 +121,7 @@ import nodomain.freeyourgadget.gadgetbridge.devices.waspos.WaspOSCoordinator;
 import nodomain.freeyourgadget.gadgetbridge.devices.watch9.Watch9DeviceCoordinator;
 import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.coordinators.SonyWFSP800NCoordinator;
 import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.coordinators.SonyWH1000XM3Coordinator;
+import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.coordinators.SonyWF1000XM3Coordinator;
 import nodomain.freeyourgadget.gadgetbridge.devices.xwatch.XWatchCoordinator;
 import nodomain.freeyourgadget.gadgetbridge.devices.zetime.ZeTimeCoordinator;
 import nodomain.freeyourgadget.gadgetbridge.entities.Device;
@@ -192,14 +194,14 @@ public class DeviceHelper {
         Prefs prefs = GBApplication.getPrefs();
         String miAddress = prefs.getString(MiBandConst.PREF_MIBAND_ADDRESS, "");
         if (miAddress.length() > 0) {
-            GBDevice miDevice = new GBDevice(miAddress, "MI", null, DeviceType.MIBAND);
+            GBDevice miDevice = new GBDevice(miAddress, "MI", null, null, DeviceType.MIBAND);
             availableDevices.add(miDevice);
         }
 
         String pebbleEmuAddr = prefs.getString("pebble_emu_addr", "");
         String pebbleEmuPort = prefs.getString("pebble_emu_port", "");
         if (pebbleEmuAddr.length() >= 7 && pebbleEmuPort.length() > 0) {
-            GBDevice pebbleEmuDevice = new GBDevice(pebbleEmuAddr + ":" + pebbleEmuPort, "Pebble qemu", "", DeviceType.PEBBLE);
+            GBDevice pebbleEmuDevice = new GBDevice(pebbleEmuAddr + ":" + pebbleEmuPort, "Pebble qemu", "", null, DeviceType.PEBBLE);
             availableDevices.add(pebbleEmuDevice);
         }
         return availableDevices;
@@ -322,10 +324,12 @@ public class DeviceHelper {
         result.add(new Ear1Coordinator());
         result.add(new GalaxyBudsDeviceCoordinator());
         result.add(new GalaxyBudsLiveDeviceCoordinator());
+        result.add(new GalaxyBudsProDeviceCoordinator());
         result.add(new VescCoordinator());
         result.add(new SonyWH1000XM3Coordinator());
         result.add(new SonyWH1000XM4Coordinator());
         result.add(new SonyWFSP800NCoordinator());
+        result.add(new SonyWF1000XM3Coordinator());
         result.add(new QC35Coordinator());
 
         return result;
@@ -357,7 +361,7 @@ public class DeviceHelper {
      */
     public GBDevice toGBDevice(Device dbDevice) {
         DeviceType deviceType = DeviceType.fromKey(dbDevice.getType());
-        GBDevice gbDevice = new GBDevice(dbDevice.getIdentifier(), dbDevice.getName(), dbDevice.getAlias(), deviceType);
+        GBDevice gbDevice = new GBDevice(dbDevice.getIdentifier(), dbDevice.getName(), dbDevice.getAlias(), dbDevice.getParentFolder(), deviceType);
         DeviceCoordinator coordinator = getCoordinator(gbDevice);
         for (BatteryConfig batteryConfig : coordinator.getBatteryConfig()) {
             gbDevice.setBatteryIcon(batteryConfig.getBatteryIcon(), batteryConfig.getBatteryIndex());

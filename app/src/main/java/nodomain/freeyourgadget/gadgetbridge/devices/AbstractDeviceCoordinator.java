@@ -26,6 +26,7 @@ import android.bluetooth.le.ScanFilter;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,6 +38,7 @@ import java.util.Collections;
 import de.greenrobot.dao.query.QueryBuilder;
 import nodomain.freeyourgadget.gadgetbridge.GBApplication;
 import nodomain.freeyourgadget.gadgetbridge.GBException;
+import nodomain.freeyourgadget.gadgetbridge.R;
 import nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSpecificSettingsCustomizer;
 import nodomain.freeyourgadget.gadgetbridge.database.DBHandler;
 import nodomain.freeyourgadget.gadgetbridge.database.DBHelper;
@@ -62,6 +64,11 @@ public abstract class AbstractDeviceCoordinator implements DeviceCoordinator {
     }
 
     @Override
+    public ConnectionType getConnectionType() {
+        return ConnectionType.BOTH;
+    }
+
+    @Override
     public boolean supports(GBDevice device) {
         return getDeviceType().equals(device.getType());
     }
@@ -74,7 +81,7 @@ public abstract class AbstractDeviceCoordinator implements DeviceCoordinator {
 
     @Override
     public GBDevice createDevice(GBDeviceCandidate candidate) {
-        GBDevice gbDevice = new GBDevice(candidate.getDevice().getAddress(), candidate.getName(), null, getDeviceType());
+        GBDevice gbDevice = new GBDevice(candidate.getDevice().getAddress(), candidate.getName(), null, null, getDeviceType());
         for (BatteryConfig batteryConfig : getBatteryConfig()) {
             gbDevice.setBatteryIcon(batteryConfig.getBatteryIcon(), batteryConfig.getBatteryIndex());
             gbDevice.setBatteryLabel(batteryConfig.getBatteryLabel(), batteryConfig.getBatteryIndex());
@@ -86,7 +93,7 @@ public abstract class AbstractDeviceCoordinator implements DeviceCoordinator {
     public void deleteDevice(final GBDevice gbDevice) throws GBException {
         LOG.info("will try to delete device: " + gbDevice.getName());
         if (gbDevice.isConnected() || gbDevice.isConnecting()) {
-            GBApplication.deviceService().disconnect();
+            GBApplication.deviceService().disconnect(gbDevice);
         }
         Prefs prefs = getPrefs();
 
@@ -233,6 +240,16 @@ public abstract class AbstractDeviceCoordinator implements DeviceCoordinator {
     }
 
     @Override
+    public int getWorldClocksSlotCount() {
+        return 0;
+    }
+
+    @Override
+    public int getWorldClocksLabelLength() {
+        return 10;
+    }
+
+    @Override
     public boolean supportsRgbLedColor() {
         return false;
     }
@@ -249,8 +266,23 @@ public abstract class AbstractDeviceCoordinator implements DeviceCoordinator {
     }
 
     @Override
+    public int[] getSupportedDeviceSpecificConnectionSettings() {
+        int[] settings = new int[0];
+        ConnectionType connectionType = getConnectionType();
+
+        if(connectionType.usesBluetoothLE()){
+            settings = ArrayUtils.insert(0, settings, R.xml.devicesettings_reconnect_ble);
+        }
+        if(connectionType.usesBluetoothClassic()){
+            settings = ArrayUtils.insert(0, settings, R.xml.devicesettings_reconnect_bl_classic);
+        }
+
+        return settings;
+    }
+
+    @Override
     public int[] getSupportedDeviceSpecificSettings(GBDevice device) {
-        return null;
+        return new int[0];
     }
 
     @Override

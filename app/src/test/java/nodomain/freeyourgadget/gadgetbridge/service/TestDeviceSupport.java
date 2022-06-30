@@ -2,6 +2,7 @@ package nodomain.freeyourgadget.gadgetbridge.service;
 
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
+import android.location.Location;
 import android.net.Uri;
 
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import nodomain.freeyourgadget.gadgetbridge.model.MusicStateSpec;
 import nodomain.freeyourgadget.gadgetbridge.model.NotificationSpec;
 import nodomain.freeyourgadget.gadgetbridge.model.Reminder;
 import nodomain.freeyourgadget.gadgetbridge.model.WeatherSpec;
+import nodomain.freeyourgadget.gadgetbridge.model.WorldClock;
 
 class TestDeviceSupport extends AbstractDeviceSupport {
 
@@ -71,6 +73,11 @@ class TestDeviceSupport extends AbstractDeviceSupport {
     }
 
     @Override
+    public void onSetWorldClocks(ArrayList<? extends WorldClock> clocks) {
+
+    }
+
+    @Override
     public void onSetCallState(CallSpec callSpec) {
 
     }
@@ -87,6 +94,11 @@ class TestDeviceSupport extends AbstractDeviceSupport {
 
     @Override
     public void onSetMusicInfo(MusicSpec musicSpec) {
+
+    }
+
+    @Override
+    public void onSetPhoneVolume(float volume) {
 
     }
 
@@ -212,6 +224,10 @@ class TestDeviceSupport extends AbstractDeviceSupport {
 
     @Override
     public void onPowerOff() {
+
+    }
+
+    @Override public void onSetGpsLocation(Location location) {
 
     }
 }

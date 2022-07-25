@@ -461,6 +461,8 @@ public class FossilWatchAdapter extends WatchAdapter {
                 return true;
             case "DN.1.0":
                 return true;
+            case "VA.0.0":
+                return true;
         }
         throw new UnsupportedOperationException("model " + modelNumber + " not supported");
     }
@@ -476,6 +478,8 @@ public class FossilWatchAdapter extends WatchAdapter {
             case "IV.0.0":
                 return false;
             case "DN.1.0":
+                return false;
+            case "VA.0.0":
                 return false;
         }
         throw new UnsupportedOperationException("Model " + modelNumber + " not supported");

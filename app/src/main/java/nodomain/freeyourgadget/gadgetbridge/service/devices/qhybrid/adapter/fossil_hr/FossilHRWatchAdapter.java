@@ -1611,6 +1611,8 @@ public class FossilHRWatchAdapter extends FossilWatchAdapter {
 
         boolean versionSupportsConfirmation = getCleanFWVersion().compareTo(new Version("2.22")) != -1;
 
+        versionSupportsConfirmation |= getDeviceSupport().getDevice().getModel().startsWith("VA");
+
         if(!versionSupportsConfirmation){
             GB.toast("not supported in this version", Toast.LENGTH_SHORT, GB.ERROR);
             return;

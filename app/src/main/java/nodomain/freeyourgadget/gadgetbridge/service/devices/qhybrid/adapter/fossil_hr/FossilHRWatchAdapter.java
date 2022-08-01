@@ -188,6 +188,8 @@ public class FossilHRWatchAdapter extends FossilWatchAdapter {
 
     @Override
     public void initialize() {
+        timeoutThread.start();
+
         saveRawActivityFiles = getDeviceSpecificPreferences().getBoolean("save_raw_activity_files", false);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -1302,11 +1304,19 @@ public class FossilHRWatchAdapter extends FossilWatchAdapter {
 
     @Override
     public void onTestNewFunction() {
-        queueWrite((FileEncryptedInterface) new ConfigurationGetRequest(this){
+        queueWrite(new FossilRequest() {
             @Override
-            protected void handleConfiguration(ConfigItem[] items) {
-                super.handleConfiguration(items);
-                LOG.debug(items[items.length - 1].toString());
+            public boolean isFinished() {
+                return false;
+            }
+
+            @Override
+            public byte[] getStartSequence() {
+                return new byte[]{(byte)2, (byte) -15, (byte)5};
+            }
+
+            public UUID getRequestUUID(){
+                return UUID.fromString("3dda0002-957f-7d4a-34a6-74696673696d");
             }
         });
     }

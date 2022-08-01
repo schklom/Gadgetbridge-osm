@@ -294,7 +294,7 @@ public class FossilHRWatchAdapter extends FossilWatchAdapter {
         setQuickRepliesConfiguration();
 
         if (authenticated) {
-            setVibrationStrength();
+            // setVibrationStrengthFromConfig();
             setUnitsConfig();
             syncSettings();
             setTime();
@@ -332,7 +332,7 @@ public class FossilHRWatchAdapter extends FossilWatchAdapter {
         queueWrite(new SelectedThemePutRequest(this, appName));
     }
 
-    private void setVibrationStrength() {
+    private void setVibrationStrengthFromConfig() {
         Prefs prefs = new Prefs(getDeviceSpecificPreferences());
         int vibrationStrengh = prefs.getInt(DeviceSettingsPreferenceConst.PREF_VIBRATION_STRENGH_PERCENTAGE, 2);
         if (vibrationStrengh > 0) {
@@ -1304,21 +1304,7 @@ public class FossilHRWatchAdapter extends FossilWatchAdapter {
 
     @Override
     public void onTestNewFunction() {
-        queueWrite(new FossilRequest() {
-            @Override
-            public boolean isFinished() {
-                return false;
-            }
-
-            @Override
-            public byte[] getStartSequence() {
-                return new byte[]{(byte)2, (byte) -15, (byte)5};
-            }
-
-            public UUID getRequestUUID(){
-                return UUID.fromString("3dda0002-957f-7d4a-34a6-74696673696d");
-            }
-        });
+        setVibrationStrengthFromConfig();
     }
 
     public byte[] getSecretKey() throws IllegalAccessException {
@@ -1457,7 +1443,7 @@ public class FossilHRWatchAdapter extends FossilWatchAdapter {
                 overwriteButtons(null);
                 break;
             case DeviceSettingsPreferenceConst.PREF_VIBRATION_STRENGH_PERCENTAGE:
-                setVibrationStrength();
+                setVibrationStrengthFromConfig();
                 break;
             case "force_white_color_scheme":
                 loadBackground();

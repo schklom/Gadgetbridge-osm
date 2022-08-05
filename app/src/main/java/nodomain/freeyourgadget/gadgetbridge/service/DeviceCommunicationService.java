@@ -240,6 +240,7 @@ public class DeviceCommunicationService extends Service implements SharedPrefere
         private boolean supportsActivityDataFetching = false;
         private boolean supportsCalendarEvents = false;
         private boolean supportsMusicInfo = false;
+        private boolean supportsNavigation = false;
 
         public boolean supportsWeather() {
             return supportsWeather;
@@ -273,6 +274,14 @@ public class DeviceCommunicationService extends Service implements SharedPrefere
             this.supportsMusicInfo = supportsMusicInfo;
         }
 
+        public boolean supportsNavigation() {
+            return supportsNavigation;
+        }
+
+        public void setSupportsNavigation(boolean supportsNavigation) {
+            this.supportsNavigation = supportsNavigation;
+        }
+
         public void logicalOr(DeviceCoordinator operand){
             if(operand.supportsCalendarEvents()){
                 setSupportsCalendarEvents(true);
@@ -285,6 +294,9 @@ public class DeviceCommunicationService extends Service implements SharedPrefere
             }
             if(operand.supportsMusicInfo()){
                 setSupportsMusicInfo(true);
+            }
+            if(operand.supportsNavigation()){
+                setSupportsNavigation(true);
             }
         }
     }
@@ -848,7 +860,7 @@ public class DeviceCommunicationService extends Service implements SharedPrefere
                 navigationInfoSpec.instruction = intent.getStringExtra(EXTRA_NAVIGATION_INSTRUCTION);
                 navigationInfoSpec.nextAction = intent.getIntExtra(EXTRA_NAVIGATION_NEXT_ACTION,0);
                 navigationInfoSpec.distanceToTurn = intent.getIntExtra(EXTRA_NAVIGATION_DISTANCE_TO_TURN,0);
-                mDeviceSupport.onSetNavigationInfo(navigationInfoSpec);
+                deviceSupport.onSetNavigationInfo(navigationInfoSpec);
                 break;
             case ACTION_REQUEST_APPINFO:
                 deviceSupport.onAppInfoReq();
@@ -1190,7 +1202,7 @@ public class DeviceCommunicationService extends Service implements SharedPrefere
                 registerReceiver(mAlarmClockReceiver, filter);
             }
 
-            if (mOsmandAidlHelper == null && coordinator != null && coordinator.supportsNavigation(mGBDevice)) {
+            if (mOsmandAidlHelper == null && features.supportsNavigation()) {
                 mOsmandAidlHelper = new OsmandEventReceiver(this.getApplication());
             }
 

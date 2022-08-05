@@ -449,5 +449,5 @@ public interface DeviceCoordinator {
 
     PasswordCapabilityImpl.Mode getPasswordCapability();
 
-    boolean supportsNavigation(GBDevice mGBDevice);
+    boolean supportsNavigation();
 }

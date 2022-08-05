@@ -335,7 +335,7 @@ public abstract class AbstractDeviceCoordinator implements DeviceCoordinator {
     }
 
     @Override
-    public boolean supportsNavigation(GBDevice gbDevice) {
+    public boolean supportsNavigation() {
         return false;
     }
 }

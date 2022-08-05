@@ -140,7 +140,7 @@ public class PineTimeJFCoordinator extends AbstractBLEDeviceCoordinator {
     }
 
     @Override
-    public boolean supportsNavigation(GBDevice gbDevice) {
+    public boolean supportsNavigation() {
         return true;
     }
 

@@ -13,6 +13,7 @@ import android.widget.Toast;
 import net.osmand.aidlapi.IOsmAndAidlCallback;
 import net.osmand.aidlapi.IOsmAndAidlInterface;
 import net.osmand.aidlapi.gpx.AGpxBitmap;
+import net.osmand.aidlapi.logcat.OnLogcatMessageParams;
 import net.osmand.aidlapi.navigation.ADirectionInfo;
 import net.osmand.aidlapi.navigation.ANavigationUpdateParams;
 import net.osmand.aidlapi.navigation.ANavigationVoiceRouterMessageParams;
@@ -82,6 +83,11 @@ public class OsmandEventReceiver {
 
         @Override
         public void onKeyEvent(KeyEvent keyEvent) {
+
+        }
+
+        @Override
+        public void onLogcatMessage(OnLogcatMessageParams onLogcatMessageParams) throws RemoteException {
 
         }
     };

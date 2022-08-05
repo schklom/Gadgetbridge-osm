@@ -25,5 +25,12 @@ allprojects {
             url 'https://jitpack.io'
         }
         google()
+        ivy {
+            name = "OsmAndBinariesIvy"
+            url = "https://builder.osmand.net"
+            patternLayout {
+                artifact "ivy/[organisation]/[module]/[revision]/[artifact]-[revision](-[classifier]).[ext]"
+            }
+        }
     }
 }

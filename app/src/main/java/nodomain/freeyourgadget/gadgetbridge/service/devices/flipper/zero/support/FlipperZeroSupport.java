@@ -152,7 +152,7 @@ public class FlipperZeroSupport extends FlipperZeroBaseSupport{
         buffer.put((byte) 0x16);
         buffer.put((byte) 0x82);
         buffer.put((byte) 0x03);
-        buffer.put((byte) 0x17);
+        buffer.put((byte) (filePath.length() + 2));
         buffer.put((byte) 0x0A);
         buffer.put((byte) filePath.length());
         buffer.put(filePath.getBytes());

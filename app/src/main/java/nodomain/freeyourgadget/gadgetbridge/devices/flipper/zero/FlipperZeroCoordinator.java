@@ -48,7 +48,7 @@ public class FlipperZeroCoordinator extends AbstractBLEDeviceCoordinator {
 
     @Override
     public boolean supportsActivityDataFetching() {
-        return true;
+        return false;
     }
 
     @Override

@@ -341,8 +341,13 @@ public class DeviceCommunicationService extends Service implements SharedPrefere
 
     private final String COMMAND_BLUETOOTH_CONNECT = "nodomain.freeyourgadget.gadgetbridge.BLUETOOTH_CONNECT";
     private final String ACTION_DEVICE_CONNECTED = "nodomain.freeyourgadget.gadgetbridge.BLUETOOTH_CONNECTED";
+    private boolean allowBluetoothIntentApi = false;
 
     private void sendDeviceConnectedBroadcast(String address){
+        if(!allowBluetoothIntentApi){
+            GB.log("not sending API event due to settings", GB.INFO, null);
+            return;
+        }
         Intent intent = new Intent(ACTION_DEVICE_CONNECTED);
         intent.putExtra("EXTRA_DEVICE_ADDRESS", address);
 
@@ -354,6 +359,10 @@ public class DeviceCommunicationService extends Service implements SharedPrefere
         public void onReceive(Context context, Intent intent) {
             switch (intent.getAction()){
                 case COMMAND_BLUETOOTH_CONNECT:
+                    if(!allowBluetoothIntentApi){
+                        GB.log("Connection API not allowed in settings", GB.ERROR, null);
+                        return;
+                    }
                     Bundle extras = intent.getExtras();
                     if(extras == null){
                         GB.log("no extras provided in Intent", GB.ERROR, null);
@@ -471,6 +480,7 @@ public class DeviceCommunicationService extends Service implements SharedPrefere
 
         if (hasPrefs()) {
             getPrefs().getPreferences().registerOnSharedPreferenceChangeListener(this);
+            allowBluetoothIntentApi = getPrefs().getBoolean(GBPrefs.PREF_ALLOW_INTENT_API, false);
         }
 
         IntentFilter bluetoothCommandFilter = new IntentFilter();
@@ -1282,6 +1292,10 @@ public class DeviceCommunicationService extends Service implements SharedPrefere
         }
         if (GBPrefs.CHART_MAX_HEART_RATE.equals(key) || GBPrefs.CHART_MIN_HEART_RATE.equals(key)) {
             HeartRateUtils.getInstance().updateCachedHeartRatePreferences();
+        }
+        if (GBPrefs.PREF_ALLOW_INTENT_API.equals(key)){
+            allowBluetoothIntentApi = sharedPreferences.getBoolean(GBPrefs.PREF_ALLOW_INTENT_API, false);
+            GB.log("allowBluetoothIntentApi changed to " + allowBluetoothIntentApi, GB.INFO, null);
         }
     }
 

@@ -1813,4 +1813,5 @@
     <string name="step_streaks_achievements_sharing_title">Steps Achievements</string>
     <string name="prefs_hourly_chime">Hourly chime</string>
     <string name="prefs_hourly_chime_summary">The watch will beep once an hour</string>
+    <string name="devicetype_flipper_zero">Flipper zero</string>
 </resources>

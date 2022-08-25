@@ -28,8 +28,8 @@ public class FlipperZeroSupport extends FlipperZeroBaseSupport{
     private final String UUID_SERIAL_CHARACTERISTIC_WRITE = "19ed82ae-ed21-4c9d-4145-228e62fe0000";
     private final String UUID_SERIAL_CHARACTERISTIC_RESPONSE = "19ed82ae-ed21-4c9d-4145-228e61fe0000";
 
-    private final String COMMAND_PLAY_SUBGHZ_FILE = "nodomain.freeyourgadget.gadgetbridge.flipper.zero.PLAY_SUBGHZ";
-    private final String ACTION_PLAY_SUBGHZ_DONE = "nodomain.freeyourgadget.gadgetbridge.flipper.zero.PLAY_SUBGHZ_DONE";
+    private final String COMMAND_PLAY_FILE = "nodomain.freeyourgadget.gadgetbridge.flipper.zero.PLAY_FILE";
+    private final String ACTION_PLAY_DONE = "nodomain.freeyourgadget.gadgetbridge.flipper.zero.PLAY_DONE";
 
     BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
@@ -37,7 +37,7 @@ public class FlipperZeroSupport extends FlipperZeroBaseSupport{
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    if(COMMAND_PLAY_SUBGHZ_FILE.equals(intent.getAction())){
+                    if(COMMAND_PLAY_FILE.equals(intent.getAction())){
                         handlePlaySubGHZ(intent);
                     }
                 }
@@ -46,6 +46,8 @@ public class FlipperZeroSupport extends FlipperZeroBaseSupport{
     };
 
     private void handlePlaySubGHZ(Intent intent) {
+        String appName = intent.getExtras().getString("EXTRA_APP_NAME", "Sub-GHz");
+
         String filePath = intent.getStringExtra("EXTRA_FILE_PATH");
         if(filePath == null){
             GB.log("missing EXTRA_FILE_PATH in intent", GB.ERROR, null);
@@ -56,10 +58,10 @@ public class FlipperZeroSupport extends FlipperZeroBaseSupport{
             return;
         }
 
-        GB.toast("playing subGHZ file", Toast.LENGTH_SHORT, GB.INFO);
-        playSubGHZFile(filePath);
+        GB.toast(String.format("playing %s file", appName), Toast.LENGTH_SHORT, GB.INFO);
+        playFile(appName, filePath);
 
-        Intent response = new Intent(ACTION_PLAY_SUBGHZ_DONE);
+        Intent response = new Intent(ACTION_PLAY_DONE);
         getContext().sendBroadcast(response);
     }
 
@@ -84,7 +86,7 @@ public class FlipperZeroSupport extends FlipperZeroBaseSupport{
 
     @Override
     protected TransactionBuilder initializeDevice(TransactionBuilder builder) {
-        getContext().registerReceiver(receiver, new IntentFilter(COMMAND_PLAY_SUBGHZ_FILE));
+        getContext().registerReceiver(receiver, new IntentFilter(COMMAND_PLAY_FILE));
 
         builder.add(new SetDeviceStateAction(getDevice(), GBDevice.State.INITIALIZING, getContext()));
 
@@ -125,7 +127,7 @@ public class FlipperZeroSupport extends FlipperZeroBaseSupport{
         // buffer.put((byte)(Math.random() * 256));
         buffer.put((byte)0x82);
         buffer.put((byte)0x01);
-        buffer.put((byte)0x0E);
+        buffer.put((byte) (appName.length() + 7));
         buffer.put((byte)0x0A);
 
         buffer.put((byte) appName.length());
@@ -179,10 +181,11 @@ public class FlipperZeroSupport extends FlipperZeroBaseSupport{
 
     @Override
     public void onTestNewFunction() {
+        openApp("Infrared");
     }
 
-    private void playSubGHZFile(String filePath){
-        openSubGhzApp();
+    private void playFile(String appName, String filePath){
+        openApp(appName);
         try {
             Thread.sleep(500);
             appLoadFile(filePath);

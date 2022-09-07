@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public final class QHybridConstants {
-    public static final String HYBRIDHR_WATCHFACE_VERSION = "1.4";
+    public static final String HYBRIDHR_WATCHFACE_VERSION = "1.5";
     public static final int HYBRID_HR_WATCHFACE_WIDGET_SIZE = 76;
 
     public static Map<String, String> KNOWN_WAPP_VERSIONS = new HashMap<String, String>() {
@@ -28,7 +28,7 @@ public final class QHybridConstants {
             put("buddyChallengeApp", "2.10");
             put("commuteApp", "2.5");
             put("launcherApp", "3.8");
-            put("musicApp", "3.4");
+            put("musicApp", "3.9");
             put("notificationsPanelApp", "3.5");
             put("ringPhoneApp", "3.7");
             put("settingApp", "3.12");

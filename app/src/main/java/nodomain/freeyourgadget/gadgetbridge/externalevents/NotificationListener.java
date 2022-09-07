@@ -53,8 +53,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -110,9 +110,11 @@ public class NotificationListener extends NotificationListenerService {
     private final HashMap<String, Long> notificationBurstPrevention = new HashMap<>();
     private final HashMap<String, Long> notificationOldRepeatPrevention = new HashMap<>();
 
-    private static final Set<String> GROUP_SUMMARY_WHITELIST = Collections.singleton(
-            "mikado.bizcalpro"
-    );
+    private static final Set<String> GROUP_SUMMARY_WHITELIST = new HashSet<String>() {{
+        add("com.microsoft.office.lync15");
+        add("com.skype.raider");
+        add("mikado.bizcalpro");
+    }};
 
     public static ArrayList<String> notificationStack = new ArrayList<>();
     private static ArrayList<Integer> notificationsActive = new ArrayList<Integer>();
@@ -207,7 +209,7 @@ public class NotificationListener extends NotificationListenerService {
                         PendingIntent actionIntent = wearableAction.getActionIntent();
                         Intent localIntent = new Intent();
                         localIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        if(wearableAction.getRemoteInputs()!=null) {
+                        if (wearableAction.getRemoteInputs() != null && wearableAction.getRemoteInputs().length > 0) {
                             RemoteInput[] remoteInputs = wearableAction.getRemoteInputs();
                             Bundle extras = new Bundle();
                             extras.putCharSequence(remoteInputs[0].getResultKey(), reply);
@@ -343,8 +345,6 @@ public class NotificationListener extends NotificationListenerService {
             notificationSpec.sourceName = name;
         }
 
-        boolean preferBigText = false;
-
         // Get the app ID that generated this notification. For now only used by pebble color, but may be more useful later.
         notificationSpec.sourceAppId = source;
 
@@ -359,7 +359,6 @@ public class NotificationListener extends NotificationListenerService {
                 LOG.info("ignore K9 group summary");
                 return;
             }
-            preferBigText = true;
         }
 
         if (notificationSpec.type == null) {
@@ -370,6 +369,8 @@ public class NotificationListener extends NotificationListenerService {
         notificationSpec.pebbleColor = getPebbleColorForNotification(notificationSpec);
 
         LOG.info("Processing notification " + notificationSpec.getId() + " age: " + (System.currentTimeMillis() - notification.when) + " from source " + source + " with flags: " + notification.flags);
+
+        boolean preferBigText = prefs.getBoolean("notification_prefer_long_text", true);
 
         dissectNotificationTo(notification, notificationSpec, preferBigText);
 
@@ -389,7 +390,8 @@ public class NotificationListener extends NotificationListenerService {
         NotificationCompat.WearableExtender wearableExtender = new NotificationCompat.WearableExtender(notification);
         List<NotificationCompat.Action> actions = wearableExtender.getActions();
 
-
+        // Some apps such as Telegram send both a group + normal notifications, which would get sent in duplicate to the devices
+        // Others only send the group summary, so they need to be whitelisted
         if (actions.isEmpty() && NotificationCompat.isGroupSummary(notification)
                 && !GROUP_SUMMARY_WHITELIST.contains(source)) { //this could cause #395 to come back
             LOG.info("Not forwarding notification, FLAG_GROUP_SUMMARY is set and no wearable action present. Notification flags: " + notification.flags);
@@ -409,7 +411,7 @@ public class NotificationListener extends NotificationListenerService {
             if (act != null) {
                 NotificationSpec.Action wearableAction = new NotificationSpec.Action();
                 wearableAction.title = act.getTitle().toString();
-                if(act.getRemoteInputs()!=null) {
+                if (act.getRemoteInputs() != null && act.getRemoteInputs().length > 0) {
                     wearableAction.type = NotificationSpec.Action.TYPE_WEARABLE_REPLY;
                 } else {
                     wearableAction.type = NotificationSpec.Action.TYPE_WEARABLE_SIMPLE;
@@ -592,9 +594,10 @@ public class NotificationListener extends NotificationListenerService {
         }
     }
 
-    // Strip Unicode control sequences: some apps like Telegram add a lot of them for unknown reasons
+    // Strip Unicode control sequences: some apps like Telegram add a lot of them for unknown reasons.
+    // Keep newline and whitespace characters
     private String sanitizeUnicode(String orig) {
-        return orig.replaceAll("\\p{C}", "");
+        return orig.replaceAll("[\\p{C}&&\\S]", "");
     }
 
     private void dissectNotificationTo(Notification notification, NotificationSpec notificationSpec,
@@ -780,8 +783,12 @@ public class NotificationListener extends NotificationListenerService {
     }
 
     private void logNotification(StatusBarNotification sbn, boolean posted) {
-        String infoMsg = (posted ? "Notification posted" : "Notification removed")
-                + ": " + sbn.getPackageName();
+        String infoMsg = String.format(
+                "Notification %d %s: %s",
+                sbn.getId(),
+                posted ? "posted" : "removed",
+                sbn.getPackageName()
+        );
 
         if (GBApplication.isRunningLollipopOrLater()) {
             infoMsg += ": " + sbn.getNotification().category;
@@ -882,6 +889,7 @@ public class NotificationListener extends NotificationListenerService {
         if (source.equals("de.dennisguse.opentracks")
                 || source.equals("de.dennisguse.opentracks.debug")
                 || source.equals("de.dennisguse.opentracks.nightly")
+                || source.equals("de.dennisguse.opentracks.playstore")
                 || source.equals("de.tadris.fitness")
                 || source.equals("de.tadris.fitness.debug")
         ) {
@@ -906,16 +914,24 @@ public class NotificationListener extends NotificationListenerService {
             return true;
         }
 
+        Prefs prefs = GBApplication.getPrefs();
+
         // Check for screen on when posting the notification; for removal, the screen
         // has to be on (obviously)
         if(!remove) {
-            Prefs prefs = GBApplication.getPrefs();
             if (!prefs.getBoolean("notifications_generic_whenscreenon", false)) {
                 PowerManager powermanager = (PowerManager) getSystemService(POWER_SERVICE);
                 if (powermanager != null && powermanager.isScreenOn()) {
                     LOG.info("Not forwarding notification, screen seems to be on and settings do not allow this");
                     return true;
                 }
+            }
+        }
+
+        if (sbn.getNotification().priority < Notification.PRIORITY_DEFAULT) {
+            if (prefs.getBoolean("notifications_ignore_low_priority", true)) {
+                LOG.info("Ignoring low priority notification");
+                return true;
             }
         }
 

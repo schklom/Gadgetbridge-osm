@@ -80,10 +80,14 @@ public abstract class WatchAdapter {
                 return "Q Commuter";
             case "HL.0.0":
                 return "Q Activist";
+            case "IV.0.0":
+                return "Hybrid HR";
             case "DN.1.0":
                 return "Hybrid HR Collider";
+            case "VA.0.0":
+                return "Fossil Gen. 6 Hybrid";
         }
-        return "unknwon Q";
+        return "unknown Q";
     }
 
     public abstract void onFetchActivityData();

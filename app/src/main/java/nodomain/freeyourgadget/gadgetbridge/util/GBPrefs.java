@@ -56,6 +56,7 @@ public class GBPrefs {
     public static final String RTL_SUPPORT = "rtl";
     public static final String RTL_CONTEXTUAL_ARABIC = "contextualArabic";
     public static boolean AUTO_RECONNECT_DEFAULT = true;
+    public static final String PREF_ALLOW_INTENT_API = "prefs_key_allow_bluetooth_intent_api";
 
     public static final String USER_NAME = "mi_user_alias";
     public static final String USER_NAME_DEFAULT = "gadgetbridge-user";
@@ -105,12 +106,12 @@ public class GBPrefs {
     }
 
     public String getTimeFormat() {
-        String timeFormat = mPrefs.getString(DeviceSettingsPreferenceConst.PREF_TIMEFORMAT, "auto");
-        if ("auto".equals(timeFormat)) {
+        String timeFormat = mPrefs.getString(DeviceSettingsPreferenceConst.PREF_TIMEFORMAT, DeviceSettingsPreferenceConst.PREF_TIMEFORMAT_AUTO);
+        if (DeviceSettingsPreferenceConst.PREF_TIMEFORMAT_AUTO.equals(timeFormat)) {
             if (DateFormat.is24HourFormat(GBApplication.getContext())) {
-                timeFormat = "24h";
+                timeFormat = DeviceSettingsPreferenceConst.PREF_TIMEFORMAT_24H;
             } else {
-                timeFormat = "am/pm";
+                timeFormat = DeviceSettingsPreferenceConst.PREF_TIMEFORMAT_12H;
             }
         }
 

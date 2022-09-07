@@ -44,6 +44,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import nodomain.freeyourgadget.gadgetbridge.BuildConfig;
 import nodomain.freeyourgadget.gadgetbridge.GBApplication;
@@ -78,6 +80,7 @@ import nodomain.freeyourgadget.gadgetbridge.service.devices.qhybrid.requests.mis
 import nodomain.freeyourgadget.gadgetbridge.service.serial.GBDeviceProtocol;
 import nodomain.freeyourgadget.gadgetbridge.util.FileUtils;
 import nodomain.freeyourgadget.gadgetbridge.util.GB;
+import nodomain.freeyourgadget.gadgetbridge.util.Version;
 
 public class QHybridSupport extends QHybridBaseSupport {
     public static final String QHYBRID_COMMAND_CONTROL = "qhybrid_command_control";
@@ -143,6 +146,7 @@ public class QHybridSupport extends QHybridBaseSupport {
 
     public QHybridSupport() {
         super(logger);
+        addSupportedService(UUID.fromString("108b5094-4c03-e51c-555e-105d1a1155f0"));
         addSupportedService(UUID.fromString("3dda0001-957f-7d4a-34a6-74696673696d"));
         addSupportedService(GattService.UUID_SERVICE_DEVICE_INFORMATION);
         addSupportedService(GattService.UUID_SERVICE_GENERIC_ACCESS);
@@ -480,6 +484,10 @@ public class QHybridSupport extends QHybridBaseSupport {
         for (int i = 2; i <= 7; i++)
             builder.notify(getCharacteristic(UUID.fromString("3dda000" + i + "-957f-7d4a-34a6-74696673696d")), true);
 
+        builder.notify(getCharacteristic(UUID.fromString("010541ae-efe8-11c0-91c0-105d1a1155f0")), true);
+        builder.notify(getCharacteristic(UUID.fromString("fef9589f-9c21-4d19-9fc0-105d1a1155f0")), true);
+        builder.notify(getCharacteristic(UUID.fromString("842d2791-0d20-4ce4-1ada-105d1a1155f0")), true);
+
         builder
                 .read(getCharacteristic(UUID.fromString("00002a19-0000-1000-8000-00805f9b34fb")))
                 .read(getCharacteristic(UUID.fromString("00002a26-0000-1000-8000-00805f9b34fb")))
@@ -751,8 +759,15 @@ public class QHybridSupport extends QHybridBaseSupport {
         switch (characteristic.getUuid().toString()) {
             case "00002a26-0000-1000-8000-00805f9b34fb": {
                 String firmwareVersion = characteristic.getStringValue(0);
-
                 gbDevice.setFirmwareVersion(firmwareVersion);
+
+                Matcher matcher = Pattern
+                        .compile("(?<=[A-Z]{2}[0-9]\\.[0-9]\\.)[0-9]+\\.[0-9]+")
+                        .matcher(firmwareVersion);
+                if(matcher.find()){
+                    gbDevice.setFirmwareVersion2(matcher.group());
+                }
+
                 this.watchAdapter = new WatchAdapterFactory().createWatchAdapter(firmwareVersion, this);
                 this.watchAdapter.initialize();
                 showNotificationsByAllActive(false);

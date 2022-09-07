@@ -31,6 +31,7 @@ import nodomain.freeyourgadget.gadgetbridge.devices.huami.HuamiCoordinator;
 import nodomain.freeyourgadget.gadgetbridge.devices.huami.HuamiFWHelper;
 import nodomain.freeyourgadget.gadgetbridge.devices.huami.HuamiService;
 import nodomain.freeyourgadget.gadgetbridge.devices.huami.amazfitneo.AmazfitNeoFWHelper;
+import nodomain.freeyourgadget.gadgetbridge.devices.miband.MiBandCoordinator;
 import nodomain.freeyourgadget.gadgetbridge.model.ActivityUser;
 import nodomain.freeyourgadget.gadgetbridge.model.NotificationSpec;
 import nodomain.freeyourgadget.gadgetbridge.service.btle.BLETypeConversions;
@@ -78,6 +79,22 @@ public class AmazfitNeoSupport extends MiBand5Support {
         bytes = ArrayUtils.addAll(bytes,
                 HuamiService.COMMAND_SET_FITNESS_GOAL_END);
         writeToChunked(builder, 2, bytes);
+    }
+
+    @Override
+    protected AmazfitNeoSupport requestAlarms(TransactionBuilder builder) {
+        return this; //Neo always returns response array with '03' in it which marks alarms unused on connect
+    }
+
+    @Override
+    public boolean supportsHourlyChime() { return true; }
+
+    @Override
+    protected AmazfitNeoSupport setHeartrateSleepSupport(TransactionBuilder builder) {
+        final boolean enableHrSleepSupport = MiBandCoordinator.getHeartrateSleepSupport(gbDevice.getAddress());
+        LOG.info("Setting Amazfit Neo heartrate sleep support to " + enableHrSleepSupport);
+        writeToConfiguration(builder, new byte[] {0x06, 0x3c, 0x00, (byte) (enableHrSleepSupport ? 1 : 0 )});
+        return this;
     }
 
     @Override

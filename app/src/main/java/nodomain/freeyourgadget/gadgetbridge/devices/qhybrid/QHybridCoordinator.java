@@ -28,6 +28,7 @@ import android.os.ParcelUuid;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -235,15 +236,6 @@ public class QHybridCoordinator extends AbstractBLEDeviceCoordinator {
     @Override
     public boolean supportsFindDevice() {
         return true;
-        /*GBDevice connectedDevice = GBApplication.app().getDeviceManager().getSelectedDevice();
-        if(connectedDevice == null || connectedDevice.getType() != DeviceType.FOSSILQHYBRID){
-            return true;
-        }
-        ItemWithDetails vibration = connectedDevice.getDeviceInfo(QHybridSupport.ITEM_EXTENDED_VIBRATION_SUPPORT);
-        if(vibration == null){
-            return true;
-        }
-        return vibration.getDetails().equals("true");*/
     }
 
     @Override
@@ -253,24 +245,26 @@ public class QHybridCoordinator extends AbstractBLEDeviceCoordinator {
 
     @Override
     public int[] getSupportedDeviceSpecificSettings(GBDevice device) {
-        if (isHybridHR() && getFirmwareVersion() != null && getFirmwareVersion().compareTo(new Version("1.0.2.20")) < 0) {
-            return new int[]{
-                    R.xml.devicesettings_fossilhybridhr_pre_fw20,
-                    R.xml.devicesettings_fossilhybridhr,
-                    R.xml.devicesettings_autoremove_notifications,
-                    R.xml.devicesettings_canned_dismisscall_16,
-                    R.xml.devicesettings_transliteration
-            };
+        if (!isHybridHR()) {
+            return new int[0];
         }
-        if (isHybridHR()) {
-            return new int[]{
-                    R.xml.devicesettings_fossilhybridhr,
-                    R.xml.devicesettings_autoremove_notifications,
-                    R.xml.devicesettings_canned_dismisscall_16,
-            };
-        }
-        return new int[]{
+        //Settings applicable to all firmware versions
+        int[] supportedSettings = new int[]{
+                R.xml.devicesettings_fossilhybridhr,
+                R.xml.devicesettings_autoremove_notifications,
+                R.xml.devicesettings_canned_dismisscall_16,
+                R.xml.devicesettings_transliteration
         };
+        //Firmware specific settings
+        if (getFirmwareVersion() != null && getFirmwareVersion().smallerThan(new Version("3.0"))) {
+            supportedSettings = ArrayUtils.insert(0, supportedSettings, R.xml.devicesettings_fossilhybridhr_buttonconfiguration_pre_fw30);
+        } else {
+            supportedSettings = ArrayUtils.insert(0, supportedSettings, R.xml.devicesettings_fossilhybridhr_buttonconfiguration);
+        }
+        if (getFirmwareVersion() != null && getFirmwareVersion().smallerThan(new Version("2.20"))) {
+            supportedSettings = ArrayUtils.insert(1, supportedSettings, R.xml.devicesettings_fossilhybridhr_pre_fw20);
+        }
+        return supportedSettings;
     }
 
     @Override
@@ -290,25 +284,23 @@ public class QHybridCoordinator extends AbstractBLEDeviceCoordinator {
     private boolean isHybridHR() {
         List<GBDevice> devices = GBApplication.app().getDeviceManager().getSelectedDevices();
         for(GBDevice device : devices){
-            if(isFossilHybrid(device) && device.getName().startsWith("Hybrid HR")){
+            if(isHybridHR(device)){
                 return true;
             }
         }
         return false;
     }
 
+    private boolean isHybridHR(GBDevice device){
+        if(!isFossilHybrid(device)) return false;
+        return device.getName().startsWith("Hybrid HR") || device.getName().equals("Fossil Gen. 6 Hybrid");
+    }
+
     private Version getFirmwareVersion() {
         List<GBDevice> devices = GBApplication.app().getDeviceManager().getSelectedDevices();
-        for(GBDevice device : devices){
-            if(isFossilHybrid(device)){
-                String firmware = device.getFirmwareVersion();
-                if (firmware != null) {
-                    Matcher matcher = Pattern.compile("[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+").matcher(firmware); // DN1.0.2.19r.v5
-                    if (matcher.find()) {
-                        firmware = matcher.group(0);
-                        return new Version(firmware);
-                    }
-                }
+        for (GBDevice device : devices) {
+            if (isFossilHybrid(device)) {
+                return new Version(device.getFirmwareVersion2());
             }
         }
 

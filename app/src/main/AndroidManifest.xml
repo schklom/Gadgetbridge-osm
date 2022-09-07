@@ -47,6 +47,9 @@
     <uses-permission android:name="lineageos.permission.READ_WEATHER" />
     <uses-permission android:name="org.omnirom.omnijaws.READ_WEATHER" />
 
+    <!-- Used for starting activities from the background with intents -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
 
     <uses-feature
         android:name="android.hardware.bluetooth"
@@ -685,6 +688,10 @@
 
         <activity
             android:name=".devices.um25.Activity.DataActivity"
+            android:exported="true" />
+
+        <activity
+            android:name=".devices.binary_sensor.activity.DataActivity"
             android:exported="true" />
 
         <activity

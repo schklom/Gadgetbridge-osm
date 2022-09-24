@@ -96,7 +96,13 @@ public class DiscoveryActivity extends AbstractGBActivity implements AdapterView
     private static final Logger LOG = LoggerFactory.getLogger(DiscoveryActivity.class);
     private static final long SCAN_DURATION = 30000; // 30s
     private final Handler handler = new Handler();
+
+    private static final long LIST_REFRESH_THRESHOLD_MS = 2500L;
+    private long lastListRefresh = System.currentTimeMillis();
+
+    private final Map<String, GBDeviceCandidate> candidatesByAddress = new LinkedHashMap<>();
     private final ArrayList<GBDeviceCandidate> deviceCandidates = new ArrayList<>();
+
     private ScanCallback newBLEScanCallback = null;
     /**
      * Use old BLE scanning
@@ -216,10 +222,8 @@ public class DiscoveryActivity extends AbstractGBActivity implements AdapterView
 
 
     private GBDeviceCandidate getCandidateFromMAC(BluetoothDevice device) {
-        for (GBDeviceCandidate candidate : deviceCandidates) {
-            if (candidate.getMacAddress().equals(device.getAddress())) {
-                return candidate;
-            }
+        if (candidatesByAddress.containsKey(device.getAddress())) {
+            return candidatesByAddress.get(device.getAddress());
         }
         LOG.warn(String.format("This shouldn't happen unless the list somehow emptied itself, device MAC: %1$s", device.getAddress()));
         return null;
@@ -244,8 +248,7 @@ public class DiscoveryActivity extends AbstractGBActivity implements AdapterView
                             uuids = serviceUuids.toArray(new ParcelUuid[0]);
                         }
                     }
-                    LOG.warn(result.getDevice().getName() + ": " +
-                            ((scanRecord != null) ? scanRecord.getBytes().length : -1));
+                    LOG.debug("BLE result: {}: {}", result.getDevice().getName(), ((scanRecord != null) ? scanRecord.getBytes().length : -1));
                     handleDeviceFound(result.getDevice(), (short) result.getRssi(), uuids);
                 } catch (NullPointerException e) {
                     LOG.warn("Error handling scan result", e);
@@ -307,6 +310,7 @@ public class DiscoveryActivity extends AbstractGBActivity implements AdapterView
         if (isScanning()) {
             stopDiscovery();
         } else {
+            candidatesByAddress.clear();
             deviceCandidates.clear();
             deviceCandidateAdapter.notifyDataSetChanged();
             if (GB.supportsBluetoothLE()) {
@@ -328,9 +332,12 @@ public class DiscoveryActivity extends AbstractGBActivity implements AdapterView
         super.onRestoreInstanceState(savedInstanceState);
         ArrayList<Parcelable> restoredCandidates = savedInstanceState.getParcelableArrayList("deviceCandidates");
         if (restoredCandidates != null) {
+            candidatesByAddress.clear();
             deviceCandidates.clear();
             for (Parcelable p : restoredCandidates) {
-                deviceCandidates.add((GBDeviceCandidate) p);
+                final GBDeviceCandidate candidate = (GBDeviceCandidate) p;
+                deviceCandidates.add(candidate);
+                candidatesByAddress.put(candidate.getMacAddress(), candidate);
             }
         }
     }
@@ -379,7 +386,7 @@ public class DiscoveryActivity extends AbstractGBActivity implements AdapterView
     private void handleDeviceFound(BluetoothDevice device, short rssi) {
         if (device.getName() != null) {
             if (handleDeviceFound(device, rssi, null)) {
-                LOG.info("found supported device " + device.getName() + " without scanning services, skipping service scan.");
+                LOG.info("found supported device {} without scanning services, skipping service scan.", device.getName());
                 return;
             }
         }
@@ -394,34 +401,65 @@ public class DiscoveryActivity extends AbstractGBActivity implements AdapterView
     }
 
     private boolean handleDeviceFound(BluetoothDevice device, short rssi, ParcelUuid[] uuids) {
-        LOG.debug("found device: " + device.getName() + ", " + device.getAddress());
-        if (LOG.isDebugEnabled()) {
-            if (uuids != null && uuids.length > 0) {
-                for (ParcelUuid uuid : uuids) {
-                    LOG.debug("  supports uuid: " + uuid.toString());
-                }
+        LOG.debug("Found device: {}, {}", device.getName(), device.getAddress());
+        if (uuids != null && uuids.length > 0) {
+            for (ParcelUuid uuid : uuids) {
+                LOG.debug("  supports uuid: {}", uuid);
             }
         }
 
         if (device.getBondState() == BluetoothDevice.BOND_BONDED && ignoreBonded) {
-            return true; // Ignore already bonded devices
+            LOG.trace("Ignoring already bonded device");
+            return true;
         }
 
         GBDeviceCandidate candidate = new GBDeviceCandidate(device, rssi, uuids);
-        DeviceType deviceType = DeviceHelper.getInstance().getSupportedType(candidate);
-        if (deviceType.isSupported() || discoverUnsupported) {
+        GBDeviceCandidate existingCandidate = candidatesByAddress.get(candidate.getMacAddress());
+        boolean isSupported;
+
+        if (existingCandidate == null || !existingCandidate.getDeviceType().isSupported()) {
+            // This candidate was either:
+            //   1. not yet recognized
+            //   2. recognized, but not identified as supported
+            // Therefore, let's refresh the DeviceType (this iterates through all known coordinators)
+            final DeviceType deviceType = DeviceHelper.getInstance().getSupportedType(candidate);
             candidate.setDeviceType(deviceType);
-            LOG.info("Recognized device: " + candidate);
-            int index = deviceCandidates.indexOf(candidate);
-            if (index >= 0) {
-                deviceCandidates.set(index, candidate); // replace
-            } else {
-                deviceCandidates.add(candidate);
-            }
-            deviceCandidateAdapter.notifyDataSetChanged();
-            return true;
+            isSupported = deviceType.isSupported();
+        } else {
+            // The candidate was already recognized as supported before
+            // Avoid iterating through all coordinators again
+            candidate.setDeviceType(existingCandidate.getDeviceType());
+            isSupported = true;
         }
-        return false;
+
+        if (isSupported || discoverUnsupported) {
+            candidatesByAddress.put(candidate.getMacAddress(), candidate);
+
+            if (existingCandidate == null) {
+                LOG.info("Recognized device: {}, supported = {}", candidate, isSupported);
+            }
+        }
+
+        if (System.currentTimeMillis() - lastListRefresh > LIST_REFRESH_THRESHOLD_MS) {
+            refreshDeviceList();
+        }
+
+        return isSupported;
+    }
+
+    private void refreshDeviceList() {
+        LOG.debug("Refreshing device list");
+
+        // Clear and re-populate the list. candidatesByAddress keeps insertion order, so newer devices
+        // will still be at the end
+        deviceCandidates.clear();
+        for (final Map.Entry<String, GBDeviceCandidate> entry : candidatesByAddress.entrySet()) {
+            deviceCandidates.add(entry.getValue());
+        }
+
+        deviceCandidateAdapter.notifyDataSetChanged();
+
+        lastListRefresh = System.currentTimeMillis();
     }
 
     private void startDiscovery(Scanning what) {
@@ -582,6 +620,9 @@ public class DiscoveryActivity extends AbstractGBActivity implements AdapterView
         }
 
         setIsScanning(Scanning.SCANNING_OFF);
+
+        // Refresh the device list one last time when finishing
+        refreshDeviceList();
     }
 
     private void setIsScanning(Scanning to) {

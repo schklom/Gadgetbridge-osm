@@ -166,7 +166,7 @@ public abstract class AbstractFetchOperation extends AbstractHuamiOperation {
         byte[] fetchBytes = BLETypeConversions.join(new byte[]{
                         HuamiService.COMMAND_ACTIVITY_DATA_START_DATE,
                         fetchType},
-                getSupport().getTimeBytes(sinceWhen, isHuami2021 ? TimeUnit.SECONDS : TimeUnit.MINUTES));
+                getSupport().getTimeBytes(sinceWhen, TimeUnit.MINUTES));
         builder.add(new AbstractGattListenerWriteAction(getQueue(), characteristicFetch, fetchBytes) {
             @Override
             protected boolean onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {

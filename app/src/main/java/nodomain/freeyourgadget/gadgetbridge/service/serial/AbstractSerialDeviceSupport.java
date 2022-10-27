@@ -209,6 +209,12 @@ public abstract class AbstractSerialDeviceSupport extends AbstractDeviceSupport 
     }
 
     @Override
+    public void onFindPhone(boolean start) {
+        byte[] bytes = gbDeviceProtocol.encodeFindPhone(start);
+        sendToDevice(bytes);
+    }
+
+    @Override
     public void onScreenshotReq() {
         byte[] bytes = gbDeviceProtocol.encodeScreenshotReq();
         sendToDevice(bytes);

@@ -90,6 +90,7 @@ public class AmazfitVergeLCoordinator extends HuamiCoordinator {
     public int[] getSupportedDeviceSpecificSettings(GBDevice device) {
         return new int[]{
                 R.xml.devicesettings_amazfitvergel,
+                R.xml.devicesettings_vibrationpatterns,
                 R.xml.devicesettings_wearlocation,
                 R.xml.devicesettings_heartrate_sleep,
                 R.xml.devicesettings_goal_notification,
@@ -102,6 +103,7 @@ public class AmazfitVergeLCoordinator extends HuamiCoordinator {
                 R.xml.devicesettings_disconnectnotification,
                 R.xml.devicesettings_bt_connected_advertisement,
                 R.xml.devicesettings_buttonactions_with_longpress,
+                R.xml.devicesettings_overwrite_settings_on_connection,
                 R.xml.devicesettings_transliteration
         };
     }

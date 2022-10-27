@@ -247,7 +247,7 @@
     <string name="user_feedback_miband_activity_data_transfer">Sur le point de transférer %1$s de données à partir de %2$s</string>
     <string name="miband_prefs_fitness_goal">Objectif de pas par jour</string>
     <string name="dbaccess_error_executing">Erreur lors de l’exécution de %1$s\'</string>
-    <string name="controlcenter_start_activitymonitor">Votre activité (ALPHA)</string>
+    <string name="controlcenter_start_activitymonitor">Votre activité</string>
     <string name="cannot_connect">Impossible de se connecter : %1$s</string>
     <string name="installer_activity_unable_to_find_handler">Impossible de trouver un gestionnaire pour installer ce fichier.</string>
     <string name="pbw_install_handler_unable_to_install">Impossible d\'installer le ficher suivant : %1$s</string>
@@ -287,7 +287,7 @@
     <string name="weeksteps_today_steps_description">Nombre de pas aujourd\'hui, objectif : %1$s</string>
     <string name="pref_title_dont_ack_transfer">Ne pas confirmer le transfert de données d\'activités</string>
     <string name="pref_summary_dont_ack_transfers">Les données d\'activités ne seront pas effacées du bracelet si elles ne sont pas confirmées par le bracelet. Utile si GB est utilisé avec d\'autres applications.</string>
-    <string name="pref_summary_keep_data_on_device">Les données d\'activités seront conservées sur le Mi Band après la synchronisation. Utile si GB est utilisé avec d\'autres applications.</string>
+    <string name="pref_summary_keep_data_on_device">Les données d\'activités seront conservées sur l\'appareil après la synchronisation. Utile si GB est utilisé avec d\'autres applications.</string>
     <string name="pref_title_low_latency_fw_update">Utilisez le mode basse latence pour installer un micrologiciel</string>
     <string name="pref_summary_low_latency_fw_update">Cela peut aider sur les appareils où les installations de micrologiciel échouent.</string>
     <string name="live_activity_steps_history">Historique de pas</string>
@@ -752,6 +752,7 @@ Temps de sommeil préféré en heures</string>
     <string name="appwidget_sleep_alarm_widget_label">Réveil</string>
     <plurals name="widget_alarm_target_hours" tools:ignore="MissingQuantity">
         <item quantity="one">%d heure</item>
+        <item quantity="many">%d heures</item>
         <item quantity="other">%d heures</item>
     </plurals>
     <string name="pref_display_add_device_fab">Bouton pour connecter un nouvel appareil</string>
@@ -1257,28 +1258,28 @@ Temps de sommeil préféré en heures</string>
     <string name="activity_summary_detail_clear_gpx_track">Effacer la trace GPX</string>
     <string name="activity_summary_detail_select_gpx_track">Choisir une trace GPX</string>
     <string name="set">Configurer</string>
-    <string name="watchface_setting_wrist_flick_duration">Durée (en ms):</string>
-    <string name="watchface_setting_wrist_flick_minute">Grande aiguille (-360 à 360):</string>
-    <string name="watchface_setting_wrist_flick_hour">Petite aiguille (-360 à +360):</string>
-    <string name="watchface_setting_wrist_flick_move_relative">Déplacement des mains en fonction du temps:</string>
+    <string name="watchface_setting_wrist_flick_duration">Durée (en ms)</string>
+    <string name="watchface_setting_wrist_flick_minute">Grande aiguille (-360 à 360)</string>
+    <string name="watchface_setting_wrist_flick_hour">Petite aiguille (-360 à +360)</string>
+    <string name="watchface_setting_wrist_flick_move_relative">Déplacement des mains en fonction du temps</string>
     <string name="watchface_setting_desc_wrist_flick">(pour désactiver complètement, permettre le mouvement relatif et configurer toutes les valeurs à 0)</string>
     <string name="watchface_setting_title_wrist_flick">Mouvement du poignet</string>
-    <string name="watchface_setting_display_refresh_partial">Rafraîchissement partiel (en minutes):</string>
-    <string name="watchface_setting_display_refresh_full">Rafraichissement complet (en minutes):</string>
+    <string name="watchface_setting_display_refresh_partial">Rafraîchissement partiel (en minutes)</string>
+    <string name="watchface_setting_display_refresh_full">Rafraîchissement complet (en minutes)</string>
     <string name="watchface_setting_title_display_refresh_timeout">Intervalle de rafraîchissement de l\'écran</string>
     <string name="watchface_dialog_title_settings">Réglages du thème d\'écran</string>
     <string name="watchface_dialog_widget_color_black">Noir</string>
     <string name="watchface_dialog_widget_color_white">Blanc</string>
-    <string name="watchface_dialog_widget_color">Couleur:</string>
+    <string name="watchface_dialog_widget_color">Couleur</string>
     <string name="qhybrid_title_watchface_designer">Concepteur de thème d\'écran</string>
     <string name="watchface_dialog_widget_preset_right">Droite</string>
     <string name="watchface_dialog_widget_preset_left">Gauche</string>
     <string name="watchface_dialog_widget_preset_bottom">Bas</string>
     <string name="watchface_dialog_widget_preset_top">Sommet</string>
-    <string name="watchface_dialog_widget_presets">Réglages de position:</string>
-    <string name="watchface_dialog_widget_y_coordinate">Coordonnée Y (max 240):</string>
-    <string name="watchface_dialog_widget_x_coordinate">Coordonnée X (max 240):</string>
-    <string name="watchface_dialog_widget_type">Genre:</string>
+    <string name="watchface_dialog_widget_presets">Réglages de position</string>
+    <string name="watchface_dialog_widget_y_coordinate">Coordonnée Y (max 240)</string>
+    <string name="watchface_dialog_widget_x_coordinate">Coordonnée X (max 240)</string>
+    <string name="watchface_dialog_widget_type">Genre</string>
     <string name="appmanager_app_edit">Modifier</string>
     <string name="button_watchface_save_apply">Enregistrer et appliquer</string>
     <string name="button_watchface_preview">Aperçu sur la montre</string>
@@ -1441,10 +1442,10 @@ Temps de sommeil préféré en heures</string>
     <string name="sony_automatic_power_off_when_taken_off">Lorsqu\'éteint</string>
     <string name="prefs_fm_preset_instructions">Faire un appui long sur le bouton pour enregistrer cette configuration</string>
     <string name="prefs_fm_presets_presets">Configurations</string>
-    <string name="watchface_dialog_widget_timeout_show_circle">Montrer le cercle en cas de perte de connexion :</string>
-    <string name="watchface_dialog_widget_timezone">Fuseau horaire :</string>
-    <string name="watchface_dialog_widget_timeout_hide_text">Cacher le texte en cas de perte de communication :</string>
-    <string name="watchface_dialog_widget_update_timeout">Mettre à jour le temps de déconnexion en minutes :</string>
+    <string name="watchface_dialog_widget_timeout_show_circle">Montrer le cercle en cas de perte de connexion</string>
+    <string name="watchface_dialog_widget_timezone">Fuseau horaire</string>
+    <string name="watchface_dialog_widget_timeout_hide_text">Cacher le texte en cas de perte de communication</string>
+    <string name="watchface_dialog_widget_update_timeout">Mettre à jour le temps de déconnexion en minutes</string>
     <string name="qhybrid_title_on_device_confirmation">Activer la confirmation de pairage sur l\'appareil</string>
     <string name="qhybrid_summary_on_device_confirmation">La confirmation de pairage sur l\'appareil peut être ennuyeuse. Sa désactivation peut entrainer la perte de fonctions.</string>
     <string name="title_activity_set_reminders">Configurer les rappels</string>
@@ -1533,7 +1534,7 @@ Temps de sommeil préféré en heures</string>
     <string name="pref_activity_recognition_mode_ask">demander</string>
     <string name="pref_activity_recognition_mode_none">aucune</string>
     <string name="pref_activity_recognition_mode_auto">auto</string>
-    <string name="watchface_dialog_widget_width">Largeur :</string>
+    <string name="watchface_dialog_widget_width">Largeur du widget (en pixels)</string>
     <string name="discovery_bluetooth_scan">Scan Bluetooth :</string>
     <string name="discovery_bluetooth_le_scan">Scan Bluetooth LE :</string>
     <string name="sony_speak_to_chat">Speak-to-chat</string>
@@ -1676,7 +1677,7 @@ Temps de sommeil préféré en heures</string>
     <string name="notification_channel_gps">Suivi GPS</string>
     <string name="permission_notification_listener">%1$s a besoin d\'accéder aux notifications pour les afficher sur votre montre quand l\'écran de votre téléphone est éteint.
 \n
-\nMerci le sélectionner \'%2$s\' puis \'%1$s\' et activer \'Autoriser l\'accès aux notifications\', puis appuyer sur \'Retour\' pour revenir à %1$s</string>
+\nMerci de sélectionner \'%2$s\' puis \'%1$s\' et activer \'Autoriser l\'accès aux notifications\', puis appuyer sur \'Retour\' pour revenir à %1$s.</string>
     <string name="discovery_scanning_intensity">Intensité du scan</string>
     <string name="discovery_scanning_intensity_warning">Si vous rencontrez des problèmes de blocage ou non réponse, essayer de régler l\'intensité du scan à un faible niveau. Si votre appareil n\'est pas découvert, essayer l\'intensité du scan au plus haut niveau.</string>
     <string name="portuguese_br">Portugais (Brésil)</string>
@@ -1701,11 +1702,11 @@ Temps de sommeil préféré en heures</string>
     <string name="pref_device_action_phone_gps_location_listener_stop">Arrêt du gestionnaire GPS</string>
     <string name="permission_notification_policy_access">%1$s doit accéder aux réglages Ne Pas Déranger afin de les respecter sur votre montre quand l\'écran de votre téléphone est éteint.
 \n
-\nMerci de sélectionner \'%2$s\' puis \'%1$s\' et activer \'Autoriser Ne Pas Déranger\', puis sélectionner \'Retour\' pour revenir à %1$s</string>
+\nMerci de sélectionner \'%2$s\' puis \'%1$s\' et activer \'Autoriser Ne Pas Déranger\', puis sélectionner \'Retour\' pour revenir à %1$s.</string>
     <string name="prefs_voice_detect_summary">Activer le son ambiant et réduction de bruit automatique lors de la détection de voix</string>
     <string name="quick_alarm">Alarme rapide</string>
     <string name="quick_alarm_description">Alarme d\'un widget</string>
-    <string name="pref_summary_device_intents">Permettre à Bangle.js d\'envoyer des notifications Android, et permettre aux autres apps Android (comme Tasker) d\'envoyer des données à Bangle.js avec le dispositif com.banglejs.uart.tx .</string>
+    <string name="pref_summary_device_intents">Permettre à Bangle.js d\'envoyer des notifications Android, et permettre aux autres apps Android (comme Tasker) d\'envoyer des données à Bangle.js avec le dispositif com.banglejs.uart.tx . Nécessite les droits d\'affichage par-dessus les autres apps pour fonctionner en arrière-plan.</string>
     <string name="pref_title_touch_volume">Volume</string>
     <string name="prefs_noise_control_with_one_earbud_summary">Permettre le contrôle du bruit en utilisant un seul écouteur</string>
     <string name="pref_ambient_sound_tone">Tonalité du son ambiant</string>
@@ -1760,7 +1761,7 @@ Temps de sommeil préféré en heures</string>
     <string name="prefs_password_summary">Verrouiller le bracelet avec un mot de passe quand il n\'est pas au poignet</string>
     <string name="prefs_password_6_digits_0_to_9_summary">Le mot de passe doit comporter 6 caractères, en utilisant seulement des chiffres</string>
     <string name="autoconnect_from_device_summary">Établir la connexion lorsque celle-ci est initiée par l\'appareil, comme pour des écouteurs</string>
-    <string name="watchface_dialog_widget_timezone_duration">Durée de visibilité de la pendule (en secondes) :</string>
+    <string name="watchface_dialog_widget_timezone_duration">Durée de visibilité de la pendule (en secondes)</string>
     <string name="open_fw_installer_getting_files_title">Obtenir le fichier de firmware/application</string>
     <string name="open_fw_installer_pick_file">Choisir le fichier</string>
     <string name="open_fw_installer_info_text_title">Installateur de fichier</string>
@@ -1773,4 +1774,175 @@ Temps de sommeil préféré en heures</string>
     <string name="open_fw_installer_getting_files_text">Comme nous ne pouvons pas distribue les fichiers de firmware, vous devrez les obtenir par vous-même. Cela signifie que vous devrez chercher les fichiers dans des fichiers apk, en ligne, dans des forums, sur Amazfitwatchfaces (pour les appareils Miband/Amazfit) et ainsi de suite.</string>
     <string name="open_fw_installer_connect_minimum_one_device">Merci de connecter AU MOINS UN appareil vers lequel vous voulez envoyer le fichier.</string>
     <string name="appmanager_item_outdated">(obsolète)</string>
+    <string name="appmanager_app_share">Partager</string>
+    <string name="pref_title_banglejs_txt_bitmap_size">Taille des images texte</string>
+    <string name="pref_summary_banglejs_txt_bitmap_size">Si le mode \'Texte en tant qu\'images\' est activé, quelle taille devrait être utilisée \?</string>
+    <string name="watchface_dialog_title_widget">Réglages du widget</string>
+    <string name="watchface_dialog_widget_cat_generic">Générique</string>
+    <string name="watchface_dialog_widget_cat_position">Position</string>
+    <string name="watchface_dialog_widget_background">Arrière-plan</string>
+    <string name="hybridhr_widget_bg_double_circle">Cercle double</string>
+    <string name="hybridhr_widget_bg_dashed_circle">Cercle en pointillé</string>
+    <string name="watchface_dialog_widget_cat_2nd_tz_widget">Widget deuxième fuseau horaire</string>
+    <string name="watchface_dialog_widget_cat_custom_widget">Widget personnalisé</string>
+    <string name="hybridhr_widget_bg_thin_circle">Cercle fin</string>
+    <string name="watchface_setting_title_button_toggle_widgets">Intervertir les widgets</string>
+    <string name="watchface_setting_button_toggle_widgets">Intervertir les widgets</string>
+    <string name="steps_streaks">Rythme de marche</string>
+    <string name="step_streak_total">Total</string>
+    <string name="steps_streaks_total_steps">Pas
+\nTotal</string>
+    <string name="steps_streaks_streak_days">Jour
+\nD\'objectif</string>
+    <string name="steps_streaks_average_steps">Nombre de pas
+\nmoyen</string>
+    <string name="steps_streaks_achievement_rate">Taux
+\nde réussite</string>
+    <string name="steps_streaks_since_date">Depuis %s</string>
+    <string name="steps_streaks_hint">Série de jours consécutifs sans interruption où l\'objectif de pas a été atteint</string>
+    <string name="step_streak_ongoing">En cours</string>
+    <string name="step_streak_longest">Le plus long</string>
+    <string name="note">Remarque</string>
+    <string name="step_streak_days_hint">Nombre de jours consécutifs où l\'objectif de pas a été réalisé</string>
+    <string name="steps_streaks_total_steps_average_hint">Moyenne totale %d de pas par jour</string>
+    <string name="share_log_not_enabled_message">Vous devez d\'abord activer l\'enregistrement des journaux dans les Réglages - Enregistrer les journaux</string>
+    <string name="steps_streaks_total_steps_hint_totals">Nombre total de pas jamais enregistré</string>
+    <string name="steps_streaks_total_days_hint_totals">Pourcentage de jours où l\'objectif a été réalisé comparé à tous les jours avec de l\'exercice</string>
+    <string name="step_streak_average_steps_hint">Moyenne de pas par jour pour l\'objectif</string>
+    <string name="steps_streaks_total_steps_hint">Nombre total de pas de l\'objectif</string>
+    <string name="watchface_setting_button_toggle_backlight">Allumer le rétroéclairage</string>
+    <string name="watchface_setting_title_custom_events">Événements personnalisés</string>
+    <string name="pref_write_logfiles_not_available">Création du fichier journal ratée, l\'écriture du fichier journal est indisponible. Redémarrer l\'application pour essayer de nouveau l\'écriture du fichier journal.</string>
+    <string name="controlcenter_get_heartrate_measurement">Obtenir les mesures de rythme cardiaque</string>
+    <string name="about_activity_title_banglejs_nightly">A propos de Bangle.js Gadgetbridge (Version quotidienne)</string>
+    <string name="title_activity_controlcenter_banglejs_nightly">Bangle.js Gadgetbridge (Version quotidienne)</string>
+    <string name="application_name_banglejs_nightly">Bangle.js Gadgetbridge (Version quotidienne)</string>
+    <string name="devicetype_binary_sensor">Capteur binaire</string>
+    <string name="gadgetbridge_running_banglejs_nightly">Bangle.js version quotidienne est en fonctionnement</string>
+    <string name="about_description_banglejs_nightly">Application complémentaire pour Bangle.js construit sur la base du projet Gadgetbridge project, avec l\'ajout de l\'accès Internet.
+\n
+\nEn raison des contraintes du Google Play Store, nous ne sommes pas autorisés à mettre un lien de donation dans l\'application elle-même, mais si vous appréciez cette application, merci de penser à faire une donation via la page Gadgetbridge ci-dessous.</string>
+    <string name="prefs_hourly_chime">Beep horaire</string>
+    <string name="prefs_hourly_chime_summary">La montre fera un beep toutes les heures</string>
+    <string name="step_streaks_achievements_sharing_title">Objectifs de pas</string>
+    <string name="step_streaks_achievements_sharing_message">Mes résultats quotidiens de pas !</string>
+    <string name="permission_display_over_other_apps">%1$s a besoin d\'une autorisation pour s\'afficher au-dessus des autres apps afin de pouvoir lanter des activités via la commande vocale lorsque %1$s est en arrière-plan.
+\n
+\nCela peut être utilisé pour démarrer une application de musique et jouer un morceau, et de nombreuses autres choses.
+\n
+\nMerci de choisir \'%2$s\' puis \'%1$s\' et activer \'Permettre l\'affichage au-dessus des autres apps\', puis faire \'Retour\' pour revenir à %1$s.
+\n
+\nPour empêcher %1$s de demander des permissions se rendre dans les \'Régalges\' et décocher \'Vérifier l\'état des permissions\'.
+\n
+\nAssurez-vous d\'accorder à %1$s les permissions nécessaires pour les fonctionnalités attendues.</string>
+    <string name="pref_header_time">Heure</string>
+    <string name="pref_header_workout">Exercice</string>
+    <string name="pref_summary_canned_replies">Réponse de la montre utilisant des messages préenregistrés</string>
+    <string name="pref_title_screen_on_on_notifications">Allumer l\'écran pour les notifications</string>
+    <string name="pref_summary_screen_on_on_notifications">Allumer l\'écran du bracelet quand une notification arrive</string>
+    <string name="spo2_perc_80">80%</string>
+    <string name="spo2_perc_85">85%</string>
+    <string name="spo2_off">Éteint</string>
+    <string name="prefs_relaxation_reminder_description">Fais vibrer le bracelet pour vous avertir si le taux de stress est supérieur à 80</string>
+    <string name="prefs_spo2_monitoring_title">Surveillance de l\'oxygénation du sang</string>
+    <string name="prefs_spo2_monitoring_description">Surveille automatiquement le taux d\'oxygénation du sang durant la journée</string>
+    <string name="prefs_spo2_alert_threshold">Seuil d\'alerte SPO2</string>
+    <string name="seconds_11">11 secondes</string>
+    <string name="seconds_12">12 secondes</string>
+    <string name="seconds_13">13 secondes</string>
+    <string name="seconds_14">14 secondes</string>
+    <string name="seconds_15">15 secondes</string>
+    <string name="pref_sleep_breathing_quality_monitoring">Surveillance de la qualité de la respiration durant le sommeil</string>
+    <string name="prefs_always_on_display">Écran toujours allumé</string>
+    <string name="devicetype_miband7">Xiaomi Smart Band 7</string>
+    <string name="menuitem_countdown">Compte à rebours</string>
+    <string name="menuitem_personal_activity_intelligence">Activité personnelle</string>
+    <string name="pref_header_stress">Stress</string>
+    <string name="pref_header_spo2">Oxygénation du sang</string>
+    <string name="pref_screen_brightness">Luminosité de l\'écran</string>
+    <string name="seconds_8">8 secondes</string>
+    <string name="menuitem_female_health">Santé féminine</string>
+    <string name="heartrate_bpm_115">115 bpm</string>
+    <string name="fw_upgrade_notice_miband7">Vous êtes sur le point d\'installer le micro-logiciel %s dans votne Xiaomi Smart Band 7.
+\n
+\nVotre bracelet redémarrera après l\'installation du fichier .zip.
+\n
+\nA VOS RISQUES ET PÉRILS !</string>
+    <string name="pref_header_calendar">Calendrier</string>
+    <string name="pref_header_connection">Connexion</string>
+    <string name="pref_header_display">Affichage</string>
+    <string name="pref_header_health">Santé</string>
+    <string name="pref_cache_weather">Mettre en cache les informations météo</string>
+    <string name="pref_cache_weather_summary">Les informations météo seront conservées en cache entre les redémarrages de l\'application.</string>
+    <string name="heartrate_bpm_40">40 bpm</string>
+    <string name="heartrate_bpm_45">45 bpm</string>
+    <string name="heartrate_bpm_50">50 bpm</string>
+    <string name="prefs_heartrate_alert_low_threshold">Seuil d\'alerte pour un taux trop bas du rythme cardiaque</string>
+    <string name="prefs_relaxation_reminder_title">Rappel de relaxation</string>
+    <string name="spo2_perc_90">90%</string>
+    <string name="prefs_heartrate_alert_high_threshold">Seuil d\'alerte pour un taux trop élevé du rythme cardiaque</string>
+    <string name="seconds_7">7 secondes</string>
+    <string name="prefs_always_on_display_summary">Garder l\'écran du bracelet toujours allumé</string>
+    <string name="pref_header_heartrate_sleep">Sommeil</string>
+    <string name="smart">Optimisé</string>
+    <string name="pref_header_heartrate_allday">Surveillance toute la journée</string>
+    <string name="seconds_6">6 secondes</string>
+    <string name="seconds_9">9 secondes</string>
+    <string name="prefs_screen_timeout">Temps de passage en veille de l\'écran</string>
+    <string name="mi2_dnd_always">Toujours</string>
+    <string name="menuitem_workout_history">Historique des entrainements</string>
+    <string name="menuitem_workout_status">État des entrainements</string>
+    <string name="pref_header_heartrate_alerts">Alerte pour le rythme cardiaque</string>
+    <string name="pref_title_notifications_ignore_low_priority">Ignorer les notifications de faible priorité</string>
+    <string name="pref_summary_notifications_ignore_low_priority">Ne pas envoyer les notifications de priorité minimum ou faible à la montre</string>
+    <string name="devicetype_flipper_zero">Flipper zero</string>
+    <string name="activity_prefs_allow_bluetooth_intent_api">API Bluetooth d\'intention</string>
+    <string name="activity_prefs_summary_allow_bluetooth_intent_api">Permet le contrôle de la connexion Bluetooth via les intentions d\'API</string>
+    <string name="fw_upgrade_notice_amazfit_gts3">Vous êtes sur le point d\'installer le micro-logiciel %s dans votre Amazfit GTS 3.
+\n
+\nVotre bracelet redémarrera après installation du fichier zip.
+\n
+\nA VOS RISQUES ET PÉRILS !</string>
+    <string name="pref_title_notification_prefer_long_text">Préférer les notifications texte longues</string>
+    <string name="pref_summary_notification_prefer_long_text">Si disponible, envoyer les notifications texte longues à l\'appareil</string>
+    <string name="devicetype_amazfit_gts3">Amazfit GTS 3</string>
+    <string name="kind_app">App</string>
+    <string name="menuitem_unknown_app">Inconnu (%s)</string>
+    <string name="pref_summary_overwrite_settings_on_connection">Lors de la connexion au bracelet, écrasez tous les réglages de celui-ci.</string>
+    <string name="pref_title_overwrite_settings_on_connection">Écraser les réglages à la connexion</string>
+    <string name="dismiss">Annuler</string>
+    <string name="fw_upgrade_notice_amazfit_gtr3">Vous êtes sur le point d\'installer le micro-logiciel %s dans votre Amazfit GTR 3.
+\n
+\nVotre bracelet redémarrera automatiquement après l\'installation du fichier .zip.
+\n
+\nA VOS RISQUES ET PÉRILS !</string>
+    <string name="devicetype_amazfit_gtr3">Amazfit GTR 3</string>
+    <string name="pref_title_third_party_app_device_settings">Permettre à des applications tierces à modifier les réglages</string>
+    <string name="pref_summary_third_party_app_device_settings">Autoriser les applications tierces à modifier les réglages à travers les commandes vocales.</string>
+    <string name="activity_type_dance">Danse</string>
+    <string name="activity_type_hiit">Entrainement à haute-intensité par intervalles</string>
+    <string name="activity_type_core_training">Entrainement de fond</string>
+    <string name="activity_type_stretching">Étirements</string>
+    <string name="activity_type_stepper">Stepper</string>
+    <string name="activity_type_pilates">Pilate</string>
+    <string name="activity_type_volleyball">Volley-Ball</string>
+    <string name="activity_type_table_tennis">Ping-Pong</string>
+    <string name="activity_type_bowling">Bouling</string>
+    <string name="activity_type_kickboxing">Kickboxing</string>
+    <string name="activity_type_street_dance">Danse de rue</string>
+    <string name="activity_type_indoor_ice_skating">Patinage sur glace en intérieur</string>
+    <string name="activity_type_boxing">Boxe</string>
+    <string name="activity_type_zumba">Zoumba</string>
+    <string name="activity_type_gymnastics">Gymnastique</string>
+    <string name="activity_type_indoor_fitness">Fitness en intérieur</string>
+    <string name="devicetype_super_cars">Course</string>
+    <string name="devicetype_amazfit_gtr_lite">Amazfit GTR Lite</string>
+    <string name="watchface_setting_button_move_hands">Bouger les mains</string>
+    <string name="supercars_turbo_speed_label">Vitesse Turbo</string>
+    <string name="supercars_lights_label">Lumières</string>
+    <string name="abstract_chart_fragment_kind_rem_sleep">Sommeil REM</string>
+    <string name="pref_header_authentication">Identification</string>
+    <string name="sports_activity_confirm_delete_title">Activités %d supprimées</string>
+    <string name="sports_activity_confirm_delete_description">Etes-vous sûr de vouloir effacer ces %d activités \?</string>
+    <string name="supercars_lights_blinking_label">Clignotant</string>
 </resources>

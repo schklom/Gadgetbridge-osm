@@ -21,6 +21,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.AssetFileDescriptor;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
@@ -32,12 +33,10 @@ import android.os.Vibrator;
 import android.view.View;
 import android.widget.Button;
 
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import nodomain.freeyourgadget.gadgetbridge.GBApplication;
 import nodomain.freeyourgadget.gadgetbridge.R;
@@ -48,18 +47,29 @@ import nodomain.freeyourgadget.gadgetbridge.util.GBPrefs;
 public class FindPhoneActivity extends AbstractGBActivity {
     private static final Logger LOG = LoggerFactory.getLogger(FindPhoneActivity.class);
 
-    public static final String ACTION_FOUND
-            = "nodomain.freeyourgadget.gadgetbridge.findphone.action.reply";
+    public static final String ACTION_FOUND = "nodomain.freeyourgadget.gadgetbridge.findphone.action.reply";
+    public static final String ACTION_VIBRATE = "nodomain.freeyourgadget.gadgetbridge.findphone.action.vibrate";
+    public static final String ACTION_RING = "nodomain.freeyourgadget.gadgetbridge.findphone.action.ring";
+
+    public static final String EXTRA_RING = "extra_ring";
+
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (action != null) {
+                LOG.info("Got action: {}", action);
+
                 switch (action) {
-                    case ACTION_FOUND: {
+                    case ACTION_FOUND:
                         finish();
                         break;
-                    }
+                    case ACTION_VIBRATE:
+                        stopSound();
+                        break;
+                    case ACTION_RING:
+                        playRingtone();
+                        break;
                 }
             }
         }
@@ -75,8 +85,12 @@ public class FindPhoneActivity extends AbstractGBActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_find_phone);
 
+        final boolean ring = getIntent().getBooleanExtra(EXTRA_RING, true);
+
         IntentFilter filter = new IntentFilter();
         filter.addAction(ACTION_FOUND);
+        filter.addAction(ACTION_VIBRATE);
+        filter.addAction(ACTION_RING);
         LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver, filter);
         registerReceiver(mReceiver, filter); // for ACTION_FOUND
 
@@ -91,7 +105,10 @@ public class FindPhoneActivity extends AbstractGBActivity {
         GB.removeNotification(GB.NOTIFICATION_ID_PHONE_FIND, this);
 
         vibrate();
-        playRingtone();
+        if (ring) {
+            playRingtone();
+        }
+        GBApplication.deviceService().onFindPhone(true);
     }
 
     private void vibrate(){
@@ -108,23 +125,20 @@ public class FindPhoneActivity extends AbstractGBActivity {
         }
     }
 
-    private void playRingtone(){
+    private void playRingtone() {
         mAudioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
         if (mAudioManager != null) {
             userVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_ALARM);
         }
-        mp = new MediaPlayer();
+        if (mp != null && mp.isPlaying()) {
+            LOG.warn("Already playing");
+            return;
+        } else if (mp == null) {
+            mp = new MediaPlayer();
+        }
 
-        Uri ringtoneUri = Uri.parse(GBApplication.getPrefs().getString(GBPrefs.PING_TONE, RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE).toString()));
-
-        try {
-            mp.setDataSource(this, ringtoneUri);
-            mp.setAudioStreamType(AudioManager.STREAM_ALARM);
-            mp.setLooping(true);
-            mp.prepare();
-            mp.start();
-        } catch (IOException ignore) {
-            LOG.warn("problem playing ringtone");
+        if (!playConfiguredRingtone()) {
+            playFallbackRingtone();
         }
 
         if (mAudioManager != null) {
@@ -137,18 +151,65 @@ public class FindPhoneActivity extends AbstractGBActivity {
         mVibrator.cancel();
     }
 
-    private void stopSound() {
-        mAudioManager.setStreamVolume(AudioManager.STREAM_ALARM, userVolume, AudioManager.FLAG_PLAY_SOUND);
-        mp.stop();
-        mp.reset();
-        mp.release();
+    /**
+     * Attempt to play the configured ringtone. This fails to get the default ringtone on some ROMs
+     * (https://codeberg.org/Freeyourgadget/Gadgetbridge/pulls/2697)
+     *
+     * @return whether playing the configured ringtone was successful or not.
+     */
+    private boolean playConfiguredRingtone() {
+        try {
+            Uri ringtoneUri = Uri.parse(GBApplication.getPrefs().getString(GBPrefs.PING_TONE, RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE).toString()));
+            mp.setDataSource(this, ringtoneUri);
+            mp.setAudioStreamType(AudioManager.STREAM_ALARM);
+            mp.setLooping(true);
+            mp.prepare();
+            mp.start();
+        } catch (final Exception e) {
+            LOG.warn("Failed to play configured ringtone", e);
+            return false;
+        }
+
+        return true;
     }
+
+    private void playFallbackRingtone() {
+        try {
+            final AssetFileDescriptor afd = getBaseContext().getResources().openRawResourceFd(R.raw.ping_tone);
+            if (afd == null) {
+                LOG.error("Failed to load fallback ringtone");
+                return;
+            }
+
+            mp.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+            mp.setAudioStreamType(AudioManager.STREAM_ALARM);
+            mp.setLooping(true);
+            mp.prepare();
+            mp.start();
+        } catch (final Exception e) {
+            LOG.warn("Failed to play fallback ringtone", e);
+        }
+    }
+
+    private void stopSound() {
+        if (mAudioManager != null) {
+            mAudioManager.setStreamVolume(AudioManager.STREAM_ALARM, userVolume, AudioManager.FLAG_PLAY_SOUND);
+        }
+        if (mp != null) {
+            mp.stop();
+            mp.reset();
+            mp.release();
+            mp = null;
+        }
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
 
         stopVibration();
         stopSound();
+        GBApplication.deviceService().onFindPhone(false);
 
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mReceiver);
         unregisterReceiver(mReceiver);

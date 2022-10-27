@@ -19,7 +19,13 @@ package nodomain.freeyourgadget.gadgetbridge.util;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 /**
@@ -152,8 +158,40 @@ public class Prefs {
         }
     }
 
+    /**
+     * Returns the preference saved under the given key as a list of strings.
+     * The preference is assumed to be a string, with each value separated by a comma.
+     * @param key the preference key
+     * @param defaultValue the default value to return if the preference value is unset
+     * @return the saved preference value or the given defaultValue
+     */
+    public List<String> getList(final String key, final List<String> defaultValue) {
+        final String stringValue = preferences.getString(key, null);
+        if (stringValue == null) {
+            return defaultValue;
+        }
+        return Arrays.asList(stringValue.split(","));
+    }
+
+    public Date getTimePreference(final String key, final String defaultValue) {
+        final String time = getString(key, defaultValue);
+
+        final DateFormat df = new SimpleDateFormat("HH:mm", Locale.ROOT);
+        try {
+            return df.parse(time);
+        } catch (final Exception e) {
+            Log.e(TAG, "Error reading datetime preference value: " + key + "; returning default current time", e); // log the first exception
+        }
+
+        return new Date();
+    }
+
     private void logReadError(String key, Exception ex) {
         Log.e(TAG, "Error reading preference value: " + key + "; returning default value", ex); // log the first exception
+    }
+
+    public boolean contains(final String key) {
+        return preferences.contains(key);
     }
 
     /**

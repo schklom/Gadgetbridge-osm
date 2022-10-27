@@ -84,9 +84,9 @@ public class ConfigureReminders extends AbstractGBActivity {
                 final DeviceCoordinator coordinator = DeviceHelper.getInstance().getCoordinator(gbDevice);
 
                 final Prefs prefs = new Prefs(GBApplication.getDeviceSpecificSharedPrefs(gbDevice.getAddress()));
-                int reservedSlots = prefs.getInt(DeviceSettingsPreferenceConst.PREF_RESERVER_REMINDERS_CALENDAR, 9);
+                int reservedSlots = prefs.getInt(DeviceSettingsPreferenceConst.PREF_RESERVER_REMINDERS_CALENDAR, coordinator.supportsCalendarEvents() ? 0 : 9);
 
-                int deviceSlots = coordinator.getReminderSlotCount() - reservedSlots;
+                int deviceSlots = coordinator.getReminderSlotCount(gbDevice) - reservedSlots;
 
                 if (mGBReminderListAdapter.getItemCount() >= deviceSlots) {
                     // No more free slots

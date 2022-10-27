@@ -26,7 +26,11 @@ import androidx.annotation.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
+import java.util.List;
+
 import nodomain.freeyourgadget.gadgetbridge.R;
+import nodomain.freeyourgadget.gadgetbridge.capabilities.HeartRateCapability;
 import nodomain.freeyourgadget.gadgetbridge.capabilities.password.PasswordCapabilityImpl;
 import nodomain.freeyourgadget.gadgetbridge.devices.InstallHandler;
 import nodomain.freeyourgadget.gadgetbridge.devices.huami.HuamiConst;
@@ -92,13 +96,13 @@ public class MiBand4Coordinator extends HuamiCoordinator {
                 R.xml.devicesettings_miband3,
                 R.xml.devicesettings_vibrationpatterns,
                 R.xml.devicesettings_wearlocation,
-                R.xml.devicesettings_heartrate_sleep,
+                R.xml.devicesettings_heartrate_sleep_activity,
                 R.xml.devicesettings_goal_notification,
                 R.xml.devicesettings_custom_emoji_font,
                 R.xml.devicesettings_timeformat,
                 R.xml.devicesettings_dateformat,
                 R.xml.devicesettings_nightmode,
-                R.xml.devicesettings_liftwrist_display,
+                R.xml.devicesettings_liftwrist_display_sensitivity,
                 R.xml.devicesettings_inactivity_dnd,
                 R.xml.devicesettings_workout_start_on_phone,
                 R.xml.devicesettings_workout_send_gps_to_band,
@@ -110,6 +114,7 @@ public class MiBand4Coordinator extends HuamiCoordinator {
                 R.xml.devicesettings_bt_connected_advertisement,
                 R.xml.devicesettings_device_actions,
                 R.xml.devicesettings_high_mtu,
+                R.xml.devicesettings_overwrite_settings_on_connection,
                 R.xml.devicesettings_transliteration
         };
     }
@@ -146,5 +151,16 @@ public class MiBand4Coordinator extends HuamiCoordinator {
     @Override
     public PasswordCapabilityImpl.Mode getPasswordCapability() {
         return PasswordCapabilityImpl.Mode.NUMBERS_4_DIGITS_1_TO_4;
+    }
+
+    @Override
+    public List<HeartRateCapability.MeasurementInterval> getHeartRateMeasurementIntervals() {
+        return Arrays.asList(
+                HeartRateCapability.MeasurementInterval.OFF,
+                HeartRateCapability.MeasurementInterval.MINUTES_1,
+                HeartRateCapability.MeasurementInterval.MINUTES_5,
+                HeartRateCapability.MeasurementInterval.MINUTES_10,
+                HeartRateCapability.MeasurementInterval.MINUTES_30
+        );
     }
 }

@@ -47,6 +47,8 @@
     <uses-permission android:name="lineageos.permission.READ_WEATHER" />
     <uses-permission android:name="org.omnirom.omnijaws.READ_WEATHER" />
 
+    <!-- Used for starting activities from the background with intents -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <uses-feature
         android:name="android.hardware.bluetooth"
@@ -365,6 +367,14 @@
             android:label="PineTime Nordic DFU service" />
 
         <receiver
+            android:name=".externalevents.GenericWeatherReceiver"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="nodomain.freeyourgadget.gadgetbridge.ACTION_GENERIC_WEATHER" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
             android:name=".externalevents.WeatherNotificationReceiver"
             android:enabled="true">
             <intent-filter>
@@ -383,8 +393,8 @@
             android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
-
                 <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
             </intent-filter>
         </receiver>
 
@@ -688,6 +698,14 @@
             android:exported="true" />
 
         <activity
+            android:name=".devices.supercars.ControlActivity"
+            android:exported="true" />
+
+        <activity
+            android:name=".devices.binary_sensor.activity.DataActivity"
+            android:exported="true" />
+
+        <activity
             android:name=".activities.GpxReceiverActivity"
             android:label="@string/gpx_receiver_activity_title"
             android:screenOrientation="portrait"
@@ -701,8 +719,14 @@
         </activity>
 
         <activity
+            android:name=".activities.WakeActivity"
+            android:label="WakeActivity">
+        </activity>
+
+        <activity
             android:name=".externalevents.opentracks.OpenTracksController"
             android:label="OpenTracks controller and intent receiver"
             android:exported="true"/>
     </application>
+
 </manifest>

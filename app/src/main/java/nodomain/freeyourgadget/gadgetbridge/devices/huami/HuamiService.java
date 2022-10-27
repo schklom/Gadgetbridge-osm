@@ -115,7 +115,10 @@ public class HuamiService {
 
     // maybe not really activity data, but steps?
     public static final byte COMMAND_FETCH_DATA = 0x02;
-    public static final byte COMMAND_XXXX_ACTIVITY_DATA = 0x03; // maybe delete/drop activity data?
+    // delete/drop activity data
+    // on Huami it's just the single 03 byte
+    // on Huami 2021 it's followed by 09 to keep, 01 to drop from device
+    public static final byte COMMAND_ACK_ACTIVITY_DATA = 0x03;
 
     public static final byte[] COMMAND_SET_FITNESS_GOAL_START = new byte[] { 0x10, 0x0, 0x0 };
     public static final byte[] COMMAND_SET_FITNESS_GOAL_END = new byte[] { 0, 0 };
@@ -206,6 +209,14 @@ public class HuamiService {
     public static byte DND_BYTE_END_HOURS = 4;
     public static byte DND_BYTE_END_MINUTES = 5;
 
+    public static final byte MUSIC_FLAG_STATE = 0x01;
+    public static final byte MUSIC_FLAG_ARTIST = 0x02;
+    public static final byte MUSIC_FLAG_ALBUM = 0x04;
+    public static final byte MUSIC_FLAG_TRACK = 0x08;
+    public static final byte MUSIC_FLAG_DURATION = 0x10;
+    public static final byte MUSIC_FLAG_NOTHING_PLAYING = 0x20;
+    public static final byte MUSIC_FLAG_VOLUME = 0x40;
+
     public static final byte RESPONSE = 0x10;
 
     public static final byte SUCCESS = 0x01;
@@ -220,12 +231,6 @@ public class HuamiService {
     public static final byte COMMAND_FIRMWARE_CHECKSUM = 0x04; // to UUID_CHARACTERISTIC_FIRMWARE
     public static final byte COMMAND_FIRMWARE_REBOOT = 0x05; // to UUID_CHARACTERISTIC_FIRMWARE
 
-    public static final byte[] RESPONSE_FINISH_SUCCESS = new byte[] {RESPONSE, 2, SUCCESS };
-    public static final byte[] RESPONSE_FIRMWARE_DATA_SUCCESS = new byte[] {RESPONSE, COMMAND_FIRMWARE_START_DATA, SUCCESS };
-    /**
-     * Received in response to any dateformat configuration request (byte 0 in the byte[] value.
-     */
-    public static final byte[] RESPONSE_DATEFORMAT_SUCCESS = new byte[] { RESPONSE, ENDPOINT_DISPLAY, 0x0a, 0x0, 0x01 };
     public static final byte[] RESPONSE_ACTIVITY_DATA_START_DATE_SUCCESS = new byte[] { RESPONSE, COMMAND_ACTIVITY_DATA_START_DATE, SUCCESS};
 
     public static final byte[] WEAR_LOCATION_LEFT_WRIST = new byte[] { 0x20, 0x00, 0x00, 0x02 };
@@ -238,12 +243,8 @@ public class HuamiService {
 
     public static final byte[] COMMAND_TEXT_NOTIFICATION = new byte[] {0x05, 0x01};
 
-    /**
-     * Endpoints for 2021 chunked protocol
-     */
-    public static final short CHUNKED2021_ENDPOINT_AUTH = 0x0082;
-    public static final short CHUNKED2021_ENDPOINT_COMPAT = 0x0090;
-    public static final short CHUNKED2021_ENDPOINT_SMSREPLY = 0x0013;
+    public static final byte[] COMMAND_ENABLE_HOURLY_CHIME = new byte[] { (byte) 0xfe, 0x0b, 0x00, 0x01, 0x0a, 0x00, 0x16, 0x00 };
+    public static final byte[] COMMAND_DISABLE_HOURLY_CHIME = new byte[] { (byte) 0xfe, 0x0b, 0x00, 0x00 };
 
     static {
         MIBAND_DEBUG = new HashMap<>();

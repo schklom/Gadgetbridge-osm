@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.GregorianCalendar;
+import java.util.concurrent.TimeUnit;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -189,16 +190,22 @@ public class CalendarReceiver extends BroadcastReceiver {
                 calendarEventSpec.timestamp = calendarEvent.getBeginSeconds();
                 calendarEventSpec.durationInSeconds = calendarEvent.getDurationSeconds(); //FIXME: leads to problems right now
                 if (calendarEvent.isAllDay()) {
-                    //force the all day events to begin at midnight and last a whole day
+                    //force the all day events to begin at midnight and last N whole days
                     Calendar c = GregorianCalendar.getInstance();
+                    int numDays = (int)TimeUnit.DAYS.convert(calendarEvent.getEnd()-calendarEvent.getBegin(),
+                            TimeUnit.MILLISECONDS);
                     c.setTimeInMillis(calendarEvent.getBegin());
-                    c.set(Calendar.HOUR, 0);
+                    c.set(Calendar.HOUR_OF_DAY, 0);
+                    //workaround for negative timezones
+                    if(c.getTimeZone().getRawOffset()<0) c.add(Calendar.DAY_OF_MONTH, 1);
                     calendarEventSpec.timestamp = (int) (c.getTimeInMillis() / 1000);
-                    calendarEventSpec.durationInSeconds = 24 * 60 * 60;
+                    calendarEventSpec.durationInSeconds = 24 * 60 * 60 * numDays;
                 }
                 calendarEventSpec.description = calendarEvent.getDescription();
                 calendarEventSpec.location = calendarEvent.getLocation();
                 calendarEventSpec.type = CalendarEventSpec.TYPE_UNKNOWN;
+                calendarEventSpec.calName = calendarEvent.getUniqueCalName();
+                calendarEventSpec.color = calendarEvent.getColor();
                 if (syncState == EventState.NEEDS_UPDATE) {
                     GBApplication.deviceService(mGBDevice).onDeleteCalendarEvent(CalendarEventSpec.TYPE_UNKNOWN, i);
                 }

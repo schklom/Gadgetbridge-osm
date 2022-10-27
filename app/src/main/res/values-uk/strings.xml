@@ -60,7 +60,7 @@
     <string name="always">Завжди</string>
     <string name="when_screen_off">Коли екран вимкнуто</string>
     <string name="never">Ніколи</string>
-    <string name="pref_header_privacy">Приавтність</string>
+    <string name="pref_header_privacy">Приватність</string>
     <string name="pref_title_canned_replies">Відповіді</string>
     <string name="pref_title_canned_reply_suffix">Загальний суфікс</string>
     <string name="pref_header_development">Параметри для розробників</string>
@@ -175,7 +175,7 @@
     <string name="user_feedback_miband_activity_data_transfer">Буде передано %1$s даних, починаючи з %2$s</string>
     <string name="miband_prefs_fitness_goal">Щоденна ціль кроків</string>
     <string name="dbaccess_error_executing">Помилка виконання \'%1$s\'</string>
-    <string name="controlcenter_start_activitymonitor">Ваша активність (ALPHA)</string>
+    <string name="controlcenter_start_activitymonitor">Ваша активність</string>
     <string name="cannot_connect">Неможливо з\'єднатися: %1$s</string>
     <string name="installer_activity_unable_to_find_handler">Не вдалося знайти обробник подій для встановлення цього файлу.</string>
     <string name="pbw_install_handler_unable_to_install">Не вдалося встановити цей файл: %1$s</string>
@@ -209,7 +209,7 @@
     <string name="weeksteps_today_steps_description">Кроків сьогодні, мета: %1$s</string>
     <string name="pref_title_dont_ack_transfer">Не передавати дані про активність</string>
     <string name="pref_summary_dont_ack_transfers">Якщо дані не будуть передані на пристрій, вони не будуть очищені. Корисно, якщо GB використовується разом з іншими застосунками.</string>
-    <string name="pref_summary_keep_data_on_device">Дозволяє залишити дані на Mi Band після синхронізації. Зазвичай використовується, якщо GB працює разом з іншими застосунками.</string>
+    <string name="pref_summary_keep_data_on_device">Зберігає дані про активність на пристрої навіть після синхронізації. Корисно, якщо GB використовується разом з іншими застосунками.</string>
     <string name="live_activity_steps_history">Історія кроків</string>
     <string name="live_activity_current_steps_per_minute">Поточні кроки/хв</string>
     <string name="live_activity_total_steps">Загалом кроків</string>
@@ -288,7 +288,7 @@
     <string name="pref_title_transliteration">Транслітерація</string>
     <string name="pref_summary_transliteration">Увімкніть цей параметр, якщо пристрій не підтримує шрифт вашої мови</string>
     <string name="pref_title_call_privacy_mode">Режим приватності викликів</string>
-    <string name="pref_call_privacy_mode_off">Показувати ім’я та номер</string>
+    <string name="pref_call_privacy_mode_off">Показувати ім\'я та номер</string>
     <string name="pref_call_privacy_mode_name">Приховати ім\'я, але показати номер</string>
     <string name="pref_call_privacy_mode_number">Приховати номер, але показати ім\'я</string>
     <string name="pref_call_privacy_mode_complete">Приховати ім\'я та номер</string>
@@ -322,7 +322,7 @@
     <string name="toast_aqurired_networklocation">місцеперебування визначено</string>
     <string name="pref_title_pebble_enable_applogs">Увімкнути логування застосунку</string>
     <string name="pref_title_pebble_enable_bgjs">Увімкнути фоновий JS</string>
-    <string name="prefs_title_all_day_heart_rate">Вимірювання серцевого ритму протягом дня</string>
+    <string name="prefs_title_all_day_heart_rate">Вимірювання пульсу протягом дня</string>
     <string name="prefs_screen_orientation">Орієнтація екрана</string>
     <string name="pref_title_auto_export_enabled">Автоматичний експорт увімкнено</string>
     <string name="tap_a_device_to_connect">Торкніться пристрою для з\'єднання</string>
@@ -353,7 +353,7 @@
     <string name="pref_summary_low_latency_fw_update">Це може допомогти на пристроях, на які не вдається встановити мікропрограми.</string>
     <string name="you_did_not_sleep">Ви не спали</string>
     <string name="miband_prefs_reserve_alarm_calendar">Сигнали для резервування для майбутніх подій</string>
-    <string name="miband_prefs_hr_sleep_detection">Використовувати датник пульсу для поліпшення виявлення сну</string>
+    <string name="miband_prefs_hr_sleep_detection">Використовувати датчик пульсу для поліпшення виявлення сну</string>
     <string name="dateformat_time">Час</string>
     <string name="dateformat_date_time">Дата та час</string>
     <string name="pref_title_unit_system">Одиниці вимірювання</string>
@@ -460,10 +460,10 @@
     <string name="pref_title_screentime">Тривалість роботи екрана</string>
     <string name="preferences_hplus_settings">Налаштування HPlus/Makibes</string>
     <string name="zetime_title_settings">Налаштування ZeTime</string>
-    <string name="zetime_title_heartrate">Налаштування серцебиття</string>
+    <string name="zetime_title_heartrate">Налаштування пульсу</string>
     <string name="zetime_title_screentime">Тривалість роботи екрана в секундах</string>
-    <string name="activity_prefs_alarm_max_heart_rate">Максимальне серцебиття</string>
-    <string name="activity_prefs_alarm_min_heart_rate">Мінімальне серцебиття</string>
+    <string name="activity_prefs_alarm_max_heart_rate">Найвищий пульс</string>
+    <string name="activity_prefs_alarm_min_heart_rate">Найнижчий пульс</string>
     <string name="zetime_analog_mode">Аналоговий режим</string>
     <string name="zetime_analog_mode_hands">Лише вручну</string>
     <string name="zetime_date_format">Формат дати</string>
@@ -538,8 +538,8 @@
     <string name="norwegian_bokmal">Норвезький літературний</string>
     <string name="mi3_prefs_night_mode">Нічний режим</string>
     <string name="activity_prefs_charts">Налаштування графіків</string>
-    <string name="activity_prefs_chart_max_heart_rate">Найшвидше серцебиття</string>
-    <string name="activity_prefs_chart_min_heart_rate">Найповільніше серцебиття</string>
+    <string name="activity_prefs_chart_max_heart_rate">Найвищий пульс</string>
+    <string name="activity_prefs_chart_min_heart_rate">Найнижчий пульс</string>
     <string name="notif_battery_low">%1$s низький заряд</string>
     <string name="notif_battery_low_extended">%1$s низький заряд: %2$s</string>
     <string name="pref_summary_rtl">Увімкніть, якщо ваш пристрій не показує мови «справа наліво»</string>
@@ -564,7 +564,7 @@
     <string name="zetime_calories_type_all">Активно і неактивно спалені калорії</string>
     <string name="zetime_prefs_inactivity_repetitions">Повторення</string>
     <string name="zetime_prefs_inactivity_mo">Понеділок</string>
-    <string name="zetime_prefs_inactivity_tu">Вівторек</string>
+    <string name="zetime_prefs_inactivity_tu">Вівторок</string>
     <string name="zetime_prefs_inactivity_we">Середа</string>
     <string name="zetime_prefs_inactivity_th">Четвер</string>
     <string name="zetime_prefs_inactivity_fr">П\'ятниця</string>
@@ -616,7 +616,7 @@
     <string name="prefs_find_phone">Знайти телефон</string>
     <string name="pref_chart_heartrate_color_red">Червоний</string>
     <string name="pref_chart_heartrate_color_orange">Жовтогарячий</string>
-    <string name="pref_title_chart_heartrate_color">Колір серцебиття</string>
+    <string name="pref_title_chart_heartrate_color">Колір пульсу</string>
     <string name="pref_title_chart_sleep_rolling_24_hour">Діапазон сну</string>
     <string name="pref_chart_sleep_rolling_24_on">Останні 24 години</string>
     <string name="pref_chart_sleep_rolling_24_off">Від полудня до полудня</string>
@@ -644,7 +644,7 @@
 \n*.gpx - записи GPS
 \n*.log - файли логування
 \nВи знайдете експортовані файли (також помістіть сюди файли бази даних для імпорту) тут:</string>
-    <string name="dbmanagementactivvity_cannot_access_export_path">Немає доступу до теки експорту. Будь ласка зверніться до розробників.</string>
+    <string name="dbmanagementactivvity_cannot_access_export_path">Немає доступу до теки експорту. Будь ласка, зверніться до розробників.</string>
     <string name="dbmanagementactivity_overwrite_database_confirmation">Дійсно перезаписати поточні дані\? Всі поточні дані Вашої активності (якщо існують) будуть перезаписані.</string>
     <string name="dbmanagementactivity_really_delete_entire_db">Дійсно видалити всі дані\? Всі дані вашої активності та дані про ваш пристрій буде втрачено.</string>
     <string name="dbmanagementactivity_delete_old_activity_db">Видалити базу даних давнішої активності\?</string>
@@ -700,7 +700,7 @@
     <string name="mi3_prefs_band_screen_unlock">Екран браслета розблокований</string>
     <string name="mi3_prefs_band_screen_unlock_summary">Проведіть пальцем вгору для розблокування екрана браслета</string>
     <string name="mi3_prefs_night_mode_summary">Автозниження яскравості екрана вночі</string>
-    <string name="share_log_warning">Пам\'ятайте, що Gadgetbridge лог-файли можуть містити багато персональних даних, включно з, але не обмежуючись, даними про здоров\'я, унікальним ідентифікатором (як-от MAC адрес), музичні вподобання тощо. Відредагуйте файл та видаліть ці дані перед надсиланням.</string>
+    <string name="share_log_warning">Пам\'ятайте, що файли журналів Gadgetbridge можуть містити багато персональних даних, включно з, але не обмежуючись, даними про здоров\'я, унікальними ідентифікаторами (як-от MAC адреса), музичні вподобання тощо. Відредагуйте файл та вилучіть ці дані перед надсиланням.</string>
     <string name="pref_title_contextual_arabic">Контекстна арабська мова</string>
     <string name="pref_summary_contextual_arabic">Увімкнути підтримку контекстної арабської мови</string>
     <string name="preferences_rtl_settings">Підтримка справа наліво</string>
@@ -765,8 +765,9 @@
     <string name="widget_1_hour">1 година</string>
     <plurals name="widget_alarm_target_hours">
         <item quantity="one">%d година</item>
-        <item quantity="few">%d годин</item>
+        <item quantity="few">%d години</item>
         <item quantity="many">%d годин</item>
+        <item quantity="other">%d годин</item>
     </plurals>
     <string name="activity_error_no_app_for_gpx">Для показу сліду вашої активності, встановіть застосунок який може обробляти GPX-файли.</string>
     <string name="devicetype_makibes_hr3">Makibes HR3</string>
@@ -866,7 +867,7 @@
     <string name="menuitem_workout">Тренування</string>
     <string name="menuitem_eventreminder">Нагадування</string>
     <string name="menuitem_hr">Пульс</string>
-    <string name="menuitem_pai">PAI - \"відстеження персональної активності\"</string>
+    <string name="menuitem_pai">PAI</string>
     <string name="devicetype_watchxplus">Watch X Plus</string>
     <string name="devicetype_watchx">Watch X</string>
     <string name="devicetype_amazfit_bips">Amazfit Bip S</string>
@@ -902,8 +903,8 @@
     <string name="swolfIndex">swolf індекс</string>
     <string name="swimStyle">Стиль плавання</string>
     <string name="pref_title_weather_summary">Застосовується для постачальника погоди LineageOS, інші версії Android мають використовувати застосунки як-от «Сповіщення про погоду». Шукайте більше відомостей у вікі Gadgetbridge.</string>
-    <string name="prefs_events_forwarding_summary">Уживати події пристрою для запуску дій і трансляцій Android</string>
-    <string name="prefs_events_forwarding_broadcast_title">Повідомлення на загал</string>
+    <string name="prefs_events_forwarding_summary">Використовувати події пристрою для запуску дій і трансляцій Android</string>
+    <string name="prefs_events_forwarding_broadcast_title">Трансляційні повідомлення</string>
     <string name="medley">Змішаний</string>
     <string name="backstroke">На спині</string>
     <string name="freestyle">Фристайл</string>
@@ -969,7 +970,7 @@
     <string name="baseAltitude">Базова висота</string>
     <string name="flatSeconds">Пласке</string>
     <string name="ascentSeconds">Зростання</string>
-    <string name="laps">Кіл</string>
+    <string name="laps">Кола</string>
     <string name="averageLapPace">Середній темп кола</string>
     <string name="averageStrokesPerSecond">Середня кількість махів</string>
     <string name="averageStrokeDistance">Середня відстань маху</string>
@@ -977,7 +978,7 @@
     <string name="averageKMPaceSeconds">Темп</string>
     <string name="averageHR">Пульс</string>
     <string name="totalStride">Звичайний крок</string>
-    <string name="maxPace">Швидки темп</string>
+    <string name="maxPace">Найшвидший темп</string>
     <string name="minPace">Найповільніший темп</string>
     <string name="maxSpeed">Максимальна</string>
     <string name="caloriesBurnt">Калорії</string>
@@ -994,8 +995,8 @@
     <string name="error_retrieving_devices_database">Помилка отримання пристроїв з бази</string>
     <string name="error_setting_alias">Помилка встановлення псевдоніму:</string>
     <string name="error_exporting_device_preferences">Помилка експорту налаштувань специфічних для пристрою</string>
-    <string name="pref_check_permission_status_summary">Перевіряти й запитувати пропущенні дозволи, навіть якщо вони зараз не потрібні. Вимкніть лише якщо ваш пристрій не підтримує жодну з цих функцій. Відсутність дозволу можу призвести до проблем!</string>
-    <string name="pref_check_permission_status">Перевірити дозволи</string>
+    <string name="pref_check_permission_status_summary">Перевіряти й запитувати пропущені дозволи, навіть якщо вони зараз не потрібні. Вимкніть лише якщо ваш пристрій не підтримує жодну з цих функцій. Відсутність дозволу можу призвести до проблем!</string>
+    <string name="pref_check_permission_status">Перевіряти стан дозволів</string>
     <string name="error_background_service_reason">Не вдалось запустити фонову службу. Помилка:</string>
     <string name="device_requires_key">ПОТРІБЕН КЛЮЧ, УТРИМАЙТЕ, ЩОБ УВІЙТИ</string>
     <string name="device_is_currently_bonded">ВЖЕ ПОВ\'ЯЗАНО</string>
@@ -1016,7 +1017,7 @@
     <string name="about_title">Про застосунок</string>
     <string name="hr_widget_last_notification">Останнє сповіщення</string>
     <string name="menuitem_worldclock">Світовий час</string>
-    <string name="menuitem_stress">Стрес</string>
+    <string name="menuitem_stress">Напруженість</string>
     <string name="menuitem_cycles">Відстеження циклу</string>
     <string name="menuitem_breathing">Дихання</string>
     <string name="devicetype_pinetime_jf">PineTime (Прошивка JF)</string>
@@ -1056,7 +1057,7 @@
     <string name="sonyswr12_settings_stamina">Режим енергозаощадження ввімкнено</string>
     <string name="sonyswr12_settings_alarm_interval">Інтелектуальний інтервал тривоги в хвилинах</string>
     <string name="sonyswr12_settings_low_vibration_summary">Увімкніть низьку інтенсивність вібрації на браслеті</string>
-    <string name="sonyswr12_settings_stamina_summary">Режим енергозаощадження вимикає періодичне автоматичне вимірювання частоти серцевих скорочень, таким чином збільшуючи час роботи</string>
+    <string name="sonyswr12_settings_stamina_summary">Режим енергоощадження вимикає періодичне автовимірювання пульсу, подовжуючи час роботи</string>
     <string name="sonyswr12_settings_alarm_interval_summary">Інтервал інтелектуальної тривоги - це інтервал до встановленої сигналізації. У цей інтервал пристрій намагається виявити найлегшу фазу сну для пробудження користувача</string>
     <string name="prefs_key_vibration">Вібрація клавіш</string>
     <string name="activity_db_management_clean_export_directory_text">Експортовані файли в каталозі Експорту/Імпорту доступні застосункам з вашого пристрою. Можливо ви захочете видалити ці файли після синхронізації чи створення запасної копії. Перед видаленням переконайтесь, що створено запасну копію. Файли GPX, підкаталоги та автоекспортовані файли бази даних (якщо існують) не будуть видалені. Шлях до каталогу Експорту/Імпорту:</string>
@@ -1065,7 +1066,7 @@
     <string name="prefs_autoremove_message">Автоматично видаляти СМС-повідомлення</string>
     <string name="fossil_hr_commute_processing">Обробка запиту…</string>
     <string name="fossil_hr_unavailable_unauthed">Недоступно без аутентифікації</string>
-    <string name="fossil_hr_synced_activity_data">Синхронизовані дані активностей</string>
+    <string name="fossil_hr_synced_activity_data">Синхронізовані дані активностей</string>
     <string name="fossil_hr_auth_failed">Автентифікацію не пройдено, функціональність обмежено</string>
     <string name="qhybrid_title_apps">Застосунки</string>
     <string name="qhybrid_title_background_image">Зображення тла</string>
@@ -1077,11 +1078,11 @@
     <string name="prefs_autolight">Автоматичне світло</string>
     <string name="qhybrid_calibration_align_hint">Використовуйте кнопки внизу, щоб вирівняти стрілки на 12:00.</string>
     <string name="devicetype_nut_mini">Nut mini</string>
-    <string name="gps_track">GPS трек</string>
+    <string name="gps_track">GPS-трек</string>
     <string name="mi">миль</string>
     <string name="minutes_mi">хв/милю</string>
     <string name="mi_h">миль/год</string>
-    <string name="ft">футів</string>
+    <string name="ft">фути</string>
     <string name="descentSeconds">За зменшенням</string>
     <string name="about_version">Версія %s</string>
     <string name="pref_title_lower_button_function_double">Подвійне натиснення нижньої кнопки</string>
@@ -1100,7 +1101,7 @@
     <string name="menuitem_pomodoro">Відстежувач Pomodoro</string>
     <string name="menuitem_sleep">Сон</string>
     <string name="menuitem_goal">Мета активності</string>
-    <string name="menuitem_stopwatch">Секундомер</string>
+    <string name="menuitem_stopwatch">Секундомір</string>
     <string name="menuitem_dnd">Тихий режим</string>
     <string name="menuitem_alexa">Alexa</string>
     <string name="menuitem_takephoto">Віддалене керування камерою</string>
@@ -1145,7 +1146,7 @@
     <string name="lefun_prefs_interface_language_title">Мова інтерфейсу</string>
     <string name="lefun_prefs_antilost_summary">Браслет буде вібрувати, якщо ваш телефон від\'єднається від браслета</string>
     <string name="lefun_prefs_antilost_title">Противтрата</string>
-    <string name="lefun_prefs_hydration_reminder_interval_title">Інтервал нагадування про гідратацію (хв.)</string>
+    <string name="lefun_prefs_hydration_reminder_interval_title">Інтервал нагадування про гідратацію (хв)</string>
     <string name="lefun_prefs_hydration_reminder_summary">Браслет буде вібрувати, щоб нагадати про пиття</string>
     <string name="lefun_prefs_hydration_reminder_title">Нагадування про гідратацію</string>
     <string name="charts_min_max_heartrate_popup">Найнижчий пульс: %1$d
@@ -1260,24 +1261,24 @@
     <string name="pref_summary_physical_buttons">Налаштувати функції фізичних кнопок годинника</string>
     <string name="pref_title_physical_buttons">Фізичні кнопки</string>
     <string name="qhybrid_title_watchface">Налаштування циферблата</string>
-    <string name="watchface_setting_wrist_flick_duration">Тривалість (у мс):</string>
-    <string name="watchface_setting_wrist_flick_minute">Хвилинна стрілка (від -360 до 360):</string>
-    <string name="watchface_setting_wrist_flick_hour">Годинна стрілка (від -360 до 360):</string>
-    <string name="watchface_setting_wrist_flick_move_relative">Переміщення рук відносно часу:</string>
+    <string name="watchface_setting_wrist_flick_duration">Тривалість (у мс)</string>
+    <string name="watchface_setting_wrist_flick_minute">Хвилинна стрілка (від -360 до 360)</string>
+    <string name="watchface_setting_wrist_flick_hour">Годинна стрілка (від -360 до 360)</string>
+    <string name="watchface_setting_wrist_flick_move_relative">Переміщення рук відносно часу</string>
     <string name="watchface_setting_desc_wrist_flick">(щоб повністю вимкнути, увімкніть відносний рух і встановіть для всіх значення 0)</string>
     <string name="watchface_setting_title_wrist_flick">Рух зап\'ястя</string>
-    <string name="watchface_setting_display_refresh_partial">Часткове оновлення (у хвилинах):</string>
-    <string name="watchface_setting_display_refresh_full">Повне оновлення (у хвилинах):</string>
+    <string name="watchface_setting_display_refresh_partial">Часткове оновлення (у хвилинах)</string>
+    <string name="watchface_setting_display_refresh_full">Повне оновлення (у хвилинах)</string>
     <string name="watchface_setting_title_display_refresh_timeout">Час оновлення екрана</string>
     <string name="watchface_dialog_title_settings">Налаштування циферблата</string>
     <string name="watchface_dialog_widget_color_black">Чорний</string>
     <string name="watchface_dialog_widget_color_white">Білий</string>
-    <string name="watchface_dialog_widget_color">Колір:</string>
+    <string name="watchface_dialog_widget_color">Колір</string>
     <string name="qhybrid_title_watchface_designer">Дизайнер циферблата</string>
     <string name="watchface_dialog_widget_preset_right">Праворуч</string>
     <string name="watchface_dialog_widget_preset_left">Ліворуч</string>
     <string name="button_watchface_preview">Попередній перегляд на годиннику</string>
-    <string name="watchface_widget_type_heart_rate">Серцебиття</string>
+    <string name="watchface_widget_type_heart_rate">Пульс</string>
     <string name="watchface_dialog_title_set_name">Встановіть назву циферблата</string>
     <string name="button_watchface_settings">Налаштування циферблата</string>
     <string name="button_watchface_add_widget">Додати віджет</string>
@@ -1285,10 +1286,10 @@
     <string name="button_watchface_edit_name">Змінити назву</string>
     <string name="watchface_dialog_widget_preset_bottom">Внизу</string>
     <string name="watchface_dialog_widget_preset_top">Вгорі</string>
-    <string name="watchface_dialog_widget_presets">Попередньо встановлені розташування:</string>
-    <string name="watchface_dialog_widget_y_coordinate">Координата Y (макс. 240):</string>
-    <string name="watchface_dialog_widget_x_coordinate">Координата X (макс. 240):</string>
-    <string name="watchface_dialog_widget_type">Тип:</string>
+    <string name="watchface_dialog_widget_presets">Попередньо встановлені розташування</string>
+    <string name="watchface_dialog_widget_y_coordinate">Координата Y (макс. 240)</string>
+    <string name="watchface_dialog_widget_x_coordinate">Координата X (макс. 240)</string>
+    <string name="watchface_dialog_widget_type">Тип</string>
     <string name="appmanager_app_edit">Змінити</string>
     <string name="button_watchface_save_apply">Зберегти та застосувати</string>
     <string name="watchface_widget_type_steps">Кроки</string>
@@ -1315,9 +1316,9 @@
     <string name="menuitem_flashlight">Ліхтарик</string>
     <string name="prefs_autoheartrate_interval">Частота вимірювань</string>
     <string name="prefs_autoheartrate_sleep">Вимірювати під час сну</string>
-    <string name="prefs_autoheartrate_measurement">Автоматичне вимірювання частоти серцебиття</string>
-    <string name="prefs_autoheartrate_summary">Періодичні вимірювання частоти серцебиття впродовж дня, а також під час сну</string>
-    <string name="prefs_autoheartrate">Автовизначення серцебиття</string>
+    <string name="prefs_autoheartrate_measurement">Автовимірювання пульсу</string>
+    <string name="prefs_autoheartrate_summary">Періодичні вимірювання пульсу впродовж дня, а також під час сну</string>
+    <string name="prefs_autoheartrate">Автовизначення пульсу</string>
     <string name="enable_notifications_summary">Сповіщення про виклики, повідомлення тощо</string>
     <string name="enable_vibrations_summary">Вібрація для викликів, повідомлень, сповіщень тощо</string>
     <string name="prefs_notifications_enable">Увімкнути сповіщення</string>
@@ -1444,10 +1445,10 @@
     <string name="sony_automatic_power_off_when_taken_off">При знятті</string>
     <string name="prefs_fm_preset_instructions">Утримуйте кнопку, щоб зберегти налаштування</string>
     <string name="prefs_fm_presets_presets">Попередні налаштування</string>
-    <string name="watchface_dialog_widget_update_timeout">Час очікування оновлення у хвилинах:</string>
-    <string name="watchface_dialog_widget_timeout_hide_text">Сховати текст після очікування:</string>
-    <string name="watchface_dialog_widget_timeout_show_circle">Показати коло на час очікування:</string>
-    <string name="watchface_dialog_widget_timezone">Часовий пояс:</string>
+    <string name="watchface_dialog_widget_update_timeout">Час очікування оновлення у хвилинах</string>
+    <string name="watchface_dialog_widget_timeout_hide_text">Сховати текст після очікування</string>
+    <string name="watchface_dialog_widget_timeout_show_circle">Показати коло на час очікування</string>
+    <string name="watchface_dialog_widget_timezone">Часовий пояс</string>
     <string name="qhybrid_title_on_device_confirmation">Увімкнути підтвердження підʼєднання пристрою</string>
     <string name="qhybrid_summary_on_device_confirmation">Підтвердження підʼєднання пристрою можуть дратувати. Вимкнення їх може зменшити функціональність.</string>
     <string name="reminder_repeat">Повтор</string>
@@ -1476,11 +1477,11 @@
     <string name="mi2_prefs_do_not_disturb_lift_wrist">Вмикати дисплей під час підйому у режимі «Не турбувати»</string>
     <string name="averageAltitude">Середня</string>
     <string name="minSpeed">Мінімальна</string>
-    <string name="maxHR">Максимальний пульс</string>
+    <string name="maxHR">Найвищий пульс</string>
     <string name="spm">кроків/хв</string>
     <string name="averageCadence">Середній темп</string>
     <string name="maxCadence">Максимальний темп</string>
-    <string name="minHR">Мінімальний пульс</string>
+    <string name="minHR">Найнижчий пульс</string>
     <string name="maxStride">Максимальний крок</string>
     <string name="minStride">Мінімальний крок</string>
     <string name="minCadence">Мінімальний темп</string>
@@ -1549,7 +1550,7 @@
     <string name="sony_speak_to_chat_sensitivity_low">Низька</string>
     <string name="sony_speak_to_chat_timeout_off">Вимкнено</string>
     <string name="sony_speak_to_chat_timeout_short">Коротка (15 с)</string>
-    <string name="watchface_dialog_widget_width">Ширина:</string>
+    <string name="watchface_dialog_widget_width">Ширина віджета (у пікселях)</string>
     <string name="discovery_bluetooth_scan">Сканування Bluetooth:</string>
     <string name="discovery_bluetooth_le_scan">Сканування LE Bluetooth:</string>
     <string name="device_unsupported">НЕ ПІДТРИМУЄТЬСЯ</string>
@@ -1588,9 +1589,9 @@
     <string name="watchface_setting_light_up_on_notification">Засвітлювати за нового сповіщення</string>
     <string name="menuitem_email">Е-пошта</string>
     <string name="application_name_banglejs_main">Bangle.js Gadgetbridge</string>
-    <string name="about_description_banglejs_main">Засосунок-компаньйон Android для Bangle.js побудований на основі проєкту Gadgetbridge, з додаванням доступу до інтернету.
+    <string name="about_description_banglejs_main">Супутній застосунок Android для Bangle.js побудований на основі проєкту Gadgetbridge з додатковим доступом до Інтернету.
 \n
-\nЗгідно з правилами Google Play Маркету, нам не дозволено вказувати посилання на допомогу в самому застосунку, але якщо він вам до вподоби, ви можете посприяти розвитку проєкту через домашню сторінку Gadgetbridge нижче.</string>
+\nВідповідно до правил Google Play Маркету, нам заборонено розміщувати посилання на внески в самому застосунку, але якщо він вам подобається, розгляньте можливість допомогти через домашню сторінку Gadgetbridge нижче.</string>
     <string name="gadgetbridge_running_banglejs_main">Bangle.js працює</string>
     <string name="application_name_banglejs_nopebble">Bangle.js Gadgetbridge</string>
     <string name="title_activity_controlcenter_banglejs_nopebble">Bangle.js Gadgetbridge</string>
@@ -1648,7 +1649,7 @@
     <string name="prefs_switch_control_right">Перемикання елемента керування праворуч</string>
     <string name="pref_title_touch_anc">Активне пригнічення шуму</string>
     <string name="pref_title_touch_volume">Гучність</string>
-    <string name="pref_ambient_sound_tone_summary">Від м’якого до чистого</string>
+    <string name="pref_ambient_sound_tone_summary">Від м\'якого до чистого</string>
     <string name="pref_switch_controls_anc_off">Пригнічення шуму ←→ Вимкнено</string>
     <string name="pref_switch_controls_ambient_off">Навколишнє середовище ←→ Вимкнено</string>
     <string name="prefs_noise_control">Контроль шуму</string>
@@ -1675,30 +1676,30 @@
     <string name="prefs_double_tap_edge_summary">Виявлення подвійного дотику, навіть якщо він не під\'єднаний до сенсорної панелі</string>
     <string name="pref_voice_detect_duration_10">10 секунд</string>
     <string name="pref_voice_detect_duration_5">5 секунд</string>
-    <string name="heartrate_bpm_100">100 ударів на хвилину</string>
-    <string name="prefs_heartrate_alert_experimental_title">Попередження про частоту серцевих скорочень (експериментально)</string>
-    <string name="prefs_heartrate_alert_threshold">Поріг попередження про частоту серцевих скорочень</string>
-    <string name="heartrate_bpm_110">110 ударів на хвилину</string>
-    <string name="heartrate_bpm_140">140 ударів на хвилину</string>
-    <string name="heartrate_bpm_150">150 ударів на хвилину</string>
-    <string name="heartrate_bpm_105">105 ударів на хвилину</string>
-    <string name="heartrate_bpm_120">120 ударів на хвилину</string>
+    <string name="heartrate_bpm_100">100 уд/хв</string>
+    <string name="prefs_heartrate_alert_experimental_title">Попередження про пульс (експериментально)</string>
+    <string name="prefs_heartrate_alert_threshold">Межа попередження про пульс</string>
+    <string name="heartrate_bpm_110">110 уд/хв</string>
+    <string name="heartrate_bpm_140">140 уд/хв</string>
+    <string name="heartrate_bpm_150">150 уд/хв</string>
+    <string name="heartrate_bpm_105">105 уд/хв</string>
+    <string name="heartrate_bpm_120">120 уд/хв</string>
     <string name="heartrate_bpm_112">112 ударів на хвилину</string>
-    <string name="heartrate_bpm_130">130 ударів на хвилину</string>
-    <string name="heartrate_bpm_145">145 ударів на хвилину</string>
-    <string name="heartrate_bpm_125">125 ударів на хвилину</string>
-    <string name="heartrate_bpm_135">135 ударів на хвилину</string>
-    <string name="prefs_stress_monitoring_description">Стеження за рівнем стресу під час відпочинку</string>
-    <string name="prefs_heartrate_alert_experimental_description">Вібрація годинника, коли частота серцевих скорочень перевищує поріг, без будь-якої очевидної фізичної активності протягом останніх 10 хвилин. Ця функція експериментальна, і не була достатньо випробувана.</string>
-    <string name="prefs_stress_monitoring_title">Стеження за стресом</string>
-    <string name="prefs_activity_monitoring_title">Стеження за діяльністю</string>
-    <string name="prefs_activity_monitoring_description">Автоматично збільшувати частоту перевірки частоти серцевих скорочень, коли годинник виявляє фізичні вправи, щоб збільшити точність охоплення серцевого ритму.</string>
-    <string name="mi2_prefs_heart_rate_monitoring_alerts_summary">Налаштуйте пороги стеження за частотою серцевих скорочень та попереджень</string>
-    <string name="mi2_prefs_heart_rate_monitoring">Стеження за частотою серцевих скорочень</string>
-    <string name="mi2_prefs_heart_rate_monitoring_summary">Налаштувати стеження за частотою серцевих скорочень</string>
+    <string name="heartrate_bpm_130">130 уд/хв</string>
+    <string name="heartrate_bpm_145">145 уд/хв</string>
+    <string name="heartrate_bpm_125">125 уд/хв</string>
+    <string name="heartrate_bpm_135">135 уд/хв</string>
+    <string name="prefs_stress_monitoring_description">Спостереження за рівнем напруженості під час відпочинку</string>
+    <string name="prefs_heartrate_alert_experimental_description">Вібрація годинника, коли пульс перевищує обмеження, без будь-якої очевидної фізичної діяльності протягом останніх 10 хвилин. Ця функція експериментальна, і не була достатньо випробувана.</string>
+    <string name="prefs_stress_monitoring_title">Спостереження за напруженістю</string>
+    <string name="prefs_activity_monitoring_title">Спостереження за діяльністю</string>
+    <string name="prefs_activity_monitoring_description">Автоматично збільшувати частоту перевірки пульсу, коли годинник виявляє фізичні вправи, щоб підвищити точність охоплення пульсу.</string>
+    <string name="mi2_prefs_heart_rate_monitoring_alerts_summary">Налаштуйте межі спостереження за пульсом і попереджень</string>
+    <string name="mi2_prefs_heart_rate_monitoring">Спостереження за пульсом</string>
+    <string name="mi2_prefs_heart_rate_monitoring_summary">Налаштувати спостереження за пульсом</string>
     <string name="pref_title_device_internet_access">Дозволити доступ до інтернету</string>
     <string name="pref_summary_device_internet_access">Дозволити застосункам на цьому пристрої доступ до інтернету</string>
-    <string name="pref_summary_device_intents">Дозволити застосункам для годинника Bangle.js надсилати наміри Android і дозволити іншим застосункам на Android (наприклад, Tasker) надсилати дані до Bangle.js із наміром com.banglejs.uart.tx.</string>
+    <string name="pref_summary_device_intents">Дозволити застосункам для годинника Bangle.js надсилати наміри Android і дозволити іншим застосункам на Android (наприклад, Tasker) надсилати дані до Bangle.js із наміром com.banglejs.uart.tx. Для роботи у фоновому режимі потрібен дозвіл на показ поверх інших застосунків.</string>
     <string name="pref_title_device_intents">Дозволити наміри</string>
     <string name="pref_title_banglejs_text_bitmap">Текст у вигляді растрових зображень</string>
     <string name="pref_summary_banglejs_text_bitmap">Якщо слово не може бути відтворено шрифтом годинника, перетворювати його на растрове зображення в Gadgetbridge і показувати растрове зображення на годиннику</string>
@@ -1709,12 +1710,12 @@
     <string name="notification_channel_gps">GPS-стеження</string>
     <string name="notification_gps_title">Gadgetbridge GPS</string>
     <string name="notification_gps_text">Надсилання місцеперебування GPS на пристрій %1$d</string>
-    <string name="permission_notification_listener">%1$s потребує доступу до сповіщень, щоб показувати їх на годиннику коли екран телефону вимкнено.
+    <string name="permission_notification_listener">%1$s потребує доступу до сповіщень, щоб показувати їх на годиннику коли екран телефона вимкнено.
 \n
-\nТоркніться «%2$s», потім «%1$s» і увімкніть «Дозволити доступ до сповіщень», а потім торкніться «Назад», щоб повернутися до %1$s</string>
-    <string name="permission_notification_policy_access">%1$s потребує доступу до налаштувань «Не турбувати», щоб дотримуватися їх на годиннику коли екран телефону вимкнено.
+\nТоркніться «%2$s», потім «%1$s» й увімкніть «Дозволити доступ до сповіщень», а потім торкніться «Назад», щоб повернутися до %1$s.</string>
+    <string name="permission_notification_policy_access">%1$s потребує доступу до налаштувань «Не турбувати», щоб дотримуватися їх на годиннику коли екран телефона вимкнено.
 \n
-\nТоркніться «%2$s», потім «%1$s» і увімкніть «Дозволити не турбувати», а потім торкніться «Назад», щоб повернутися до %1$s</string>
+\nТоркніться «%2$s», потім «%1$s» й увімкніть «Дозволити не турбувати», а потім торкніться «Назад», щоб повернутися до %1$s.</string>
     <string name="pref_device_action_phone_gps_location_listener_stop">Зупинка відстежувача GPS-розташування</string>
     <string name="discovery_scanning_intensity_warning">Якщо ви бачите заморожування або несприйняття, спробуйте встановити нижчий рівень інтенсивності сканування. Якщо пристрій не виявлено, спробуйте встановити інтенсивність сканування на вищий рівень.</string>
     <string name="discovery_scanning_intensity">Інтенсивність сканування</string>
@@ -1764,9 +1765,9 @@
     <string name="auto_reconnect_ble_summary">Проактивно періодично намагатися під\'єднуватися до пристрою</string>
     <string name="connection_over_ble">З\'єднання через BLE</string>
     <string name="autoconnect_from_device_title">Під\'єднуватися після з\'єднання з пристрою</string>
-    <string name="watchface_dialog_widget_timezone_duration">Тривалість показу годинника (в секундах):</string>
+    <string name="watchface_dialog_widget_timezone_duration">Тривалість показу годинника (в секундах)</string>
     <string name="open_fw_installer_warning_title">Попередження</string>
-    <string name="open_fw_installer_pick_file">Виберати файл</string>
+    <string name="open_fw_installer_pick_file">Вибрати файл</string>
     <string name="open_fw_installer_connect_minimum_one_device">Будь ласка, під\'єднайте ПРИНАЙМНІ ОДИН пристрій, на який ви хочете надіслати файл.</string>
     <string name="open_fw_installer_info_text">Налаштування Мікропрограма/Циферблат/Застосунок/Файл встановлювач дозволяє вивантажувати/установлювати підтримувані файли (мікропрограми, циферблати, застосунки, GPS, ресурси, шрифти...) на пристрій. Більше інформації дивіться у вікі: https://codeberg.org/Freeyourgadget/Gadgetbridge/wiki/Firmware-Update</string>
     <string name="open_fw_installer_warning_text">Ця функція може зламати ваш пристрій. Однак, такого ніколи не траплялося з жодним із розробників через перепрошивання, але пам\'ятайте, що ви робите це на свій страх і ризик.</string>
@@ -1778,4 +1779,186 @@
     <string name="open_fw_installer_ensure_device_connected">Переконайтеся, що пристрій %s під\'єднано</string>
     <string name="appmanager_item_outdated">(застаріле)</string>
     <string name="appmanager_app_share">Поділитися</string>
+    <string name="watchface_dialog_widget_cat_position">Позиція</string>
+    <string name="pref_title_banglejs_txt_bitmap_size">Розмір растрового зображення тексту</string>
+    <string name="hybridhr_widget_bg_thin_circle">Тонке коло</string>
+    <string name="pref_summary_banglejs_txt_bitmap_size">Якщо ввімкнено функцію «Текст у вигляді растрових зображень», якого розміру має бути текст\?</string>
+    <string name="watchface_dialog_widget_cat_custom_widget">Користувальницький віджет</string>
+    <string name="watchface_dialog_widget_cat_2nd_tz_widget">Віджет 2-го часового поясу</string>
+    <string name="hybridhr_widget_bg_dashed_circle">Пунктирне коло</string>
+    <string name="watchface_dialog_widget_background">Тло</string>
+    <string name="hybridhr_widget_bg_double_circle">Подвійне коло</string>
+    <string name="watchface_dialog_widget_cat_generic">Загальний</string>
+    <string name="watchface_dialog_title_widget">Налаштування віджета</string>
+    <string name="watchface_setting_title_button_toggle_widgets">Перемкнути віджети</string>
+    <string name="watchface_setting_button_toggle_widgets">Перемкнути віджети</string>
+    <string name="note">Примітка</string>
+    <string name="share_log_not_enabled_message">Попередньо необхідно ввімкнути вхід у налаштуваннях - Запис файлів журналів</string>
+    <string name="steps_streaks">Успішних днів підряд</string>
+    <string name="step_streak_total">Усього</string>
+    <string name="steps_streaks_total_steps">Усього
+\nкроків</string>
+    <string name="steps_streaks_streak_days">Днів
+\nПоспіль</string>
+    <string name="steps_streaks_average_steps">У середньому
+\nкроків</string>
+    <string name="steps_streaks_since_date">З %s</string>
+    <string name="step_streak_average_steps_hint">Середня кількість кроків за день серії</string>
+    <string name="steps_streaks_total_steps_hint_totals">Загальна кількість записаних кроків за весь час</string>
+    <string name="steps_streaks_total_days_hint_totals">Відсоток днів з досягнутою метою відносно до всіх днів з кроками</string>
+    <string name="steps_streaks_achievement_rate">Оцінка
+\nдосягнення</string>
+    <string name="steps_streaks_hint">Серія днів поспіль з досягненням мети кількості кроків</string>
+    <string name="steps_streaks_total_steps_hint">Загальна кількість кроків у всій серії</string>
+    <string name="step_streak_ongoing">Поточна</string>
+    <string name="step_streak_longest">Найтриваліша</string>
+    <string name="step_streak_days_hint">Кількість днів поспіль з досягненням мети кількості кроків</string>
+    <string name="steps_streaks_total_steps_average_hint">Загальний середній показник %d кроків на день</string>
+    <string name="watchface_setting_title_custom_events">Користувацькі події</string>
+    <string name="watchface_setting_button_toggle_backlight">Увімкнути підсвітку</string>
+    <string name="controlcenter_get_heartrate_measurement">Виміряти пульс</string>
+    <string name="pref_write_logfiles_not_available">Помилка ініціалізації журналу файлів, запис файлів журналу наразі недоступний. Перезапустіть застосунок, щоб знову спробувати ініціалізувати файли журналу.</string>
+    <string name="devicetype_binary_sensor">Бінарний датчик</string>
+    <string name="gadgetbridge_running_banglejs_nightly">Nightly Bangle.js працює</string>
+    <string name="application_name_banglejs_nightly">Bangle.js Gadgetbridge (Nightly)</string>
+    <string name="title_activity_controlcenter_banglejs_nightly">Bangle.js Gadgetbridge (Nightly)</string>
+    <string name="about_activity_title_banglejs_nightly">Про Bangle.js Gadgetbridge (Nightly)</string>
+    <string name="about_description_banglejs_nightly">Супутній застосунок Android для Bangle.js побудований на основі проєкту Gadgetbridge з додатковим доступом до Інтернету.
+\n
+\nВідповідно до правил Google Play Маркету, нам заборонено розміщувати посилання на внески в самому застосунку, але якщо він вам подобається, розгляньте можливість допомогти через домашню сторінку Gadgetbridge нижче.</string>
+    <string name="prefs_hourly_chime">Дзвін щогодини</string>
+    <string name="prefs_hourly_chime_summary">Годинник подаватиме звуковий сигнал раз на годину</string>
+    <string name="step_streaks_achievements_sharing_title">Досягнення кількості кроків</string>
+    <string name="step_streaks_achievements_sharing_message">Мої щоденні досягнення кількості кроків!</string>
+    <string name="permission_display_over_other_apps">%1$s потребує дозволу на показ над іншими застосунками, щоб дозволити годинникам Bangle.js починати діяльність через намір, коли %1$s перебуває у фоновому режимі.
+\n
+\nЦе можна використовувати для запуску музичного застосунку та відтворення пісні та багатьох інших речей.
+\n
+\nТоркніться «%2$s», потім «%1$s» й увімкніть «Дозволити показ над іншими застосунками», а потім торкніться «Назад», щоб повернутися до %1$s.
+\n
+\nЩоб %1$s не запитував дозволів, перейдіть до «Налаштувань» і приберіть прапорець із пункту «Перевіряти стан дозволів».
+\n
+\nПереконайтеся, що ви надали дозволи для %1$s, необхідні для нормального функціонування.</string>
+    <string name="pref_summary_canned_replies">Відповідайте з годинника за допомогою попередньо встановлених повідомлень</string>
+    <string name="pref_title_screen_on_on_notifications">Наекранні сповіщення</string>
+    <string name="pref_summary_screen_on_on_notifications">Вмикати екран годинника, коли надходить сповіщення</string>
+    <string name="heartrate_bpm_40">40 уд/хв</string>
+    <string name="heartrate_bpm_50">50 уд/хв</string>
+    <string name="heartrate_bpm_115">115 уд/хв</string>
+    <string name="spo2_perc_80">80%</string>
+    <string name="spo2_perc_85">85%</string>
+    <string name="spo2_perc_90">90%</string>
+    <string name="spo2_off">Вимкнено</string>
+    <string name="prefs_relaxation_reminder_title">Нагадування перепочити</string>
+    <string name="prefs_spo2_monitoring_title">Спостереження за рівним кисню в крові</string>
+    <string name="prefs_spo2_monitoring_description">Автоспостереження за рівнем кисню в крові протягом дня</string>
+    <string name="seconds_6">6 секунд</string>
+    <string name="seconds_7">7 секунд</string>
+    <string name="seconds_8">8 секунд</string>
+    <string name="seconds_9">9 секунд</string>
+    <string name="seconds_11">11 секунд</string>
+    <string name="seconds_12">12 секунд</string>
+    <string name="prefs_screen_timeout">Час очікування екрана</string>
+    <string name="devicetype_miband7">Xiaomi Smart Band 7</string>
+    <string name="pref_header_heartrate_sleep">Сон</string>
+    <string name="pref_header_heartrate_allday">Цілодобове спостереження</string>
+    <string name="pref_header_stress">Напруженість</string>
+    <string name="pref_header_spo2">Кисень у крові</string>
+    <string name="pref_screen_brightness">Яскравість екрана</string>
+    <string name="pref_header_heartrate_alerts">Попередження про пульс</string>
+    <string name="fw_upgrade_notice_miband7">Ви збираєтеся встановити мікропрограму %s на свій Xiaomi Smart Band 7.
+\n
+\nВаш годинник перезавантажиться після встановлення файлу .zip.
+\n
+\nДІЙТЕ НА СВІЙ СТРАХ І РИЗИК!</string>
+    <string name="pref_header_connection">З\'єднання</string>
+    <string name="pref_header_calendar">Календар</string>
+    <string name="pref_header_health">Здоров\'я</string>
+    <string name="pref_header_time">Час</string>
+    <string name="pref_header_workout">Тренування</string>
+    <string name="pref_header_display">Дисплей</string>
+    <string name="pref_cache_weather_summary">Дані про погоду кешуватимуться під час перезапусків застосунку.</string>
+    <string name="mi2_dnd_always">Завжди</string>
+    <string name="pref_cache_weather">Кешувати дані про погоду</string>
+    <string name="heartrate_bpm_45">45 уд/хв</string>
+    <string name="prefs_relaxation_reminder_description">Вібрація годинника для повідомлення вас, якщо значення напруженості понад 80</string>
+    <string name="prefs_spo2_alert_threshold">Поріг сповіщення SPO2</string>
+    <string name="seconds_14">14 секунд</string>
+    <string name="seconds_15">15 секунд</string>
+    <string name="pref_sleep_breathing_quality_monitoring">Спостереження за якістю дихання уві сні</string>
+    <string name="seconds_13">13 секунд</string>
+    <string name="prefs_always_on_display">Always On Display</string>
+    <string name="menuitem_female_health">Жіноче здоров\'я</string>
+    <string name="prefs_always_on_display_summary">Тримати дисплей годинника завжди увімкненим</string>
+    <string name="smart">Розумний</string>
+    <string name="prefs_heartrate_alert_high_threshold">Попередження про високий пульс</string>
+    <string name="prefs_heartrate_alert_low_threshold">Попередження про низький пульс</string>
+    <string name="menuitem_countdown">Відлік</string>
+    <string name="menuitem_workout_history">Історія тренувань</string>
+    <string name="menuitem_workout_status">Стан тренування</string>
+    <string name="menuitem_personal_activity_intelligence">Дослідження особистої діяльності</string>
+    <string name="pref_title_notifications_ignore_low_priority">Нехтувати сповіщення з низьким пріоритетом</string>
+    <string name="pref_summary_notifications_ignore_low_priority">Не надсилати на годинник сповіщення з низьким і найнижчим пріоритетом</string>
+    <string name="activity_prefs_allow_bluetooth_intent_api">Bluetooth Intent API</string>
+    <string name="devicetype_flipper_zero">Flipper zero</string>
+    <string name="activity_prefs_summary_allow_bluetooth_intent_api">Дозволити керування з\'єднанням Bluetooth через Intent API</string>
+    <string name="fw_upgrade_notice_amazfit_gts3">Ви збираєтесь установити мікропрограму %s на свій Amazfit GTS 3.
+\n
+\nВаш годинник перезапуститься після встановлення файлу .zip.
+\n
+\nВИ ПРОДОВЖУЄТЕ НА ВЛАСНИЙ РИЗИК!</string>
+    <string name="devicetype_amazfit_gts3">Amazfit GTS 3</string>
+    <string name="pref_title_notification_prefer_long_text">Надавати перевагу довгому тексту сповіщень</string>
+    <string name="pref_summary_notification_prefer_long_text">Якщо доступно, надсилати довгий текст сповіщення на пристрій</string>
+    <string name="menuitem_unknown_app">Невідомо (%s)</string>
+    <string name="kind_app">Застосунок</string>
+    <string name="pref_title_overwrite_settings_on_connection">Перезаписувати налаштування під час з\'єднання</string>
+    <string name="pref_summary_overwrite_settings_on_connection">Під час під\'єднання до годинника перезаписувати всі налаштування на ньому.</string>
+    <string name="dismiss">Відхилити</string>
+    <string name="devicetype_amazfit_gtr3">Amazfit GTR 3</string>
+    <string name="fw_upgrade_notice_amazfit_gtr3">Ви збираєтесь установити мікропрограму %s на свій Amazfit GTR 3.
+\n
+\nВаша група перезавантажиться після встановлення файлу .zip.
+\n
+\nПРОДОВЖУЙТЕ НА СВІЙ СТРАХ І РИЗИК!</string>
+    <string name="pref_title_third_party_app_device_settings">Дозволити стороннім застосункам змінювати налаштування</string>
+    <string name="pref_summary_third_party_app_device_settings">Дозволити іншим установленим стороннім застосункам установлювати налаштування пристрою за допомогою намірів.</string>
+    <string name="activity_type_dance">Танець</string>
+    <string name="activity_type_indoor_fitness">Фітнес у приміщенні</string>
+    <string name="activity_type_stepper">Степер</string>
+    <string name="activity_type_pilates">Пілатес</string>
+    <string name="activity_type_volleyball">Волейбол</string>
+    <string name="activity_type_table_tennis">Настільний теніс</string>
+    <string name="activity_type_bowling">Боулінг</string>
+    <string name="activity_type_street_dance">Вуличні танці</string>
+    <string name="activity_type_zumba">Зумба</string>
+    <string name="activity_type_indoor_ice_skating">Катання на ковзанах у приміщенні</string>
+    <string name="activity_type_gymnastics">Гімнастика</string>
+    <string name="activity_type_hiit">Високоінтенсивне інтервальне тренування</string>
+    <string name="activity_type_stretching">Розтягування</string>
+    <string name="activity_type_core_training">Основне тренування</string>
+    <string name="activity_type_boxing">Бокс</string>
+    <string name="activity_type_kickboxing">Кікбоксинг</string>
+    <string name="devicetype_super_cars">Перегони на снарядах</string>
+    <string name="devicetype_amazfit_gtr_lite">Amazfit GTR Lite</string>
+    <string name="watchface_setting_button_move_hands">Рух рук</string>
+    <string name="supercars_lights_label">Світло</string>
+    <string name="supercars_turbo_speed_label">Турбошвидкість</string>
+    <string name="pref_header_authentication">Автентифікація</string>
+    <string name="abstract_chart_fragment_kind_rem_sleep">Швидкий сон</string>
+    <string name="sports_activity_confirm_delete_title">Видалити діяльність %d</string>
+    <string name="sports_activity_confirm_delete_description">Ви впевнені, що хочете видалити дії %d\?</string>
+    <string name="supercars_lights_blinking_label">Блимання</string>
+    <string name="hrZoneNa">Н/Д</string>
+    <string name="hrZoneFatBurn">Спалювання жиру</string>
+    <string name="hrZoneWarmUp">Розминка</string>
+    <string name="hrZoneExtreme">Екстремальна</string>
+    <string name="hrZoneAnaerobic">Анаеробна</string>
+    <string name="TrainingEffect">Тренувальний ефект</string>
+    <string name="aerobicTrainingEffect">Аеробний ефект</string>
+    <string name="anaerobicTrainingEffect">Анаеробний ефект</string>
+    <string name="maximumOxygenUptake">Максимальне споживання кисню</string>
+    <string name="HeartRateZones">Зони вимірювання пульсу</string>
+    <string name="currentWorkoutLoad">Тренувальне навантаження</string>
+    <string name="hrZoneAerobic">Аеробна</string>
 </resources>

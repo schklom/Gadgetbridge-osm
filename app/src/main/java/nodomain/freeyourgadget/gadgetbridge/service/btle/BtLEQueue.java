@@ -79,6 +79,7 @@ public final class BtLEQueue {
     private final InternalGattCallback internalGattCallback;
     private final InternalGattServerCallback internalGattServerCallback;
     private boolean mAutoReconnect;
+    private boolean mImplicitGattCallbackModify = true;
 
     private Thread dispatchThread = new Thread("Gadgetbridge GATT Dispatcher") {
 
@@ -137,7 +138,10 @@ public final class BtLEQueue {
 
                     if(qTransaction instanceof Transaction) {
                         Transaction transaction = (Transaction)qTransaction;
-                        internalGattCallback.setTransactionGattCallback(transaction.getGattCallback());
+                        LOG.trace("Changing gatt callback for {}? {}", transaction.getTaskName(), transaction.isModifyGattCallback());
+                        if (mImplicitGattCallbackModify || transaction.isModifyGattCallback()) {
+                            internalGattCallback.setTransactionGattCallback(transaction.getGattCallback());
+                        }
                         mAbortTransaction = false;
                         // Run all actions of the transaction until one doesn't succeed
                         for (BtLEAction action : transaction.getActions()) {
@@ -202,6 +206,10 @@ public final class BtLEQueue {
         mAutoReconnect = enable;
     }
 
+    public void setImplicitGattCallbackModify(final boolean enable) {
+        mImplicitGattCallbackModify = enable;
+    }
+
     protected boolean isConnected() {
         return mGbDevice.isConnected();
     }
@@ -264,7 +272,7 @@ public final class BtLEQueue {
         LOG.debug("new device connection state: " + newState);
 
         mGbDevice.setState(newState);
-        mGbDevice.sendDeviceUpdateIntent(mContext);
+        mGbDevice.sendDeviceUpdateIntent(mContext, GBDevice.DeviceUpdateSubject.CONNECTION_STATE);
     }
 
     public void disconnect() {
@@ -550,6 +558,8 @@ public final class BtLEQueue {
             if(getCallbackToUse() != null){
                 getCallbackToUse().onMtuChanged(gatt, mtu, status);
             }
+
+            mWaitForActionResultLatch.countDown();
         }
 
 

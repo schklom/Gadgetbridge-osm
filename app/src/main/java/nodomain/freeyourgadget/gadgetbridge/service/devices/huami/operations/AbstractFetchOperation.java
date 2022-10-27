@@ -39,12 +39,14 @@ import java.util.concurrent.TimeUnit;
 import nodomain.freeyourgadget.gadgetbridge.GBApplication;
 import nodomain.freeyourgadget.gadgetbridge.Logging;
 import nodomain.freeyourgadget.gadgetbridge.R;
+import nodomain.freeyourgadget.gadgetbridge.devices.huami.HuamiCoordinator;
 import nodomain.freeyourgadget.gadgetbridge.devices.huami.HuamiService;
 import nodomain.freeyourgadget.gadgetbridge.service.btle.BLETypeConversions;
 import nodomain.freeyourgadget.gadgetbridge.service.btle.TransactionBuilder;
 import nodomain.freeyourgadget.gadgetbridge.service.btle.actions.AbstractGattListenerWriteAction;
 import nodomain.freeyourgadget.gadgetbridge.service.btle.actions.SetDeviceBusyAction;
 import nodomain.freeyourgadget.gadgetbridge.service.devices.huami.AbstractHuamiOperation;
+import nodomain.freeyourgadget.gadgetbridge.service.devices.huami.Huami2021Support;
 import nodomain.freeyourgadget.gadgetbridge.service.devices.huami.HuamiSupport;
 import nodomain.freeyourgadget.gadgetbridge.util.ArrayUtils;
 import nodomain.freeyourgadget.gadgetbridge.util.GB;
@@ -62,6 +64,7 @@ public abstract class AbstractFetchOperation extends AbstractHuamiOperation {
     protected BluetoothGattCharacteristic characteristicActivityData;
     protected BluetoothGattCharacteristic characteristicFetch;
     Calendar startTimestamp;
+    int expectedDataLength = 0;
 
     public AbstractFetchOperation(HuamiSupport support) {
         super(support);
@@ -82,10 +85,10 @@ public abstract class AbstractFetchOperation extends AbstractHuamiOperation {
     }
 
     protected void startFetching() throws IOException {
+        expectedDataLength = 0;
         lastPacketCounter = -1;
 
         TransactionBuilder builder = performInitialized(getName());
-        getSupport().setLowLatency(builder);
         if (fetchCount == 0) {
             builder.add(new SetDeviceBusyAction(getDevice(), getContext().getString(R.string.busy_task_fetch_activity_data), getContext()));
         }
@@ -121,12 +124,27 @@ public abstract class AbstractFetchOperation extends AbstractHuamiOperation {
         }
     }
 
+    /**
+     * Handles the finishing of fetching the activity.
+     * @param success whether fetching was successful
+     * @return whether handling the activity fetch finish was successful
+     */
     @CallSuper
-    protected void handleActivityFetchFinish(boolean success) {
+    protected boolean handleActivityFetchFinish(boolean success) {
         GB.updateTransferNotification(null, "", false, 100, getContext());
         operationFinished();
         unsetBusy();
+        return true;
     }
+
+    /**
+     * Validates that the received data has the expected checksum. Only
+     * relevant for Huami2021Support devices.
+     *
+     * @param crc32 the expected checksum
+     * @return whether the checksum was valid
+     */
+    protected abstract boolean validChecksum(int crc32);
 
     /**
      * Method to handle the incoming activity data.
@@ -144,10 +162,11 @@ public abstract class AbstractFetchOperation extends AbstractHuamiOperation {
 
     protected void startFetching(TransactionBuilder builder, byte fetchType, GregorianCalendar sinceWhen) {
         final String taskName = StringUtils.ensureNotNull(builder.getTaskName());
+        final boolean isHuami2021 = getSupport() instanceof Huami2021Support;
         byte[] fetchBytes = BLETypeConversions.join(new byte[]{
                         HuamiService.COMMAND_ACTIVITY_DATA_START_DATE,
                         fetchType},
-                getSupport().getTimeBytes(sinceWhen, TimeUnit.MINUTES));
+                getSupport().getTimeBytes(sinceWhen, isHuami2021 ? TimeUnit.SECONDS : TimeUnit.MINUTES));
         builder.add(new AbstractGattListenerWriteAction(getQueue(), characteristicFetch, fetchBytes) {
             @Override
             protected boolean onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
@@ -157,13 +176,18 @@ public abstract class AbstractFetchOperation extends AbstractHuamiOperation {
 
                     if (ArrayUtils.equals(value, HuamiService.RESPONSE_ACTIVITY_DATA_START_DATE_SUCCESS, 0)) {
                         handleActivityMetadata(value);
-                        TransactionBuilder newBuilder = createTransactionBuilder(taskName + " Step 2");
-                        newBuilder.notify(characteristicActivityData, true);
-                        newBuilder.write(characteristicFetch, new byte[]{HuamiService.COMMAND_FETCH_DATA});
-                        try {
-                            performImmediately(newBuilder);
-                        } catch (IOException ex) {
-                            GB.toast(getContext(), "Error fetching debug logs: " + ex.getMessage(), Toast.LENGTH_LONG, GB.ERROR, ex);
+                        if (expectedDataLength == 0 && isHuami2021) {
+                            // Nothing to receive, if we try to fetch data it will fail
+                            sendAck2021(true);
+                        } else {
+                            TransactionBuilder newBuilder = createTransactionBuilder(taskName + " Step 2");
+                            newBuilder.notify(characteristicActivityData, true);
+                            newBuilder.write(characteristicFetch, new byte[]{HuamiService.COMMAND_FETCH_DATA});
+                            try {
+                                performImmediately(newBuilder);
+                            } catch (IOException ex) {
+                                GB.toast(getContext(), "Error fetching debug logs: " + ex.getMessage(), Toast.LENGTH_LONG, GB.ERROR, ex);
+                            }
                         }
                         return true;
                     } else {
@@ -176,34 +200,119 @@ public abstract class AbstractFetchOperation extends AbstractHuamiOperation {
     }
 
     private void handleActivityMetadata(byte[] value) {
-        if (value.length == 15) {
-            // first two bytes are whether our request was accepted
-            if (ArrayUtils.equals(value, HuamiService.RESPONSE_ACTIVITY_DATA_START_DATE_SUCCESS, 0)) {
-                // the third byte (0x01 on success) = ?
-                // the 4th - 7th bytes epresent the number of bytes/packets to expect, excluding the counter bytes
-                //int expectedDataLength = BLETypeConversions.toUint32(Arrays.copyOfRange(value, 3, 7));
-
-                // last 8 bytes are the start date
-                Calendar startTimestamp = getSupport().fromTimeBytes(Arrays.copyOfRange(value, 7, value.length));
-                setStartTimestamp(startTimestamp);
-
-                GB.updateTransferNotification(getContext().getString(R.string.busy_task_fetch_activity_data),
-                        getContext().getString(R.string.FetchActivityOperation_about_to_transfer_since,
-                                DateFormat.getDateTimeInstance().format(startTimestamp.getTime())), true, 0, getContext());
-            } else {
-                LOG.warn("Unexpected activity metadata: " + Logging.formatBytes(value));
-                handleActivityFetchFinish(false);
-            }
-        } else if (value.length == 3) {
-            if (Arrays.equals(HuamiService.RESPONSE_FINISH_SUCCESS, value)) {
-                handleActivityFetchFinish(true);
-            } else {
-                LOG.warn("Unexpected activity metadata: " + Logging.formatBytes(value));
-                handleActivityFetchFinish(false);
-            }
-        } else {
-            LOG.warn("Unexpected activity metadata: " + Logging.formatBytes(value));
+        if (value.length < 3) {
+            LOG.warn("Activity metadata too short: {}", Logging.formatBytes(value));
             handleActivityFetchFinish(false);
+            return;
+        }
+
+        if (value[0] != HuamiService.RESPONSE) {
+            LOG.warn("Activity metadata not a response: {}", Logging.formatBytes(value));
+            handleActivityFetchFinish(false);
+            return;
+        }
+
+        switch (value[1]) {
+            case HuamiService.COMMAND_ACTIVITY_DATA_START_DATE:
+                handleStartDateResponse(value);
+                return;
+            case HuamiService.COMMAND_FETCH_DATA:
+                handleFetchDataResponse(value);
+                return;
+            case HuamiService.COMMAND_ACK_ACTIVITY_DATA:
+                // ignore, this is just the reply to the COMMAND_ACK_ACTIVITY_DATA
+                LOG.info("Got reply to COMMAND_ACK_ACTIVITY_DATA");
+                return;
+            default:
+                LOG.warn("Unexpected activity metadata: {}", Logging.formatBytes(value));
+                handleActivityFetchFinish(false);
+        }
+    }
+
+    private void handleStartDateResponse(final byte[] value) {
+        if (value[2] != HuamiService.SUCCESS) {
+            LOG.warn("Start date unsuccessful response: {}", Logging.formatBytes(value));
+            handleActivityFetchFinish(false);
+            return;
+        }
+
+        // it's 16 on the MB7, with a 0 at the end
+        if (value.length != 15 && (value.length != 16 && value[15] != 0x00)) {
+            LOG.warn("Start date response length: {}", Logging.formatBytes(value));
+            handleActivityFetchFinish(false);
+            return;
+        }
+
+        // the third byte (0x01 on success) = ?
+        // the 4th - 7th bytes represent the number of bytes/packets to expect, excluding the counter bytes
+        expectedDataLength = BLETypeConversions.toUint32(Arrays.copyOfRange(value, 3, 7));
+
+        // last 8 bytes are the start date
+        Calendar startTimestamp = getSupport().fromTimeBytes(Arrays.copyOfRange(value, 7, value.length));
+
+        if (expectedDataLength == 0) {
+            LOG.info("No data to fetch since {}", startTimestamp.getTime());
+            handleActivityFetchFinish(true);
+            return;
+        }
+
+        setStartTimestamp(startTimestamp);
+        LOG.info("Will transfer {} packets since {}", expectedDataLength, startTimestamp.getTime());
+
+        GB.updateTransferNotification(getContext().getString(R.string.busy_task_fetch_activity_data),
+                getContext().getString(R.string.FetchActivityOperation_about_to_transfer_since,
+                        DateFormat.getDateTimeInstance().format(startTimestamp.getTime())), true, 0, getContext());
+    }
+
+    private void handleFetchDataResponse(final byte[] value) {
+        if (value[2] != HuamiService.SUCCESS) {
+            LOG.warn("Fetch data unsuccessful response: {}", Logging.formatBytes(value));
+            handleActivityFetchFinish(false);
+            return;
+        }
+
+        if (value.length != 3 && value.length != 7) {
+            LOG.warn("Fetch data unexpected metadata length: {}", Logging.formatBytes(value));
+            handleActivityFetchFinish(false);
+            return;
+        }
+
+        if (value.length == 7 && !validChecksum(BLETypeConversions.toUint32(value, 3))) {
+            LOG.warn("Data checksum invalid");
+            handleActivityFetchFinish(false);
+            sendAck2021(true);
+            return;
+        }
+
+        boolean handleFinishSuccess;
+        try {
+            handleFinishSuccess = handleActivityFetchFinish(true);
+        } catch (final Exception e) {
+            LOG.warn("Failed to handle activity fetch finish", e);
+            handleFinishSuccess = false;
+        }
+
+        final boolean keepActivityDataOnDevice = HuamiCoordinator.getKeepActivityDataOnDevice(getDevice().getAddress());
+
+        sendAck2021(keepActivityDataOnDevice || !handleFinishSuccess);
+    }
+
+    private void sendAck2021(final boolean keepDataOnDevice) {
+        if (!(getSupport() instanceof Huami2021Support)) {
+            return;
+        }
+
+        // 0x01 to ACK, mark as saved on phone (drop from band)
+        // 0x09 to ACK, but keep it marked as not saved
+        // If 0x01 is sent, detailed information seems to be discarded, and is not sent again anymore
+        final byte ackByte = (byte) (keepDataOnDevice ? 0x09 : 0x01);
+
+        try {
+            final TransactionBuilder builder = performInitialized(getName() + " end");
+            builder.write(characteristicFetch, new byte[]{HuamiService.COMMAND_ACK_ACTIVITY_DATA, ackByte});
+            performImmediately(builder);
+        } catch (final IOException e) {
+            LOG.error("Ending failed", e);
         }
     }
 
@@ -220,7 +329,6 @@ public abstract class AbstractFetchOperation extends AbstractHuamiOperation {
         editor.putLong(getLastSyncTimeKey(), timestamp.getTimeInMillis());
         editor.apply();
     }
-
 
     protected GregorianCalendar getLastSuccessfulSyncTime() {
         long timeStampMillis = GBApplication.getDeviceSpecificSharedPrefs(getDevice().getAddress()).getLong(getLastSyncTimeKey(), 0);

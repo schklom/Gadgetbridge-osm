@@ -75,7 +75,7 @@ public class MiBand2Coordinator extends HuamiCoordinator {
     }
 
     @Override
-    public int getReminderSlotCount() {
+    public int getReminderSlotCount(final GBDevice device) {
         return 0;
     }
 
@@ -94,6 +94,7 @@ public class MiBand2Coordinator extends HuamiCoordinator {
                 R.xml.devicesettings_buttonactions,
                 R.xml.devicesettings_reserve_alarms_calendar,
                 R.xml.devicesettings_bt_connected_advertisement,
+                R.xml.devicesettings_overwrite_settings_on_connection,
                 R.xml.devicesettings_transliteration
         };
     }

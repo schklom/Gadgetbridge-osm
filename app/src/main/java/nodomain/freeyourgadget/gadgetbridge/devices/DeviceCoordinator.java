@@ -28,16 +28,19 @@ import android.os.Build;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import nodomain.freeyourgadget.gadgetbridge.GBException;
 import nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSpecificSettingsCustomizer;
+import nodomain.freeyourgadget.gadgetbridge.capabilities.HeartRateCapability;
 import nodomain.freeyourgadget.gadgetbridge.capabilities.password.PasswordCapabilityImpl;
 import nodomain.freeyourgadget.gadgetbridge.entities.DaoSession;
 import nodomain.freeyourgadget.gadgetbridge.impl.GBDevice;
 import nodomain.freeyourgadget.gadgetbridge.impl.GBDeviceCandidate;
 import nodomain.freeyourgadget.gadgetbridge.model.ActivitySample;
+import nodomain.freeyourgadget.gadgetbridge.model.ActivitySummaryParser;
 import nodomain.freeyourgadget.gadgetbridge.model.BatteryConfig;
 import nodomain.freeyourgadget.gadgetbridge.model.DeviceType;
 
@@ -139,7 +142,6 @@ public interface DeviceCoordinator {
      * @return the list of scan filters, may be empty
      */
     @NonNull
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     Collection<? extends ScanFilter> createBLEScanFilters();
 
     GBDevice createDevice(GBDeviceCandidate candidate);
@@ -215,6 +217,13 @@ public interface DeviceCoordinator {
     SampleProvider<? extends ActivitySample> getSampleProvider(GBDevice device, DaoSession session);
 
     /**
+     * Returns the {@link ActivitySummaryParser} for the device being supported.
+     *
+     * @return
+     */
+    ActivitySummaryParser getActivitySummaryParser(final GBDevice device);
+
+    /**
      * Returns true if this device/coordinator supports installing files like firmware,
      * watchfaces, gps, resources, fonts...
      *
@@ -271,6 +280,11 @@ public interface DeviceCoordinator {
      * @return
      */
     boolean supportsHeartRateMeasurement(GBDevice device);
+
+    /**
+     * Returns true if the device supports triggering manual one-shot heart rate measurements.
+     */
+    boolean supportsManualHeartRateMeasurement(GBDevice device);
 
     /**
      * Returns the readable name of the manufacturer.
@@ -341,6 +355,11 @@ public interface DeviceCoordinator {
     boolean supportsRealtimeData();
 
     /**
+     * Indicates whether the device supports REM sleep tracking.
+     */
+    boolean supportsRemSleep();
+
+    /**
      * Indicates whether the device supports current weather and/or weather
      * forecast display.
      */
@@ -366,7 +385,7 @@ public interface DeviceCoordinator {
     /**
      * Indicates the maximum number of reminder slots available in the device.
      */
-    int getReminderSlotCount();
+    int getReminderSlotCount(GBDevice device);
 
     /**
      * Indicates the maximum number of slots available for world clocks in the device.
@@ -450,4 +469,6 @@ public interface DeviceCoordinator {
     PasswordCapabilityImpl.Mode getPasswordCapability();
 
     boolean supportsNavigation();
+    
+    List<HeartRateCapability.MeasurementInterval> getHeartRateMeasurementIntervals();
 }

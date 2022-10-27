@@ -153,6 +153,11 @@ class TestDeviceSupport extends AbstractDeviceSupport {
     }
 
     @Override
+    public void onFindPhone(boolean start) {
+
+    }
+
+    @Override
     public void onSetConstantVibration(int intensity) {
 
     }

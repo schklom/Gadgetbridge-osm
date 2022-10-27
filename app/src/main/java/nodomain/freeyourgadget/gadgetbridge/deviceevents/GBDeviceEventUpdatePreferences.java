@@ -68,7 +68,11 @@ public class GBDeviceEventUpdatePreferences extends GBDeviceEvent {
 
             LOG.debug("Updating {} = {}", key, value);
 
-            if (value instanceof Integer) {
+            if (value == null) {
+                editor.remove(key);
+            } else if (value instanceof Short) {
+                editor.putInt(key, (Short) value);
+            } else if (value instanceof Integer) {
                 editor.putInt(key, (Integer) value);
             } else if (value instanceof Boolean) {
                 editor.putBoolean(key, (Boolean) value);

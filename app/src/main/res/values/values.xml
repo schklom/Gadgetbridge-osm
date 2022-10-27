@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Note: these are not translated! They are used as preference keys -->
+    <item name="p_default" type="string">default</item>
     <item name="p_staccato" type="string">staccato</item>
     <item name="p_short" type="string">short</item>
     <item name="p_medium" type="string">medium</item>
@@ -55,6 +56,11 @@
     <item name="p_menuitem_temperature" type="string">temperature</item>
     <item name="p_menuitem_barometer" type="string">barometer</item>
     <item name="p_menuitem_flashlight" type="string">flashlight</item>
+    <item name="p_menuitem_countdown" type="string">countdown</item>
+    <item name="p_menuitem_personal_activity_intelligence" type="string">personal_activity_intelligence</item>
+    <item name="p_menuitem_workout_history" type="string">workout_history</item>
+    <item name="p_menuitem_female_health" type="string">female_health</item>
+    <item name="p_menuitem_workout_status" type="string">workout_status</item>
 
     <!-- currently used for sounds -->
     <item name="p_menuitem_button" type="string">button</item>
@@ -66,6 +72,7 @@
     <item name="p_off" type="string">off</item>
     <item name="p_on" type="string">on</item>
     <item name="p_sunset" type="string">sunset</item>
+    <item name="p_always" type="string">always</item>
     <item name="p_automatic" type="string">automatic</item>
     <item name="p_scheduled" type="string">scheduled</item>
 

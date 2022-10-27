@@ -23,17 +23,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.util.Base64;
 import android.widget.Toast;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.RequestQueue;
@@ -50,7 +51,6 @@ import org.xml.sax.InputSource;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringReader;
@@ -63,8 +63,8 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.SimpleTimeZone;
 import java.util.UUID;
 import java.lang.reflect.Field;
@@ -75,8 +75,6 @@ import io.wax911.emojify.EmojiUtils;
 import de.greenrobot.dao.query.QueryBuilder;
 import nodomain.freeyourgadget.gadgetbridge.BuildConfig;
 import nodomain.freeyourgadget.gadgetbridge.GBApplication;
-import nodomain.freeyourgadget.gadgetbridge.R;
-import nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst;
 import nodomain.freeyourgadget.gadgetbridge.database.DBHandler;
 import nodomain.freeyourgadget.gadgetbridge.database.DBHelper;
 import nodomain.freeyourgadget.gadgetbridge.deviceevents.GBDeviceEventBatteryInfo;
@@ -92,10 +90,10 @@ import nodomain.freeyourgadget.gadgetbridge.entities.CalendarSyncState;
 import nodomain.freeyourgadget.gadgetbridge.entities.CalendarSyncStateDao;
 import nodomain.freeyourgadget.gadgetbridge.entities.DaoSession;
 import nodomain.freeyourgadget.gadgetbridge.impl.GBDevice;
-import nodomain.freeyourgadget.gadgetbridge.model.ActivityKind;
 import nodomain.freeyourgadget.gadgetbridge.model.Alarm;
 import nodomain.freeyourgadget.gadgetbridge.model.BatteryState;
 import nodomain.freeyourgadget.gadgetbridge.model.CalendarEventSpec;
+import nodomain.freeyourgadget.gadgetbridge.service.btle.BtLEQueue;
 import nodomain.freeyourgadget.gadgetbridge.util.calendar.CalendarEvent;
 import nodomain.freeyourgadget.gadgetbridge.util.calendar.CalendarManager;
 import nodomain.freeyourgadget.gadgetbridge.model.CallSpec;
@@ -108,7 +106,6 @@ import nodomain.freeyourgadget.gadgetbridge.model.RecordedDataTypes;
 import nodomain.freeyourgadget.gadgetbridge.model.WeatherSpec;
 import nodomain.freeyourgadget.gadgetbridge.service.btle.AbstractBTLEDeviceSupport;
 import nodomain.freeyourgadget.gadgetbridge.service.btle.TransactionBuilder;
-import nodomain.freeyourgadget.gadgetbridge.util.AlarmUtils;
 import nodomain.freeyourgadget.gadgetbridge.util.EmojiConverter;
 import nodomain.freeyourgadget.gadgetbridge.util.FileUtils;
 import nodomain.freeyourgadget.gadgetbridge.util.GB;
@@ -141,6 +138,8 @@ public class BangleJSDeviceSupport extends AbstractBTLEDeviceSupport {
     private boolean realtimeHRM = false;
     private boolean realtimeStep = false;
     private int realtimeHRMInterval = 30*60;
+    /// Last battery percentage reported (or -1) to help with smoothing reported battery levels
+    private int lastBatteryPercent = -1;
 
     private final LimitedQueue/*Long*/ mNotificationReplyAction = new LimitedQueue(16);
 
@@ -177,18 +176,23 @@ public class BangleJSDeviceSupport extends AbstractBTLEDeviceSupport {
                 switch (intent.getAction()) {
                     case BANGLEJS_COMMAND_TX: {
                         String data = String.valueOf(intent.getExtras().get("DATA"));
-                        try {
-                            TransactionBuilder builder = performInitialized("TX");
-                            uartTx(builder, data);
-                            builder.queue(getQueue());
-                        } catch (IOException e) {
-                            GB.toast(getContext(), "Error in TX: " + e.getLocalizedMessage(), Toast.LENGTH_LONG, GB.ERROR);
+                        BtLEQueue queue = getQueue();
+                        if (queue==null) {
+                            LOG.warn("BANGLEJS_COMMAND_TX received, but getQueue()==null (state=" + gbDevice.getStateString() + ")");
+                        } else {
+                            try {
+                                TransactionBuilder builder = performInitialized("TX");
+                                uartTx(builder, data);
+                                builder.queue(queue);
+                            } catch (IOException e) {
+                                GB.toast(getContext(), "Error in TX: " + e.getLocalizedMessage(), Toast.LENGTH_LONG, GB.ERROR);
+                            }
                         }
                         break;
                     }
                     case GBDevice.ACTION_DEVICE_CHANGED: {
-                        LOG.info("ACTION_DEVICE_CHANGED " + gbDevice.getStateString());
-                        addReceiveHistory("\n================================================\nACTION_DEVICE_CHANGED "+gbDevice.getStateString()+" "+(new SimpleDateFormat("yyyy-mm-dd hh:mm:ss")).format(Calendar.getInstance().getTime())+"\n================================================\n");
+                        LOG.info("ACTION_DEVICE_CHANGED " + (gbDevice!=null ? gbDevice.getStateString():""));
+                        addReceiveHistory("\n================================================\nACTION_DEVICE_CHANGED "+gbDevice.getStateString()+" "+(new SimpleDateFormat("yyyy-mm-dd hh:mm:ss", Locale.US)).format(Calendar.getInstance().getTime())+"\n================================================\n");
                     }
                 }
             }
@@ -265,6 +269,7 @@ public class BangleJSDeviceSupport extends AbstractBTLEDeviceSupport {
 
         getDevice().setFirmwareVersion("N/A");
         getDevice().setFirmwareVersion2("N/A");
+        lastBatteryPercent = -1;
 
         LOG.info("Initialization Done");
 
@@ -377,13 +382,7 @@ public class BangleJSDeviceSupport extends AbstractBTLEDeviceSupport {
         }
     }
 
-    /// Write JSON object of the form {t:taskName, err:message}
-
-    private void uartTxJSONError(String taskName, String message) {
-        uartTxJSONError(taskName,message,null);
-    }
-
-    private void uartTxJSONError(String taskName, String message,String id) {
+    private void uartTxJSONError(String taskName, String message, String id) {
         JSONObject o = new JSONObject();
         try {
             o.put("t", taskName);
@@ -438,16 +437,25 @@ public class BangleJSDeviceSupport extends AbstractBTLEDeviceSupport {
             } break;
             case "status": {
                 GBDeviceEventBatteryInfo batteryInfo = new GBDeviceEventBatteryInfo();
+                batteryInfo.state = BatteryState.UNKNOWN;
+                if (json.has("chg")) {
+                    batteryInfo.state = (json.getInt("chg") == 1) ? BatteryState.BATTERY_CHARGING : BatteryState.BATTERY_NORMAL;
+                }
                 if (json.has("bat")) {
                     int b = json.getInt("bat");
                     if (b < 0) b = 0;
                     if (b > 100) b = 100;
+                    // smooth out battery level reporting (it can only go up if charging, or down if discharging)
+                    // http://forum.espruino.com/conversations/379294
+                    if (lastBatteryPercent<0) lastBatteryPercent = b;
+                    if (batteryInfo.state == BatteryState.BATTERY_NORMAL && b > lastBatteryPercent)
+                        b = lastBatteryPercent;
+                    if (batteryInfo.state == BatteryState.BATTERY_CHARGING && b < lastBatteryPercent)
+                        b = lastBatteryPercent;
+                    lastBatteryPercent = b;
                     batteryInfo.level = b;
-                    batteryInfo.state = BatteryState.BATTERY_NORMAL;
                 }
-                if (json.has("chg") && json.getInt("chg") == 1) {
-                    batteryInfo.state = BatteryState.BATTERY_CHARGING;
-                }
+
                 if (json.has("volt"))
                     batteryInfo.voltage = (float) json.getDouble("volt");
                 handleGBDeviceEvent(batteryInfo);
@@ -537,10 +545,42 @@ public class BangleJSDeviceSupport extends AbstractBTLEDeviceSupport {
                 }
                 final String id = _id;
 
-
                 if (BuildConfig.INTERNET_ACCESS && devicePrefs.getBoolean(PREF_DEVICE_INTERNET_ACCESS, false)) {
                     RequestQueue queue = Volley.newRequestQueue(getContext());
                     String url = json.getString("url");
+
+                    int method = Request.Method.GET;
+                    if (json.has("method")) {
+                        String m = json.getString("method").toLowerCase();
+                        if (m.equals("get")) method = Request.Method.GET;
+                        else if (m.equals("post")) method = Request.Method.POST;
+                        else if (m.equals("head")) method = Request.Method.HEAD;
+                        else if (m.equals("put")) method = Request.Method.PUT;
+                        else if (m.equals("patch")) method = Request.Method.PATCH;
+                        else if (m.equals("delete")) method = Request.Method.DELETE;
+                        else uartTxJSONError("http", "Unknown HTTP method "+m,id);
+                    }
+
+                    byte[] _body = null;
+                    if (json.has("body"))
+                        _body = json.getString("body").getBytes();
+                    final byte[] body = _body;
+
+                    Map<String,String> _headers = null;
+                    if (json.has("headers")) {
+                        JSONObject h = json.getJSONObject("headers");
+                        _headers = new HashMap<String,String>();
+                        Iterator<String> iter = h.keys();
+                        while (iter.hasNext()) {
+                            String key = iter.next();
+                            try {
+                                String value = h.getString(key);
+                                _headers.put(key, value);
+                            } catch (JSONException e) {
+                            }
+                        }
+                    }
+                    final Map<String,String> headers = _headers;
 
                     String _xmlPath = "";
                     try {
@@ -549,7 +589,7 @@ public class BangleJSDeviceSupport extends AbstractBTLEDeviceSupport {
                     }
                     final String xmlPath = _xmlPath;
                     // Request a string response from the provided URL.
-                    StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                    StringRequest stringRequest = new StringRequest(method, url,
                             new Response.Listener<String>() {
                                 @Override
                                 public void onResponse(String response) {
@@ -560,7 +600,7 @@ public class BangleJSDeviceSupport extends AbstractBTLEDeviceSupport {
                                             XPath xPath = XPathFactory.newInstance().newXPath();
                                             response = xPath.evaluate(xmlPath, inputXML);
                                         } catch (Exception error) {
-                                            uartTxJSONError("http", error.toString(),id);
+                                            uartTxJSONError("http", error.toString(), id);
                                             return;
                                         }
                                     }
@@ -577,10 +617,28 @@ public class BangleJSDeviceSupport extends AbstractBTLEDeviceSupport {
                             }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            JSONObject o = new JSONObject();
-                            uartTxJSONError("http", error.toString(),id);
+                            uartTxJSONError("http", error.toString(), id);
                         }
-                    });
+                    }) {
+                        @Override
+                        public byte[] getBody() throws AuthFailureError {
+                            if (body == null) return super.getBody();
+                            return body;
+                        }
+
+                        @Override
+                        public Map<String, String> getHeaders() throws AuthFailureError {
+                            // clone the data from super.getHeaders() so we can write to it
+                            Map<String, String> h = new HashMap<>(super.getHeaders());
+                            if (headers != null) {
+                                for (String key : headers.keySet()) {
+                                    String value = headers.get(key);
+                                    h.put(key, value);
+                                }
+                            }
+                            return h;
+                        }
+                    };
                     queue.add(stringRequest);
                 } else {
                     if (BuildConfig.INTERNET_ACCESS)
@@ -592,23 +650,69 @@ public class BangleJSDeviceSupport extends AbstractBTLEDeviceSupport {
             case "intent": {
                 Prefs devicePrefs = new Prefs(GBApplication.getDeviceSpecificSharedPrefs(gbDevice.getAddress()));
                 if (devicePrefs.getBoolean(PREF_DEVICE_INTENTS, false)) {
-                    String action = json.getString("action");
-                    JSONObject extra = json.getJSONObject("extra");
+                    String target = json.has("target") ? json.getString("target") : "broadcastreceiver";
                     Intent in = new Intent();
-                    in.setAction(action);
-                    if (extra != null) {
+                    if (json.has("action")) in.setAction(json.getString("action"));
+                    if (json.has("flags")) {
+                        JSONArray flags = json.getJSONArray("flags");
+                        for (int i = 0; i < flags.length(); i++) {
+                            in = addIntentFlag(in, flags.getString(i));
+                        }
+                    }
+                    if (json.has("categories")) {
+                        JSONArray categories = json.getJSONArray("categories");
+                        for (int i = 0; i < categories.length(); i++) {
+                            in.addCategory(categories.getString(i));
+                        }
+                    }
+                    if (json.has("package") && !json.has("class")) {
+                        in = json.getString("package").equals("gadgetbridge") ?
+                                in.setPackage(this.getContext().getPackageName()) :
+                                in.setPackage(json.getString("package"));
+                    }
+                    if (json.has("package") && json.has("class")) {
+                        in = json.getString("package").equals("gadgetbridge") ?
+                                in.setClassName(this.getContext().getPackageName(), json.getString("class")) :
+                                in.setClassName(json.getString("package"), json.getString("class"));
+                    }
+
+                    if (json.has("mimetype")) in.setType(json.getString("mimetype"));
+                    if (json.has("data")) in.setData(Uri.parse(json.getString("data")));
+                    if (json.has("extra")) {
+                        JSONObject extra = json.getJSONObject("extra");
                         Iterator<String> iter = extra.keys();
                         while (iter.hasNext()) {
                             String key = iter.next();
-                            in.putExtra(key, extra.getString(key));
+                            in.putExtra(key, extra.getString(key)); // Should this be implemented for other types, e.g. extra.getInt(key)? Or will this always work even if receiving ints/doubles/etc.?
                         }
                     }
-                    LOG.info("Sending intent " + action);
-                    this.getContext().getApplicationContext().sendBroadcast(in);
+                    LOG.info("Executing intent:\n\t" + String.valueOf(in) + "\n\tTargeting: " + target);
+                    //GB.toast(getContext(), String.valueOf(in), Toast.LENGTH_LONG, GB.INFO);
+                    switch (target) {
+                        case "broadcastreceiver":
+                            getContext().sendBroadcast(in);
+                            break;
+                        case "activity": // See wakeActivity.java if you want to start activities from under the keyguard/lock sceen.
+                            getContext().startActivity(in);
+                            break;
+                        case "service": // Should this be implemented differently, e.g. workManager?
+                            getContext().startService(in);
+                            break;
+                        case "foregroundservice": // Should this be implemented differently, e.g. workManager?
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                getContext().startForegroundService(in);
+                            } else {
+                                getContext().startService(in);
+                            }
+                            break;
+                        default:
+                            LOG.info("Targeting '"+target+"' isn't implemented or doesn't exist.");
+                            GB.toast(getContext(), "Targeting '"+target+"' isn't implemented or it doesn't exist.", Toast.LENGTH_LONG, GB.INFO);
+                    }
                 } else {
-                    uartTxJSONError("intent", "Android Intents not enabled, check Gadgetbridge Device Settings");
-                }
-            } break;
+                    uartTxJSONError("intent", "Android Intents not enabled, check Gadgetbridge Device Settings", null);
+                } break;
+            }
             case "force_calendar_sync": {
                 //if(!GBApplication.getPrefs().getBoolean("enable_calendar_sync", false)) return;
                 //pretty much like the updateEvents in CalendarReceiver, but would need a lot of libraries here
@@ -661,6 +765,19 @@ public class BangleJSDeviceSupport extends AbstractBTLEDeviceSupport {
                 LOG.info("UART RX JSON packet type '"+packetType+"' not understood.");
             }
         }
+    }
+
+    private Intent addIntentFlag(Intent intent, String flag) {
+        try {
+            final Class<Intent> intentClass = Intent.class;
+            final Field flagField = intentClass.getDeclaredField(flag);
+            intent.addFlags(flagField.getInt(null));
+        } catch (final Exception e) {
+            // The user sent an invalid flag
+            LOG.info("Flag '"+flag+"' isn't implemented or doesn't exist and was therefore not set.");
+            GB.toast(getContext(), "Flag '"+flag+"' isn't implemented or it doesn't exist and was therefore not set.", Toast.LENGTH_LONG, GB.INFO);
+        }
+        return intent;
     }
 
     @Override
@@ -719,7 +836,10 @@ public class BangleJSDeviceSupport extends AbstractBTLEDeviceSupport {
         if (EmojiUtils.getAllEmojis()==null)
             EmojiManager.initEmojiData(GBApplication.getContext());
         for(Emoji emoji : EmojiUtils.getAllEmojis())
-            if (word.contains(emoji.getEmoji())) hasEmoji = true;
+            if (word.contains(emoji.getEmoji())) {
+                hasEmoji = true;
+                break;
+            }
         // if we had emoji, ensure we create 3 bit color (not 1 bit B&W)
         return "\0"+bitmapToEspruinoString(textToBitmap(word), hasEmoji ? BangleJSBitmapStyle.RGB_3BPP_TRANSPARENT : BangleJSBitmapStyle.MONOCHROME_TRANSPARENT);
     }
@@ -767,7 +887,7 @@ public class BangleJSDeviceSupport extends AbstractBTLEDeviceSupport {
             for (int i=0;i<notificationSpec.attachedActions.size();i++) {
                 NotificationSpec.Action action = notificationSpec.attachedActions.get(i);
                 if (action.type==NotificationSpec.Action.TYPE_WEARABLE_REPLY)
-                    mNotificationReplyAction.add(notificationSpec.getId(), new Long(((long)notificationSpec.getId()<<4) + i + 1)); // wow. This should be easier!
+                    mNotificationReplyAction.add(notificationSpec.getId(), ((long) notificationSpec.getId() << 4) + i + 1);
             }
         try {
             JSONObject o = new JSONObject();
@@ -804,7 +924,7 @@ public class BangleJSDeviceSupport extends AbstractBTLEDeviceSupport {
             transmitTime(builder);
             //TODO: once we have a common strategy for sending events (e.g. EventHandler), remove this call from here. Meanwhile it does no harm.
             // = we should genaralize the pebble calender code
-            //sendCalendarEvents(builder);
+            //sendCalendarEvents();
             forceCalendarSync();
             builder.queue(getQueue());
         } catch (Exception e) {
@@ -824,9 +944,7 @@ public class BangleJSDeviceSupport extends AbstractBTLEDeviceSupport {
                 if (!alarm.getEnabled()) continue;
                 JSONObject jsonalarm = new JSONObject();
                 jsonalarms.put(jsonalarm);
-
-                Calendar calendar = AlarmUtils.toCalendar(alarm);
-
+                //Calendar calendar = AlarmUtils.toCalendar(alarm);
                 jsonalarm.put("h", alarm.getHour());
                 jsonalarm.put("m", alarm.getMinute());
                 jsonalarm.put("rep", alarm.getRepetition());
@@ -844,7 +962,7 @@ public class BangleJSDeviceSupport extends AbstractBTLEDeviceSupport {
             o.put("t", "call");
             String cmdName = "";
             try {
-                Field fields[] = callSpec.getClass().getDeclaredFields();
+                Field[] fields = callSpec.getClass().getDeclaredFields();
                 for (Field field : fields)
                     if (field.getName().startsWith("CALL_") && field.getInt(callSpec) == callSpec.command)
                         cmdName = field.getName().substring(5).toLowerCase();
@@ -970,7 +1088,6 @@ public class BangleJSDeviceSupport extends AbstractBTLEDeviceSupport {
                 GB.toast(getContext(), "Log written to "+filename, Toast.LENGTH_LONG, GB.INFO);
             } catch (IOException e) {
                 LOG.warn("Could not write to file", e);
-                return;
             }
         }
     }
@@ -1044,6 +1161,8 @@ public class BangleJSDeviceSupport extends AbstractBTLEDeviceSupport {
             o.put("title", calendarEventSpec.title);
             o.put("description", calendarEventSpec.description);
             o.put("location", calendarEventSpec.location);
+            o.put("calName", calendarEventSpec.calName);
+            o.put("color", calendarEventSpec.color);
             o.put("allDay", calendarEventSpec.allDay);
             uartTxJSON("onAddCalendarEvent", o);
         } catch (JSONException e) {
@@ -1121,7 +1240,7 @@ public class BangleJSDeviceSupport extends AbstractBTLEDeviceSupport {
     /** Used for writing single bits to an array */
     public static class BitWriter {
         int n;
-        byte[] bits;
+        final byte[] bits;
         int currentByte, bitIdx;
 
         public BitWriter(byte[] array, int offset) {
@@ -1151,9 +1270,9 @@ public class BangleJSDeviceSupport extends AbstractBTLEDeviceSupport {
         int height = bitmap.getHeight();
         int bpp = (style==BangleJSBitmapStyle.RGB_3BPP ||
                    style==BangleJSBitmapStyle.RGB_3BPP_TRANSPARENT) ? 3 : 1;
-        byte pixels[] = new byte[width * height];
+        byte[] pixels = new byte[width * height];
         final byte PIXELCOL_TRANSPARENT = -1;
-        final int ditherMatrix[] = {1*16,5*16,7*16,3*16}; // for bayer dithering
+        final int[] ditherMatrix = {1*16,5*16,7*16,3*16}; // for bayer dithering
         // if doing RGB_3BPP_TRANSPARENT, check image to see if it's transparent
         // MONOCHROME_TRANSPARENT is handled later on...
         boolean allowTransparency = (style == BangleJSBitmapStyle.RGB_3BPP_TRANSPARENT);
@@ -1161,7 +1280,7 @@ public class BangleJSDeviceSupport extends AbstractBTLEDeviceSupport {
         byte transparentColorIndex = 0;
         /* Work out what colour index each pixel should be and write to pixels.
          Also figure out if we're transparent at all, and how often each color is used */
-        int colUsage[] = new int[8];
+        int[] colUsage = new int[8];
         int n = 0;
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
@@ -1212,7 +1331,7 @@ public class BangleJSDeviceSupport extends AbstractBTLEDeviceSupport {
         }
         // Write the header
         int headerLen = isTransparent ? 4 : 3;
-        byte bmp[] = new byte[(((height * width * bpp) + 7) >> 3) + headerLen];
+        byte[] bmp = new byte[(((height * width * bpp) + 7) >> 3) + headerLen];
         bmp[0] = (byte)width;
         bmp[1] = (byte)height;
         bmp[2] = (byte)(bpp + (isTransparent?128:0));
@@ -1227,6 +1346,7 @@ public class BangleJSDeviceSupport extends AbstractBTLEDeviceSupport {
                     bits.push(((pixel>>b)&1) != 0);
             }
         }
+        bits.finish();
         return bmp;
     }
 
@@ -1295,8 +1415,8 @@ public class BangleJSDeviceSupport extends AbstractBTLEDeviceSupport {
     /*
      * Sending all events together, not used for now, keep for future reference
      */
-    private void sendCalendarEvents(TransactionBuilder builder) {
-        Prefs prefs = new Prefs(GBApplication.getDeviceSpecificSharedPrefs(gbDevice.getAddress()));
+    private void sendCalendarEvents() {
+        //Prefs prefs = new Prefs(GBApplication.getDeviceSpecificSharedPrefs(gbDevice.getAddress()));
         //TODO set a limit as number in the preferences?
         //int availableSlots = prefs.getInt(PREF_CALENDAR_EVENTS_MAX, 0);
         int availableSlots = 6;

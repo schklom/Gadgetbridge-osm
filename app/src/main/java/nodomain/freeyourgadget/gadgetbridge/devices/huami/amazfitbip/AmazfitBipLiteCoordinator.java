@@ -70,6 +70,7 @@ public class AmazfitBipLiteCoordinator extends AmazfitBipCoordinator {
     public int[] getSupportedDeviceSpecificSettings(GBDevice device) {
         return new int[]{
                 R.xml.devicesettings_amazfitbip,
+                R.xml.devicesettings_vibrationpatterns,
                 R.xml.devicesettings_timeformat,
                 R.xml.devicesettings_wearlocation,
                 R.xml.devicesettings_heartrate_sleep,
@@ -83,6 +84,7 @@ public class AmazfitBipLiteCoordinator extends AmazfitBipCoordinator {
                 R.xml.devicesettings_buttonactions_with_longpress,
                 R.xml.devicesettings_device_actions,
                 R.xml.devicesettings_relax_firmware_checks,
+                R.xml.devicesettings_overwrite_settings_on_connection,
                 R.xml.devicesettings_transliteration
         };
     }

@@ -18,6 +18,9 @@ package nodomain.freeyourgadget.gadgetbridge.service.devices.huami;
 
 public enum HuamiFirmwareType {
     FIRMWARE((byte) 0),
+    CHANGELOG_TXT((byte) 16),
+    // MB7 firmwares are sent as UIHH packing FIRMWARE (zip) + CHANGELOG_TXT, type 0xfd
+    FIRMWARE_UIHH_2021_ZIP_WITH_CHANGELOG((byte) -3),
     FONT((byte) 1),
     RES((byte) 2),
     RES_COMPRESSED((byte) 130),
@@ -26,7 +29,10 @@ public enum HuamiFirmwareType {
     AGPS_UIHH((byte) -4),
     GPS_ALMANAC((byte) 5),
     WATCHFACE((byte) 8),
+    APP((byte) 8),
     FONT_LATIN((byte) 11),
+    ZEPPOS_UNKNOWN_0X13((byte) 0x13),
+    ZEPPOS_APP((byte) 0xa0),
     INVALID(Byte.MIN_VALUE);
 
     private final byte value;

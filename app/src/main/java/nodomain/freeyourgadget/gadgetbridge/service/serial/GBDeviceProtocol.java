@@ -110,6 +110,10 @@ public abstract class GBDeviceProtocol {
         return null;
     }
 
+    public byte[] encodeFindPhone(boolean start) {
+        return null;
+    }
+
     public byte[] encodeEnableRealtimeSteps(boolean enable) {
         return null;
     }

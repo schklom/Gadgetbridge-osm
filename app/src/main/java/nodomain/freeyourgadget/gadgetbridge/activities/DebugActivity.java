@@ -26,6 +26,7 @@ import android.app.DatePickerDialog;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetManager;
+import android.companion.CompanionDeviceManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -34,6 +35,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -68,6 +70,7 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -76,6 +79,7 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.TreeMap;
 
+import nodomain.freeyourgadget.gadgetbridge.BuildConfig;
 import nodomain.freeyourgadget.gadgetbridge.GBApplication;
 import nodomain.freeyourgadget.gadgetbridge.R;
 import nodomain.freeyourgadget.gadgetbridge.Widget;
@@ -100,10 +104,13 @@ import nodomain.freeyourgadget.gadgetbridge.model.MusicStateSpec;
 import nodomain.freeyourgadget.gadgetbridge.model.NotificationSpec;
 import nodomain.freeyourgadget.gadgetbridge.model.NotificationType;
 import nodomain.freeyourgadget.gadgetbridge.model.RecordedDataTypes;
+import nodomain.freeyourgadget.gadgetbridge.model.Weather;
+import nodomain.freeyourgadget.gadgetbridge.model.WeatherSpec;
 import nodomain.freeyourgadget.gadgetbridge.service.serial.GBDeviceProtocol;
 import nodomain.freeyourgadget.gadgetbridge.util.DeviceHelper;
 import nodomain.freeyourgadget.gadgetbridge.util.GB;
 import nodomain.freeyourgadget.gadgetbridge.util.Prefs;
+import nodomain.freeyourgadget.gadgetbridge.util.StringUtils;
 import nodomain.freeyourgadget.gadgetbridge.util.WidgetPreferenceStorage;
 
 public class DebugActivity extends AbstractGBActivity {
@@ -179,8 +186,22 @@ public class DebugActivity extends AbstractGBActivity {
                 notificationSpec.body = testString;
                 notificationSpec.sender = testString;
                 notificationSpec.subject = testString;
+                notificationSpec.sourceAppId = BuildConfig.APPLICATION_ID;
+                notificationSpec.sourceName = getApplicationContext().getApplicationInfo()
+                        .loadLabel(getApplicationContext().getPackageManager())
+                        .toString();
                 notificationSpec.type = NotificationType.sortedValues()[sendTypeSpinner.getSelectedItemPosition()];
                 notificationSpec.pebbleColor = notificationSpec.type.color;
+                notificationSpec.attachedActions = new ArrayList<>();
+
+                if (notificationSpec.type == NotificationType.GENERIC_SMS) {
+                    // REPLY action
+                    NotificationSpec.Action replyAction = new NotificationSpec.Action();
+                    replyAction.title = "Reply";
+                    replyAction.type = NotificationSpec.Action.TYPE_SYNTECTIC_REPLY_PHONENR;
+                    notificationSpec.attachedActions.add(replyAction);
+                }
+
                 GBApplication.deviceService().onNotification(notificationSpec);
             }
         });
@@ -303,6 +324,42 @@ public class DebugActivity extends AbstractGBActivity {
             }
         });
 
+        Button setWeatherButton = findViewById(R.id.setWeatherButton);
+        setWeatherButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (Weather.getInstance().getWeatherSpec() == null) {
+                    final WeatherSpec weatherSpec = new WeatherSpec();
+                    weatherSpec.forecasts = new ArrayList<>();
+
+                    weatherSpec.location = "Green Hill";
+                    weatherSpec.currentConditionCode = 601; // snow
+                    weatherSpec.currentCondition = Weather.getConditionString(weatherSpec.currentConditionCode);
+
+                    weatherSpec.currentTemp = 15 + 273;
+                    weatherSpec.currentHumidity = 30;
+
+                    weatherSpec.windSpeed = 10;
+                    weatherSpec.windDirection = 12;
+                    weatherSpec.timestamp = (int) (System.currentTimeMillis() / 1000);
+                    weatherSpec.todayMinTemp = 10 + 273;
+                    weatherSpec.todayMaxTemp = 25 + 273;
+
+                    for (int i = 0; i < 5; i++) {
+                        final WeatherSpec.Forecast gbForecast = new WeatherSpec.Forecast();
+                        gbForecast.minTemp = 10 + i + 273;
+                        gbForecast.maxTemp = 25 + i + 273;
+
+                        gbForecast.conditionCode = 800; // clear
+                        weatherSpec.forecasts.add(gbForecast);
+                    }
+
+                    Weather.getInstance().setWeatherSpec(weatherSpec);
+                }
+
+                GBApplication.deviceService().onSendWeather(Weather.getInstance().getWeatherSpec());
+            }
+        });
 
         Button setMusicInfoButton = findViewById(R.id.setMusicInfoButton);
         setMusicInfoButton.setOnClickListener(new View.OnClickListener() {
@@ -546,6 +603,37 @@ public class DebugActivity extends AbstractGBActivity {
             @Override
             public void onClick(View v) {
                 GBLocationManager.stopAll(getBaseContext());
+            }
+        });
+
+        Button showCompanionDevices = findViewById(R.id.showCompanionDevices);
+        showCompanionDevices.setVisibility(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ? View.VISIBLE : View.GONE);
+        showCompanionDevices.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+                    LOG.warn("Android version < O, companion devices not supported");
+                    return;
+                }
+
+                final CompanionDeviceManager manager = (CompanionDeviceManager) GBApplication.getContext().getSystemService(Context.COMPANION_DEVICE_SERVICE);
+                final List<String> associations = new ArrayList<>(manager.getAssociations());
+                Collections.sort(associations);
+                String companionDevicesList = String.format(Locale.ROOT, "%d companion devices", associations.size());
+                if (!associations.isEmpty()) {
+                    companionDevicesList += "\n\n" + StringUtils.join("\n", associations.toArray(new String[0]));
+                }
+
+                new AlertDialog.Builder(DebugActivity.this)
+                        .setCancelable(false)
+                        .setTitle("Companion Devices")
+                        .setMessage(companionDevicesList)
+                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
+                        })
+                        .show();
             }
         });
 

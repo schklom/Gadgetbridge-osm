@@ -6,9 +6,12 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
-import nodomain.freeyourgadget.gadgetbridge.devices.huami.HuamiActivitySummaryParser;
 import nodomain.freeyourgadget.gadgetbridge.entities.BaseActivitySummary;
 
 public class ActivitySummaryJsonSummary {
@@ -16,9 +19,11 @@ public class ActivitySummaryJsonSummary {
     private JSONObject groupData;
     private JSONObject summaryData;
     private JSONObject summaryGroupedList;
+    private ActivitySummaryParser summaryParser;
     private BaseActivitySummary baseActivitySummary;
 
-    public ActivitySummaryJsonSummary(BaseActivitySummary baseActivitySummary){
+    public ActivitySummaryJsonSummary(final ActivitySummaryParser summaryParser, BaseActivitySummary baseActivitySummary){
+        this.summaryParser=summaryParser;
         this.baseActivitySummary=baseActivitySummary;
     }
 
@@ -67,8 +72,11 @@ public class ActivitySummaryJsonSummary {
 
     private String getCorrectSummary(BaseActivitySummary item){
         if (item.getRawSummaryData() != null) {
-            ActivitySummaryParser parser = new HuamiActivitySummaryParser(); // FIXME: if something else than huami supports that make sure to have the right parser
-            item = parser.parseBinaryData(item);
+            try {
+                item = summaryParser.parseBinaryData(item);
+            } catch (final Exception e) {
+                LOG.error("Failed to re-parse corrected summary", e);
+            }
         }
         return item.getSummaryData();
     }
@@ -143,20 +151,39 @@ public class ActivitySummaryJsonSummary {
         return defaultGroup;
     }
     private JSONObject createActivitySummaryGroups(){
-        String groupDefinitions = "{'Strokes':['averageStrokeDistance','averageStrokesPerSecond','strokes'], " +
-                "'Swimming':['swolfIndex','swimStyle'], " +
-                "'Elevation':['ascentMeters','descentMeters','maxAltitude','minAltitude','averageAltitude', 'baseAltitude','ascentSeconds','descentSeconds','flatSeconds','ascentDistance','descentDistance','flatDistance'], " +
-                "'Speed':['averageSpeed','maxSpeed','minSpeed','averageKMPaceSeconds','minPace','maxPace','averageSpeed2','averageCadence','maxCadence','minCadence'], " +
-                "'Activity':['distanceMeters','steps','activeSeconds','caloriesBurnt','totalStride'," +
-                "'averageHR','maxHR','minHR','averageStride','maxStride','minStride'], " +
-                "'Laps':['averageLapPace','laps']}";
-        JSONObject data = null;
-        try {
-            data = new JSONObject(groupDefinitions);
-        } catch (JSONException e) {
-            LOG.error("SportsActivity", e);
-        }
-        return data;
-    }
+        final Map<String, List<String>> groupDefinitions = new HashMap<String, List<String>>() {{
+            put("Strokes", Arrays.asList(
+                    "averageStrokeDistance", "averageStrokesPerSecond", "strokes"
+            ));
+            put("Swimming", Arrays.asList(
+                    "swolfIndex", "swimStyle"
+            ));
+            put("Elevation", Arrays.asList(
+                    "ascentMeters", "descentMeters", "maxAltitude", "minAltitude", "averageAltitude",
+                    "baseAltitude", "ascentSeconds", "descentSeconds", "flatSeconds", "ascentDistance",
+                    "descentDistance", "flatDistance", "elevationGain", "elevationLoss"
+            ));
+            put("Speed", Arrays.asList(
+                    "averageSpeed", "maxSpeed", "minSpeed", "averageKMPaceSeconds", "minPace",
+                    "maxPace", "averageSpeed2", "averageCadence", "maxCadence", "minCadence"
+            ));
+            put("Activity", Arrays.asList(
+                    "distanceMeters", "steps", "activeSeconds", "caloriesBurnt", "totalStride",
+                    "averageHR", "maxHR", "minHR", "averageStride", "maxStride", "minStride"
+            ));
+            put("HeartRateZones", Arrays.asList(
+                    "hrZoneNa", "hrZoneWarmUp", "hrZoneFatBurn", "hrZoneAerobic", "hrZoneAnaerobic",
+                    "hrZoneExtreme"
+            ));
+            put("TrainingEffect", Arrays.asList(
+                    "aerobicTrainingEffect", "anaerobicTrainingEffect", "currentWorkoutLoad",
+                    "maximumOxygenUptake"
+            ));
+            put("Laps", Arrays.asList(
+                    "averageLapPace", "laps"
+            ));
+        }};
 
+        return new JSONObject(groupDefinitions);
+    }
 }

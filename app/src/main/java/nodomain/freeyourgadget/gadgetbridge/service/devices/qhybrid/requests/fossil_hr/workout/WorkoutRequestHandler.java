@@ -25,7 +25,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import nodomain.freeyourgadget.gadgetbridge.GBApplication;
+import nodomain.freeyourgadget.gadgetbridge.devices.qhybrid.QHybridConstants;
 import nodomain.freeyourgadget.gadgetbridge.externalevents.opentracks.OpenTracksController;
+import nodomain.freeyourgadget.gadgetbridge.model.ActivityKind;
 
 public class WorkoutRequestHandler {
     public static void addStateResponse(JSONObject workoutResponse, String type, String msg) throws JSONException {
@@ -41,9 +43,15 @@ public class WorkoutRequestHandler {
         JSONObject workoutResponse = new JSONObject();
         if (workoutRequest.optString("state").equals("started") && workoutRequest.optString("gps").equals("on")) {
             int activityType = workoutRequest.optInt("activity", -1);
-            LOG.info("Workout started, activity type is " + activityType);
+            final int activityKind;
+            if (QHybridConstants.WORKOUT_TYPES_TO_ACTIVITY_KIND.containsKey(activityType)) {
+                activityKind = QHybridConstants.WORKOUT_TYPES_TO_ACTIVITY_KIND.get(activityType);
+            } else {
+                activityKind = ActivityKind.TYPE_UNKNOWN;
+            }
+            LOG.info("Workout started, activity type is " + activityType + "/" + activityKind);
             addStateResponse(workoutResponse, "success", "");
-            OpenTracksController.startRecording(context);
+            OpenTracksController.startRecording(context, activityKind);
         } else if (workoutRequest.optString("type").equals("req_distance")) {
             long timeSecs = GBApplication.app().getOpenTracksObserver().getTimeMillisChange() / 1000;
             float distanceCM = GBApplication.app().getOpenTracksObserver().getDistanceMeterChange() * 100;

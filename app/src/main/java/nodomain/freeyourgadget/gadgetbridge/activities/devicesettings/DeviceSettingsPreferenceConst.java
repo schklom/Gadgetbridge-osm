@@ -285,6 +285,8 @@ public class DeviceSettingsPreferenceConst {
     public static final String PREF_SONY_SPEAK_TO_CHAT_TIMEOUT = "pref_sony_speak_to_chat_timeout";
     public static final String PREF_SONY_CONNECT_TWO_DEVICES = "pref_sony_connect_two_devices";
 
+    public static final String PREF_BLUETOOTH_MULTIPOINT = "pref_bluetooth_multipoint";
+
     public static final String PREF_QC35_NOISE_CANCELLING_LEVEL = "qc35_noise_cancelling_level";
 
     public static final String PREFS_ACTIVITY_IN_DEVICE_CARD = "prefs_activity_in_device_card";

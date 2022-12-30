@@ -16,6 +16,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 package nodomain.freeyourgadget.gadgetbridge.service.devices.sony.headphones.protocol.impl.v3;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static nodomain.freeyourgadget.gadgetbridge.service.devices.sony.headphones.protocol.impl.SonyTestUtils.assertRequest;
@@ -33,8 +34,11 @@ import nodomain.freeyourgadget.gadgetbridge.deviceevents.GBDeviceEventUpdatePref
 import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.SonyHeadphonesCoordinator;
 import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.coordinators.SonyLinkBudsSCoordinator;
 import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.prefs.AmbientSoundControlButtonMode;
+import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.prefs.Multipoint;
 import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.prefs.QuickAccess;
+import nodomain.freeyourgadget.gadgetbridge.service.devices.sony.headphones.deviceevents.SonyHeadphonesEnqueueRequestEvent;
 import nodomain.freeyourgadget.gadgetbridge.service.devices.sony.headphones.protocol.Request;
+import nodomain.freeyourgadget.gadgetbridge.util.GB;
 
 public class SonyProtocolImplV3Test {
     private final SonyProtocolImplV3 protocol = new SonyProtocolImplV3(null) {
@@ -43,6 +47,25 @@ public class SonyProtocolImplV3Test {
             return new SonyLinkBudsSCoordinator();
         }
     };
+
+    @Test
+    public void getMultipoint() {
+        final Request request = protocol.getMultipoint();
+        assertRequest(request, "3e:0c:01:00:00:00:02:d6:d2:b7:3c");
+    }
+
+    @Test
+    public void setMultipoint() {
+        final Map<Multipoint, String> commands = new LinkedHashMap<Multipoint, String>() {{
+            put(new Multipoint(false), "3e:0c:00:00:00:00:04:d8:d2:00:01:bb:3c");
+            put(new Multipoint(true), "3e:0c:00:00:00:00:04:d8:d2:00:00:ba:3c");
+        }};
+
+        for (Map.Entry<Multipoint, String> entry : commands.entrySet()) {
+            final Request request = protocol.setMultipoint(entry.getKey());
+            assertRequest(request, entry.getValue());
+        }
+    }
 
     @Test
     public void getQuickAccess() {
@@ -129,6 +152,39 @@ public class SonyProtocolImplV3Test {
                     .get(DeviceSettingsPreferenceConst.PREF_SONY_AMBIENT_SOUND_CONTROL_BUTTON_MODE);
             assertNotNull(modePrefValue);
             assertEquals(modePrefValue, event.preferences.get(DeviceSettingsPreferenceConst.PREF_SONY_AMBIENT_SOUND_CONTROL_BUTTON_MODE));
+        }
+    }
+
+    @Test
+    public void handleRestartNotify() {
+        final List<? extends GBDeviceEvent> events = handleMessage(protocol, "3e:0c:00:00:00:00:04:99:00:07:01:b1:3c");
+        assertEquals("Expect 1 events", 1, events.size());
+        final SonyHeadphonesEnqueueRequestEvent event = (SonyHeadphonesEnqueueRequestEvent) events.get(0);
+        final List<Request> enqueuedRequests = event.getRequests();
+        assertEquals("Expect 1 enqueued request", 1, enqueuedRequests.size());
+        final Request reply = enqueuedRequests.get(0);
+        assertEquals(PayloadTypeV3.RESTART_ACK.getMessageType(), reply.messageType());
+        assertArrayEquals(GB.hexStringToByteArray("98:00:07:01".replace(":", "")), reply.payload());
+    }
+
+    @Test
+    public void handleMultipoint() {
+        final Map<Multipoint, String> commands = new LinkedHashMap<Multipoint, String>() {{
+            // Notify
+            put(new Multipoint(true), "3e:0c:01:00:00:00:04:d7:d2:00:00:ba:3c");
+            put(new Multipoint(false), "3e:0c:00:00:00:00:04:d9:d2:00:01:bc:3c");
+        }};
+
+        for (Map.Entry<Multipoint, String> entry : commands.entrySet()) {
+            final List<? extends GBDeviceEvent> events = handleMessage(protocol, entry.getValue());
+            assertEquals("Expect 1 events", 1, events.size());
+            final GBDeviceEventUpdatePreferences event = (GBDeviceEventUpdatePreferences) events.get(0);
+            final Map<String, Object> expectedPrefs = entry.getKey().toPreferences();
+            assertEquals("Expect 1 prefs", 1, expectedPrefs.size());
+            final Object modePrefValue = expectedPrefs
+                    .get(DeviceSettingsPreferenceConst.PREF_BLUETOOTH_MULTIPOINT);
+            assertNotNull(modePrefValue);
+            assertEquals(modePrefValue, event.preferences.get(DeviceSettingsPreferenceConst.PREF_BLUETOOTH_MULTIPOINT));
         }
     }
 }

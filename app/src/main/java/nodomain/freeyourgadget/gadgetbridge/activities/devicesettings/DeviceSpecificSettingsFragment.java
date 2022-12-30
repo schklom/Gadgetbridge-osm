@@ -512,6 +512,8 @@ public class DeviceSpecificSettingsFragment extends PreferenceFragmentCompat imp
         addPreferenceHandlerFor(PREF_SONY_SPEAK_TO_CHAT_TIMEOUT);
         addPreferenceHandlerFor(PREF_SONY_CONNECT_TWO_DEVICES);
 
+        addPreferenceHandlerFor(PREF_BLUETOOTH_MULTIPOINT);
+
         addPreferenceHandlerFor(PREF_QC35_NOISE_CANCELLING_LEVEL);
         addPreferenceHandlerFor(PREF_USER_FITNESS_GOAL);
         addPreferenceHandlerFor(PREF_USER_FITNESS_GOAL_NOTIFICATION);

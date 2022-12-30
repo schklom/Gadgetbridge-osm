@@ -32,8 +32,11 @@ import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.prefs.Ambien
 import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.prefs.AmbientSoundControlButtonMode;
 import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.prefs.ButtonModes;
 import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.prefs.EqualizerPreset;
+import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.prefs.Multipoint;
 import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.prefs.QuickAccess;
+import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.prefs.TouchSensor;
 import nodomain.freeyourgadget.gadgetbridge.impl.GBDevice;
+import nodomain.freeyourgadget.gadgetbridge.service.devices.sony.headphones.deviceevents.SonyHeadphonesEnqueueRequestEvent;
 import nodomain.freeyourgadget.gadgetbridge.service.devices.sony.headphones.protocol.MessageType;
 import nodomain.freeyourgadget.gadgetbridge.service.devices.sony.headphones.protocol.Request;
 import nodomain.freeyourgadget.gadgetbridge.service.devices.sony.headphones.protocol.impl.v1.PayloadTypeV1;
@@ -84,6 +87,30 @@ public class SonyProtocolImplV3 extends SonyProtocolImplV2 {
         buf.put((byte) (ambientSoundControl.getAmbientSound()));
 
         return new Request(PayloadTypeV1.AMBIENT_SOUND_CONTROL_SET.getMessageType(), buf.array());
+    }
+
+    @Override
+    public Request getMultipoint() {
+        return new Request(
+                PayloadTypeV3.MULTIPOINT_GET.getMessageType(),
+                new byte[]{
+                        PayloadTypeV3.MULTIPOINT_GET.getCode(),
+                        (byte) 0xd2
+                }
+        );
+    }
+
+    @Override
+    public Request setMultipoint(final Multipoint multipoint) {
+        return new Request(
+                PayloadTypeV3.MULTIPOINT_SET.getMessageType(),
+                new byte[]{
+                        PayloadTypeV3.MULTIPOINT_SET.getCode(),
+                        (byte) 0xd2,
+                        (byte) 0x00,
+                        (byte) (multipoint.isEnabled() ? 0x00 : 0x01) // Seems to be reversed?
+                }
+        );
     }
 
     @Override
@@ -143,6 +170,11 @@ public class SonyProtocolImplV3 extends SonyProtocolImplV2 {
         final PayloadTypeV3 payloadType = PayloadTypeV3.fromCode(messageType, payload[0]);
 
         switch (payloadType) {
+            case RESTART_NOTIFY:
+                return handleRestartNotify(payload);
+            case MULTIPOINT_RET:
+            case MULTIPOINT_NOTIFY:
+                return handleMultipoint(payload);
             case QUICK_ACCESS_RET:
             case QUICK_ACCESS_NOTIFY:
                 return handleQuickAccess(payload);
@@ -257,6 +289,63 @@ public class SonyProtocolImplV3 extends SonyProtocolImplV2 {
 
         final GBDeviceEventUpdatePreferences event = new GBDeviceEventUpdatePreferences()
                 .withPreferences(mode.toPreferences());
+
+        return Collections.singletonList(event);
+    }
+
+    public List<? extends GBDeviceEvent> handleRestartNotify(final byte[] payload) {
+        if (payload.length != 4) {
+            LOG.warn("Unexpected payload length {}", payload.length);
+            return Collections.emptyList();
+        }
+
+        if (payload[1] != 0x00 || payload[2] != 0x07 || payload[3] != 0x01) {
+            LOG.warn(
+                    "Unexpected restart notify payload bytes {}",
+                    String.format("%02x %02x %02x", payload[1], payload[2], payload[3])
+            );
+            return Collections.emptyList();
+        }
+
+        LOG.info("Got restart notify, acknowledging");
+
+        final Request restartAckRequest = new Request(
+                PayloadTypeV3.RESTART_ACK.getMessageType(),
+                new byte[]{
+                        PayloadTypeV3.RESTART_ACK.getCode(),
+                        (byte) 0x00,
+                        (byte) 0x07,
+                        (byte) 0x01
+                }
+        );
+
+        return Collections.singletonList(new SonyHeadphonesEnqueueRequestEvent(restartAckRequest));
+    }
+
+    public List<? extends GBDeviceEvent> handleMultipoint(final byte[] payload) {
+        if (payload.length != 4) {
+            LOG.warn("Unexpected payload length {}", payload.length);
+            return Collections.emptyList();
+        }
+
+        if (payload[1] != (byte) 0xd2 || payload[2] != (byte) 0x00) {
+            LOG.warn(
+                    "Unexpected multipoint payload bytes {}",
+                    String.format("%02x %02x", payload[1], payload[2])
+            );
+            return Collections.emptyList();
+        }
+
+        final Boolean disabled = booleanFromByte(payload[3]);
+        if (disabled == null) {
+            LOG.warn("Unknown multipoint code {}", String.format("%02x", payload[3]));
+            return Collections.emptyList();
+        }
+
+        LOG.debug("Bluetooth Multipoint: {}", !disabled);
+
+        final GBDeviceEventUpdatePreferences event = new GBDeviceEventUpdatePreferences()
+                .withPreferences(new Multipoint(!disabled).toPreferences());
 
         return Collections.singletonList(event);
     }

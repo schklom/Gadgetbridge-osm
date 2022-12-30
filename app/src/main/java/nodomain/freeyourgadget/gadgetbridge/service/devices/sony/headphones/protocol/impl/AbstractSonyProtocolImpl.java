@@ -27,6 +27,7 @@ import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.prefs.Automa
 import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.prefs.ButtonModes;
 import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.prefs.EqualizerCustomBands;
 import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.prefs.EqualizerPreset;
+import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.prefs.Multipoint;
 import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.prefs.PauseWhenTakenOff;
 import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.prefs.QuickAccess;
 import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.prefs.SoundPosition;
@@ -77,6 +78,10 @@ public abstract class AbstractSonyProtocolImpl {
     public abstract Request getButtonModes();
 
     public abstract Request setButtonModes(final ButtonModes config);
+
+    public abstract Request getMultipoint();
+
+    public abstract Request setMultipoint(final Multipoint multipoint);
 
     public abstract Request getQuickAccess();
 

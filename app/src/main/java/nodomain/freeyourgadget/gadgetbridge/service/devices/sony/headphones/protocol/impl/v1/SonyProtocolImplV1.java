@@ -47,6 +47,7 @@ import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.prefs.Automa
 import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.prefs.ButtonModes;
 import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.prefs.EqualizerCustomBands;
 import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.prefs.EqualizerPreset;
+import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.prefs.Multipoint;
 import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.prefs.PauseWhenTakenOff;
 import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.prefs.QuickAccess;
 import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.prefs.SoundPosition;
@@ -253,6 +254,18 @@ public class SonyProtocolImplV1 extends AbstractSonyProtocolImpl {
                         encodeButtonMode(config.getModeRight())
                 }
         );
+    }
+
+    @Override
+    public Request getMultipoint() {
+        LOG.warn("Multipoint not implemented for V1");
+        return null;
+    }
+
+    @Override
+    public Request setMultipoint(final Multipoint multipoint) {
+        LOG.warn("Multipoint not implemented for V1");
+        return null;
     }
 
     @Override
@@ -544,6 +557,7 @@ public class SonyProtocolImplV1 extends AbstractSonyProtocolImpl {
             put(SonyHeadphonesCapabilities.SurroundMode, getSurroundMode());
             put(SonyHeadphonesCapabilities.PauseWhenTakenOff, getPauseWhenTakenOff());
             put(SonyHeadphonesCapabilities.AmbientSoundControlButtonMode, getAmbientSoundControlButtonMode());
+            put(SonyHeadphonesCapabilities.Multipoint, getMultipoint());
             put(SonyHeadphonesCapabilities.QuickAccess, getQuickAccess());
         }};
 

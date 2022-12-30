@@ -38,6 +38,7 @@ import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.prefs.Automa
 import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.prefs.ButtonModes;
 import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.prefs.EqualizerCustomBands;
 import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.prefs.EqualizerPreset;
+import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.prefs.Multipoint;
 import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.prefs.PauseWhenTakenOff;
 import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.prefs.QuickAccess;
 import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.prefs.VoiceNotifications;
@@ -198,6 +199,9 @@ public class SonyHeadphonesProtocol extends GBDeviceProtocol {
                 break;
             case DeviceSettingsPreferenceConst.PREF_SONY_TOUCH_SENSOR:
                 configRequest = protocolImpl.setTouchSensor(TouchSensor.fromPreferences(prefs));
+                break;
+            case DeviceSettingsPreferenceConst.PREF_BLUETOOTH_MULTIPOINT:
+                configRequest = protocolImpl.setMultipoint(Multipoint.fromPreferences(prefs));
                 break;
             case DeviceSettingsPreferenceConst.PREF_SONY_AUTOMATIC_POWER_OFF:
                 configRequest = protocolImpl.setAutomaticPowerOff(AutomaticPowerOff.fromPreferences(prefs));

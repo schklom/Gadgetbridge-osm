@@ -19,6 +19,14 @@ package nodomain.freeyourgadget.gadgetbridge.service.devices.sony.headphones.pro
 import nodomain.freeyourgadget.gadgetbridge.service.devices.sony.headphones.protocol.MessageType;
 
 public enum PayloadTypeV3 {
+    RESTART_ACK(MessageType.COMMAND_1, 0x98),
+    RESTART_NOTIFY(MessageType.COMMAND_1, 0x99),
+
+    MULTIPOINT_GET(MessageType.COMMAND_1, 0xd6),
+    MULTIPOINT_RET(MessageType.COMMAND_1, 0xd7),
+    MULTIPOINT_SET(MessageType.COMMAND_1, 0xd8),
+    MULTIPOINT_NOTIFY(MessageType.COMMAND_1, 0xd9),
+
     QUICK_ACCESS_GET(MessageType.COMMAND_1, 0xf6),
     QUICK_ACCESS_RET(MessageType.COMMAND_1, 0xf7),
     QUICK_ACCESS_SET(MessageType.COMMAND_1, 0xf8),

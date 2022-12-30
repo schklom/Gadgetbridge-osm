@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <SwitchPreference
+        android:defaultValue="true"
+        android:icon="@drawable/ic_mtu"
+        android:key="pref_bluetooth_multipoint"
+        android:summary="@string/pref_summary_bluetooth_multipoint"
+        android:title="@string/pref_title_bluetooth_multipoint" />
+</androidx.preference.PreferenceScreen>

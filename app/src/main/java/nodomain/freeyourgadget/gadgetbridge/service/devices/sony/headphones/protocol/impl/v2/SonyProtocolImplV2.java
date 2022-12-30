@@ -38,6 +38,7 @@ import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.prefs.Automa
 import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.prefs.ButtonModes;
 import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.prefs.EqualizerCustomBands;
 import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.prefs.EqualizerPreset;
+import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.prefs.Multipoint;
 import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.prefs.PauseWhenTakenOff;
 import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.prefs.QuickAccess;
 import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.prefs.SoundPosition;
@@ -207,6 +208,18 @@ public class SonyProtocolImplV2 extends SonyProtocolImplV1 {
                         encodeButtonMode(config.getModeRight())
                 }
         );
+    }
+
+    @Override
+    public Request getMultipoint() {
+        LOG.warn("Multipoint not implemented for V2");
+        return null;
+    }
+
+    @Override
+    public Request setMultipoint(final Multipoint multipoint) {
+        LOG.warn("Multipoint not implemented for V2");
+        return null;
     }
 
     @Override

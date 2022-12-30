@@ -201,6 +201,7 @@ public abstract class SonyHeadphonesCoordinator extends AbstractBLClassicDeviceC
             put(SonyHeadphonesCapabilities.AutomaticPowerOffWhenTakenOff, R.xml.devicesettings_automatic_power_off_when_taken_off);
             put(SonyHeadphonesCapabilities.AutomaticPowerOffByTime, R.xml.devicesettings_automatic_power_off_by_time);
             put(SonyHeadphonesCapabilities.VoiceNotifications, R.xml.devicesettings_sony_headphones_notifications_voice_guide);
+            put(SonyHeadphonesCapabilities.Multipoint, R.xml.devicesettings_bluetooth_multipoint);
         }});
 
         settings.add(R.xml.devicesettings_sony_headphones_device_info);

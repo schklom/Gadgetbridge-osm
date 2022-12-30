@@ -53,6 +53,7 @@ public class SonyLinkBudsSCoordinator extends SonyHeadphonesCoordinator {
                 SonyHeadphonesCapabilities.ButtonModesLeftRight,
                 SonyHeadphonesCapabilities.AmbientSoundControlButtonMode,
                 SonyHeadphonesCapabilities.QuickAccess,
+                SonyHeadphonesCapabilities.Multipoint,
                 SonyHeadphonesCapabilities.PauseWhenTakenOff,
                 SonyHeadphonesCapabilities.AutomaticPowerOffWhenTakenOff
         );

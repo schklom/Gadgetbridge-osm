@@ -2694,19 +2694,23 @@ public abstract class HuamiSupport extends AbstractBTLEDeviceSupport implements 
     }
 
     private HuamiSupport sendCalendarEventsAsReminders(TransactionBuilder builder) {
-        boolean syncCalendar = GBApplication.getDeviceSpecificSharedPrefs(gbDevice.getAddress()).getBoolean(PREF_SYNC_CALENDAR, false);
-        if (!syncCalendar) {
-            return this;
-        }
-        final DeviceCoordinator coordinator = DeviceHelper.getInstance().getCoordinator(gbDevice);
-
         final Prefs prefs = new Prefs(GBApplication.getDeviceSpecificSharedPrefs(gbDevice.getAddress()));
-        int availableSlots = prefs.getInt(PREF_RESERVER_REMINDERS_CALENDAR, coordinator.supportsCalendarEvents() ? 0 : 9);
 
-        CalendarManager upcomingEvents = new CalendarManager(getContext(), getDevice().getAddress());
-        List<CalendarEvent> calendarEvents = upcomingEvents.getCalendarEventList();
-        Calendar calendar = Calendar.getInstance();
+        final boolean syncCalendar = prefs.getBoolean(PREF_SYNC_CALENDAR, false);
+        final DeviceCoordinator coordinator = DeviceHelper.getInstance().getCoordinator(gbDevice);
+        final int availableSlots = prefs.getInt(PREF_RESERVER_REMINDERS_CALENDAR, coordinator.supportsCalendarEvents() ? 0 : 9);
 
+        final List<CalendarEvent> calendarEvents;
+        if (syncCalendar) {
+            final CalendarManager upcomingEvents = new CalendarManager(getContext(), getDevice().getAddress());
+            calendarEvents = upcomingEvents.getCalendarEventList();
+        } else {
+            // If calendar sync is disabled, set an empty list.
+            // This will ensure the reserved slots are still cleaned up at the end
+            calendarEvents = Collections.emptyList();
+        }
+
+        final Calendar calendar = Calendar.getInstance();
         int iteration = 0;
 
         for (CalendarEvent calendarEvent : calendarEvents) {

@@ -141,7 +141,11 @@ public class DiscoveryActivity extends AbstractGBActivity implements AdapterView
                 case BluetoothDevice.ACTION_FOUND: {
                     LOG.debug("ACTION_FOUND");
                     BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                    handleDeviceFound(device, intent.getShortExtra(BluetoothDevice.EXTRA_RSSI, GBDevice.RSSI_UNKNOWN));
+                    if (isInFoundCandidates(device)) {
+                        LOG.debug("Device " + device.getName() + " (" + device.getAddress() + ") already in foundCandidates, skipping.");
+                    } else {
+                        handleDeviceFound(device, intent.getShortExtra(BluetoothDevice.EXTRA_RSSI, GBDevice.RSSI_UNKNOWN));
+                    }
                     break;
                 }
                 case BluetoothDevice.ACTION_UUID: {
@@ -169,6 +173,15 @@ public class DiscoveryActivity extends AbstractGBActivity implements AdapterView
             }
         }
     };
+
+    private boolean isInFoundCandidates(BluetoothDevice btDev) {
+        for (BTUUIDPair candidate : foundCandidates) {
+            if (btDev.getAddress().equals(candidate.bluetoothDevice.getAddress())) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public void logMessageContent(byte[] value) {
         if (value != null) {
@@ -348,12 +361,13 @@ public class DiscoveryActivity extends AbstractGBActivity implements AdapterView
     private void addToCandidateListIfNotAlreadyProcessed(BluetoothDevice device, short rssi, ParcelUuid[] uuids) {
         BTUUIDPair btuuidPair = new BTUUIDPair(device, uuids);
         if (foundCandidates.contains(btuuidPair)) {
-//                        LOG.info("candidate already processed, skipping");
+//            LOG.info("candidate already processed, skipping: " + device.toString());
             return;
         }
 
         if (handleDeviceFound(device, rssi, uuids)) {
             //device was considered a candidate, do not process it again unless something changed
+            LOG.debug("adding to foundCandidates: " + device.getName() + " (" + device.toString() + ")");
             foundCandidates.add(btuuidPair);
         }
     }

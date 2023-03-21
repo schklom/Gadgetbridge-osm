@@ -122,6 +122,7 @@ import nodomain.freeyourgadget.gadgetbridge.service.devices.huami.zeppos.service
 import nodomain.freeyourgadget.gadgetbridge.service.devices.huami.zeppos.services.ZeppOsConfigService;
 import nodomain.freeyourgadget.gadgetbridge.service.devices.huami.zeppos.services.ZeppOsFileUploadService;
 import nodomain.freeyourgadget.gadgetbridge.service.devices.huami.zeppos.services.ZeppOsFtpServerService;
+import nodomain.freeyourgadget.gadgetbridge.service.devices.huami.zeppos.services.ZeppOsMorningUpdatesService;
 import nodomain.freeyourgadget.gadgetbridge.service.devices.huami.zeppos.services.ZeppOsWifiService;
 import nodomain.freeyourgadget.gadgetbridge.util.AlarmUtils;
 import nodomain.freeyourgadget.gadgetbridge.util.BitmapUtil;
@@ -151,12 +152,15 @@ public abstract class Huami2021Support extends HuamiSupport {
     private final ZeppOsAgpsService agpsService = new ZeppOsAgpsService(this);
     private final ZeppOsWifiService wifiService = new ZeppOsWifiService(this);
     private final ZeppOsFtpServerService ftpServerService = new ZeppOsFtpServerService(this);
+    private final ZeppOsMorningUpdatesService morningUpdatesService = new ZeppOsMorningUpdatesService(this);
+
     private final Map<Short, AbstractZeppOsService> mServiceMap = new HashMap<Short, AbstractZeppOsService>() {{
         put(fileUploadService.getEndpoint(), fileUploadService);
         put(configService.getEndpoint(), configService);
         put(agpsService.getEndpoint(), agpsService);
         put(wifiService.getEndpoint(), wifiService);
         put(ftpServerService.getEndpoint(), ftpServerService);
+        put(morningUpdatesService.getEndpoint(), morningUpdatesService);
     }};
 
     public Huami2021Support() {

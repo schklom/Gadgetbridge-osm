@@ -16,6 +16,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>. */
 package nodomain.freeyourgadget.gadgetbridge.service.devices.sony.headphones.protocol.impl;
 
+import android.content.SharedPreferences;
+
 import java.util.List;
 
 import nodomain.freeyourgadget.gadgetbridge.deviceevents.GBDeviceEvent;
@@ -100,7 +102,7 @@ public abstract class AbstractSonyProtocolImpl {
 
     public abstract Request setPauseWhenTakenOff(final PauseWhenTakenOff config);
 
-    public abstract Request getEqualizer();
+    public abstract Request getEqualizerPreset();
 
     public abstract Request setEqualizerPreset(final EqualizerPreset config);
 
@@ -127,4 +129,64 @@ public abstract class AbstractSonyProtocolImpl {
     public abstract Request powerOff();
 
     public abstract List<? extends GBDeviceEvent> handlePayload(final MessageType messageType, final byte[] payload);
+
+    public Request setAmbientSoundControl(final SharedPreferences prefs) {
+        return setAmbientSoundControl(AmbientSoundControl.fromPreferences(prefs));
+    }
+
+    public Request setSpeakToChatEnabled(final SharedPreferences prefs) {
+        return setSpeakToChatEnabled(SpeakToChatEnabled.fromPreferences(prefs));
+    }
+
+    public Request setSpeakToChatConfig(final SharedPreferences prefs) {
+        return setSpeakToChatConfig(SpeakToChatConfig.fromPreferences(prefs));
+    }
+
+    public Request setAudioUpsampling(final SharedPreferences prefs) {
+        return setAudioUpsampling(AudioUpsampling.fromPreferences(prefs));
+    }
+
+    public Request setAutomaticPowerOff(final SharedPreferences prefs) {
+        return setAutomaticPowerOff(AutomaticPowerOff.fromPreferences(prefs));
+    }
+
+    public Request setButtonModes(final SharedPreferences prefs) {
+        return setButtonModes(ButtonModes.fromPreferences(prefs));
+    }
+
+    public Request setQuickAccess(final SharedPreferences prefs) {
+        return setQuickAccess(QuickAccess.fromPreferences(prefs));
+    }
+
+    public Request setAmbientSoundControlButtonMode(final SharedPreferences prefs) {
+        return setAmbientSoundControlButtonMode(AmbientSoundControlButtonMode.fromPreferences(prefs))
+    }
+
+    public Request setPauseWhenTakenOff(final SharedPreferences prefs) {
+        return setPauseWhenTakenOff(PauseWhenTakenOff.fromPreferences(prefs));
+    }
+
+    public Request setEqualizerPreset(final SharedPreferences prefs) {
+        return setEqualizerPreset(EqualizerPreset.fromPreferences(prefs));
+    }
+
+    public Request setEqualizerCustomBands(final SharedPreferences prefs) {
+        return setEqualizerCustomBands(EqualizerCustomBands.fromPreferences(prefs));
+    }
+
+    public Request setSoundPosition(final SharedPreferences prefs) {
+        return setSoundPosition(SoundPosition.fromPreferences(prefs));
+    }
+
+    public Request setSurroundMode(final SharedPreferences prefs) {
+        return setSurroundMode(SurroundMode.fromPreferences(prefs));
+    }
+
+    public Request setTouchSensor(final SharedPreferences prefs) {
+        return setTouchSensor(TouchSensor.fromPreferences(prefs));
+    }
+
+    public Request setVoiceNotifications(final SharedPreferences prefs) {
+        return setVoiceNotifications(VoiceNotifications.fromPreferences(prefs));
+    }
 }

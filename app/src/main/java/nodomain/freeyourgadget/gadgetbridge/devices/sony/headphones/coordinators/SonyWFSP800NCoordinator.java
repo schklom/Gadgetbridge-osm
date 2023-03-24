@@ -60,7 +60,7 @@ public class SonyWFSP800NCoordinator extends SonyHeadphonesCoordinator {
                 SonyHeadphonesCapabilities.BatteryCase,
                 SonyHeadphonesCapabilities.PowerOffFromPhone,
                 SonyHeadphonesCapabilities.AmbientSoundControl,
-                SonyHeadphonesCapabilities.EqualizerWithCustomBands,
+                SonyHeadphonesCapabilities.EqualizerCustomBands,
                 SonyHeadphonesCapabilities.ButtonModesLeftRight,
                 SonyHeadphonesCapabilities.PauseWhenTakenOff,
                 SonyHeadphonesCapabilities.AutomaticPowerOffWhenTakenOff,

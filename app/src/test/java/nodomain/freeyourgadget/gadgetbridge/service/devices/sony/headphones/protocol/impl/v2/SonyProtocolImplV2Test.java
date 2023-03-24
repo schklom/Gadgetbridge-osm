@@ -135,7 +135,7 @@ public class SonyProtocolImplV2Test {
 
     @Test
     public void getEqualizer() {
-        final Request requestDisabled = protocol.getEqualizer();
+        final Request requestDisabled = protocol.getEqualizerPreset();
         assertRequest(requestDisabled, "3e:0c:00:00:00:00:02:56:00:64:3c");
     }
 

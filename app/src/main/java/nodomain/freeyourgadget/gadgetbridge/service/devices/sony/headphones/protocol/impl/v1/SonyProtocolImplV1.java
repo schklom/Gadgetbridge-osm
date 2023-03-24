@@ -19,6 +19,8 @@ package nodomain.freeyourgadget.gadgetbridge.service.devices.sony.headphones.pro
 import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_NOISE_OPTIMIZER_STATE_PRESSURE;
 import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.PREF_SONY_NOISE_OPTIMIZER_STATUS;
 
+import android.content.SharedPreferences;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,6 +34,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import nodomain.freeyourgadget.gadgetbridge.GBApplication;
 import nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst;
 import nodomain.freeyourgadget.gadgetbridge.deviceevents.GBDeviceEvent;
 import nodomain.freeyourgadget.gadgetbridge.deviceevents.GBDeviceEventBatteryInfo;
@@ -356,7 +359,7 @@ public class SonyProtocolImplV1 extends AbstractSonyProtocolImpl {
     }
 
     @Override
-    public Request getEqualizer() {
+    public Request getEqualizerPreset() {
         return new Request(
                 PayloadTypeV1.EQUALIZER_GET.getMessageType(),
                 new byte[]{
@@ -574,10 +577,12 @@ public class SonyProtocolImplV1 extends AbstractSonyProtocolImpl {
 
     public List<? extends GBDeviceEvent> handleInitResponse(final byte[] payload) {
         final SonyHeadphonesCoordinator coordinator = getCoordinator();
+        final SharedPreferences prefs = GBApplication.getDeviceSpecificSharedPrefs(getDevice().getAddress());
 
         // Populate the init requests
         final List<Request> capabilityRequests = new ArrayList<>();
 
+        
         capabilityRequests.add(getFirmwareVersion());
         capabilityRequests.add(getAudioCodec());
 
@@ -593,8 +598,8 @@ public class SonyProtocolImplV1 extends AbstractSonyProtocolImpl {
             put(SonyHeadphonesCapabilities.AutomaticPowerOffWhenTakenOff, getAutomaticPowerOff());
             put(SonyHeadphonesCapabilities.AutomaticPowerOffByTime, getAutomaticPowerOff());
             put(SonyHeadphonesCapabilities.TouchSensorSingle, getTouchSensor());
-            put(SonyHeadphonesCapabilities.EqualizerSimple, getEqualizer());
-            put(SonyHeadphonesCapabilities.EqualizerWithCustomBands, getEqualizer());
+            put(SonyHeadphonesCapabilities.EqualizerPresets, getEqualizerPreset());
+            put(SonyHeadphonesCapabilities.EqualizerCustomBands, getEqualizerPreset());
             put(SonyHeadphonesCapabilities.SoundPosition, getSoundPosition());
             put(SonyHeadphonesCapabilities.SurroundMode, getSurroundMode());
             put(SonyHeadphonesCapabilities.SpeakToChatEnabled, getSpeakToChatEnabled());
@@ -603,6 +608,25 @@ public class SonyProtocolImplV1 extends AbstractSonyProtocolImpl {
             put(SonyHeadphonesCapabilities.AmbientSoundControlButtonMode, getAmbientSoundControlButtonMode());
             put(SonyHeadphonesCapabilities.QuickAccess, getQuickAccess());
         }};
+
+        //final Map<SonyHeadphonesCapabilities, Request> capabilityRequestMap = new LinkedHashMap<SonyHeadphonesCapabilities, Request>() {{
+        //    put(SonyHeadphonesCapabilities.AmbientSoundControl, setAmbientSoundControl(prefs));
+        //    put(SonyHeadphonesCapabilities.AudioUpsampling, setAudioUpsampling(prefs));
+        //    put(SonyHeadphonesCapabilities.ButtonModesLeftRight, setButtonModes(prefs));
+        //    put(SonyHeadphonesCapabilities.VoiceNotifications, setVoiceNotifications(prefs));
+        //    put(SonyHeadphonesCapabilities.AutomaticPowerOffWhenTakenOff, setAutomaticPowerOff(prefs));
+        //    put(SonyHeadphonesCapabilities.AutomaticPowerOffByTime, setAutomaticPowerOff(prefs));
+        //    put(SonyHeadphonesCapabilities.TouchSensorSingle, setTouchSensor(prefs));
+        //    put(SonyHeadphonesCapabilities.EqualizerPresets, setEqualizerPreset(prefs));
+        //    put(SonyHeadphonesCapabilities.EqualizerCustomBands, setEqualizerCustomBands(prefs));
+        //    put(SonyHeadphonesCapabilities.SoundPosition, setSoundPosition(prefs));
+        //    put(SonyHeadphonesCapabilities.SurroundMode, setSurroundMode(prefs));
+        //    put(SonyHeadphonesCapabilities.SpeakToChatEnabled, setSpeakToChatEnabled(prefs));
+        //    put(SonyHeadphonesCapabilities.SpeakToChatConfig, setSpeakToChatConfig(prefs));
+        //    put(SonyHeadphonesCapabilities.PauseWhenTakenOff, setPauseWhenTakenOff(prefs));
+        //    put(SonyHeadphonesCapabilities.AmbientSoundControlButtonMode, setAmbientSoundControlButtonMode(prefs));
+        //    put(SonyHeadphonesCapabilities.QuickAccess, setQuickAccess(prefs));
+        //}};
 
         for (Map.Entry<SonyHeadphonesCapabilities, Request> capabilityEntry : capabilityRequestMap.entrySet()) {
             if (coordinator.supports(capabilityEntry.getKey())) {

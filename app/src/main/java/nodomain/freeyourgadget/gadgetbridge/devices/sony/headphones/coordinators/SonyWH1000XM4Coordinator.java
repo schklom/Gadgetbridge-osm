@@ -53,7 +53,7 @@ public class SonyWH1000XM4Coordinator extends SonyHeadphonesCoordinator {
                 SonyHeadphonesCapabilities.SpeakToChatEnabled,
                 SonyHeadphonesCapabilities.SpeakToChatConfig,
                 SonyHeadphonesCapabilities.AncOptimizer,
-                SonyHeadphonesCapabilities.EqualizerWithCustomBands,
+                SonyHeadphonesCapabilities.EqualizerCustomBands,
                 SonyHeadphonesCapabilities.AudioUpsampling,
                 SonyHeadphonesCapabilities.TouchSensorSingle,
                 SonyHeadphonesCapabilities.PauseWhenTakenOff,

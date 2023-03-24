@@ -48,7 +48,7 @@ public class SonyLinkBudsSCoordinator extends SonyHeadphonesCoordinator {
                 SonyHeadphonesCapabilities.BatteryDual,
                 SonyHeadphonesCapabilities.BatteryCase,
                 SonyHeadphonesCapabilities.AmbientSoundControl,
-                SonyHeadphonesCapabilities.EqualizerSimple,
+                SonyHeadphonesCapabilities.EqualizerPresets,
                 SonyHeadphonesCapabilities.AudioUpsampling,
                 SonyHeadphonesCapabilities.ButtonModesLeftRight,
                 SonyHeadphonesCapabilities.AmbientSoundControlButtonMode,

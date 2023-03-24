@@ -62,7 +62,7 @@ public class SonyWF1000XM3Coordinator extends SonyHeadphonesCoordinator {
                 SonyHeadphonesCapabilities.PowerOffFromPhone,
                 SonyHeadphonesCapabilities.AmbientSoundControl,
                 SonyHeadphonesCapabilities.WindNoiseReduction,
-                SonyHeadphonesCapabilities.EqualizerWithCustomBands,
+                SonyHeadphonesCapabilities.EqualizerCustomBands,
                 SonyHeadphonesCapabilities.AudioUpsampling,
                 SonyHeadphonesCapabilities.ButtonModesLeftRight,
                 SonyHeadphonesCapabilities.PauseWhenTakenOff,

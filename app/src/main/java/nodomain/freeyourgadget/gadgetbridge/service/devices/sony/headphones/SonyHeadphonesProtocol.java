@@ -167,10 +167,10 @@ public class SonyHeadphonesProtocol extends GBDeviceProtocol {
             case DeviceSettingsPreferenceConst.PREF_SONY_AMBIENT_SOUND_CONTROL:
             case DeviceSettingsPreferenceConst.PREF_SONY_FOCUS_VOICE:
             case DeviceSettingsPreferenceConst.PREF_SONY_AMBIENT_SOUND_LEVEL:
-                configRequest = protocolImpl.setAmbientSoundControl(AmbientSoundControl.fromPreferences(prefs));
+                configRequest = protocolImpl.setAmbientSoundControl(prefs);
                 break;
             case DeviceSettingsPreferenceConst.PREF_SONY_AMBIENT_SOUND_CONTROL_BUTTON_MODE:
-                configRequest = protocolImpl.setAmbientSoundControlButtonMode(AmbientSoundControlButtonMode.fromPreferences(prefs));
+                configRequest = protocolImpl.setAmbientSoundControlButtonMode(prefs);
                 break;
             case DeviceSettingsPreferenceConst.PREF_SONY_NOISE_OPTIMIZER_START:
                 configRequest = protocolImpl.startNoiseCancellingOptimizer(true);
@@ -179,13 +179,13 @@ public class SonyHeadphonesProtocol extends GBDeviceProtocol {
                 configRequest = protocolImpl.startNoiseCancellingOptimizer(false);
                 break;
             case DeviceSettingsPreferenceConst.PREF_SONY_SOUND_POSITION:
-                configRequest = protocolImpl.setSoundPosition(SoundPosition.fromPreferences(prefs));
+                configRequest = protocolImpl.setSoundPosition(prefs);
                 break;
             case DeviceSettingsPreferenceConst.PREF_SONY_SURROUND_MODE:
-                configRequest = protocolImpl.setSurroundMode(SurroundMode.fromPreferences(prefs));
+                configRequest = protocolImpl.setSurroundMode(prefs);
                 break;
             case DeviceSettingsPreferenceConst.PREF_SONY_EQUALIZER_MODE:
-                configRequest = protocolImpl.setEqualizerPreset(EqualizerPreset.fromPreferences(prefs));
+                configRequest = protocolImpl.setEqualizerPreset(prefs);
                 break;
             case DeviceSettingsPreferenceConst.PREF_SONY_EQUALIZER_BAND_400:
             case DeviceSettingsPreferenceConst.PREF_SONY_EQUALIZER_BAND_1000:
@@ -193,41 +193,41 @@ public class SonyHeadphonesProtocol extends GBDeviceProtocol {
             case DeviceSettingsPreferenceConst.PREF_SONY_EQUALIZER_BAND_6300:
             case DeviceSettingsPreferenceConst.PREF_SONY_EQUALIZER_BAND_16000:
             case DeviceSettingsPreferenceConst.PREF_SONY_EQUALIZER_BASS:
-                configRequest = protocolImpl.setEqualizerCustomBands(EqualizerCustomBands.fromPreferences(prefs));
+                configRequest = protocolImpl.setEqualizerCustomBands(prefs);
                 break;
             case DeviceSettingsPreferenceConst.PREF_SONY_AUDIO_UPSAMPLING:
-                configRequest = protocolImpl.setAudioUpsampling(AudioUpsampling.fromPreferences(prefs));
+                configRequest = protocolImpl.setAudioUpsampling(prefs);
                 break;
             case DeviceSettingsPreferenceConst.PREF_SONY_TOUCH_SENSOR:
-                configRequest = protocolImpl.setTouchSensor(TouchSensor.fromPreferences(prefs));
+                configRequest = protocolImpl.setTouchSensor(prefs);
                 break;
             case DeviceSettingsPreferenceConst.PREF_SONY_AUTOMATIC_POWER_OFF:
-                configRequest = protocolImpl.setAutomaticPowerOff(AutomaticPowerOff.fromPreferences(prefs));
+                configRequest = protocolImpl.setAutomaticPowerOff(prefs);
                 break;
             case DeviceSettingsPreferenceConst.PREF_SONY_BUTTON_MODE_LEFT:
             case DeviceSettingsPreferenceConst.PREF_SONY_BUTTON_MODE_RIGHT:
-                configRequest = protocolImpl.setButtonModes(ButtonModes.fromPreferences(prefs));
+                configRequest = protocolImpl.setButtonModes(prefs);
                 break;
             case DeviceSettingsPreferenceConst.PREF_SONY_QUICK_ACCESS_DOUBLE_TAP:
             case DeviceSettingsPreferenceConst.PREF_SONY_QUICK_ACCESS_TRIPLE_TAP:
-                configRequest = protocolImpl.setQuickAccess(QuickAccess.fromPreferences(prefs));
+                configRequest = protocolImpl.setQuickAccess(prefs);
                 break;
             case DeviceSettingsPreferenceConst.PREF_SONY_PAUSE_WHEN_TAKEN_OFF:
-                configRequest = protocolImpl.setPauseWhenTakenOff(PauseWhenTakenOff.fromPreferences(prefs));
+                configRequest = protocolImpl.setPauseWhenTakenOff(prefs);
                 break;
             case DeviceSettingsPreferenceConst.PREF_SONY_NOTIFICATION_VOICE_GUIDE:
-                configRequest = protocolImpl.setVoiceNotifications(VoiceNotifications.fromPreferences(prefs));
+                configRequest = protocolImpl.setVoiceNotifications(prefs);
                 break;
             case DeviceSettingsPreferenceConst.PREF_SONY_CONNECT_TWO_DEVICES:
                 LOG.warn("Connection to two devices not implemented ('{}')", config);
                 return super.encodeSendConfiguration(config);
             case DeviceSettingsPreferenceConst.PREF_SONY_SPEAK_TO_CHAT:
-                configRequest = protocolImpl.setSpeakToChatEnabled(SpeakToChatEnabled.fromPreferences(prefs));
+                configRequest = protocolImpl.setSpeakToChatEnabled(prefs);
                 break;
             case DeviceSettingsPreferenceConst.PREF_SONY_SPEAK_TO_CHAT_SENSITIVITY:
             case DeviceSettingsPreferenceConst.PREF_SONY_SPEAK_TO_CHAT_FOCUS_ON_VOICE:
             case DeviceSettingsPreferenceConst.PREF_SONY_SPEAK_TO_CHAT_TIMEOUT:
-                configRequest = protocolImpl.setSpeakToChatConfig(SpeakToChatConfig.fromPreferences(prefs));
+                configRequest = protocolImpl.setSpeakToChatConfig(prefs);
                 break;
             default:
                 LOG.warn("Unknown config '{}'", config);

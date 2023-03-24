@@ -280,7 +280,7 @@ public class SonyProtocolImplV2 extends SonyProtocolImplV1 {
     }
 
     @Override
-    public Request getEqualizer() {
+    public Request getEqualizerPreset() {
         return new Request(
                 PayloadTypeV1.EQUALIZER_GET.getMessageType(),
                 new byte[]{

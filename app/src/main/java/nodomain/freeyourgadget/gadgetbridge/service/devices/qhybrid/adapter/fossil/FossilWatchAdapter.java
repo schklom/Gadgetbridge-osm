@@ -83,6 +83,7 @@ import nodomain.freeyourgadget.gadgetbridge.util.AlarmUtils;
 import nodomain.freeyourgadget.gadgetbridge.util.FileUtils;
 import nodomain.freeyourgadget.gadgetbridge.util.GB;
 import nodomain.freeyourgadget.gadgetbridge.util.UriHelper;
+import nodomain.freeyourgadget.gadgetbridge.util.language.impl.FlattenToAsciiTransliterator;
 
 import static nodomain.freeyourgadget.gadgetbridge.service.devices.qhybrid.QHybridSupport.ITEM_STEP_GOAL;
 import static nodomain.freeyourgadget.gadgetbridge.service.devices.qhybrid.QHybridSupport.ITEM_TIMEZONE_OFFSET;
@@ -579,15 +580,18 @@ public class FossilWatchAdapter extends WatchAdapter {
             alarms = (ArrayList<? extends Alarm>) AlarmUtils.mergeOneshotToDeviceAlarms(getDeviceSupport().getDevice(), (nodomain.freeyourgadget.gadgetbridge.entities.Alarm) oneshot, 5);
         }
 
+        FlattenToAsciiTransliterator transliterator = new FlattenToAsciiTransliterator();
         ArrayList<nodomain.freeyourgadget.gadgetbridge.service.devices.qhybrid.requests.fossil.alarm.Alarm> activeAlarms = new ArrayList<>();
         for (Alarm alarm : alarms) {
             if (!alarm.getEnabled()) continue;
+            String title = transliterator.transliterate(alarm.getTitle());
+            String description = transliterator.transliterate(alarm.getDescription());
             if (alarm.getRepetition() == 0) {
                 activeAlarms.add(new nodomain.freeyourgadget.gadgetbridge.service.devices.qhybrid.requests.fossil.alarm.Alarm(
                         (byte) alarm.getMinute(),
                         (byte) alarm.getHour(),
-                        alarm.getTitle(),
-                        alarm.getDescription()
+                        title,
+                        description
                 ));
                 continue;
             }
@@ -597,8 +601,8 @@ public class FossilWatchAdapter extends WatchAdapter {
                     (byte) alarm.getMinute(),
                     (byte) alarm.getHour(),
                     (byte) repitition,
-                    alarm.getTitle(),
-                    alarm.getDescription()
+                    title,
+                    description
             ));
         }
         queueWrite(new AlarmsSetRequest(activeAlarms.toArray(new nodomain.freeyourgadget.gadgetbridge.service.devices.qhybrid.requests.fossil.alarm.Alarm[0]), this) {

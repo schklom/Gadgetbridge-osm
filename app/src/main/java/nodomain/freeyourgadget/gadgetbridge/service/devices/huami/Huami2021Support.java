@@ -17,6 +17,7 @@
 package nodomain.freeyourgadget.gadgetbridge.service.devices.huami;
 
 import static org.apache.commons.lang3.ArrayUtils.subarray;
+import static nodomain.freeyourgadget.gadgetbridge.activities.devicesettings.DeviceSettingsPreferenceConst.SHORTCUT_CARDS_SORTABLE;
 import static nodomain.freeyourgadget.gadgetbridge.devices.huami.Huami2021Service.*;
 import static nodomain.freeyourgadget.gadgetbridge.devices.huami.HuamiService.SUCCESS;
 import static nodomain.freeyourgadget.gadgetbridge.model.ActivityUser.PREF_USER_NAME;
@@ -68,6 +69,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -119,12 +121,14 @@ import nodomain.freeyourgadget.gadgetbridge.service.devices.huami.operations.Upd
 import nodomain.freeyourgadget.gadgetbridge.service.devices.huami.zeppos.AbstractZeppOsService;
 import nodomain.freeyourgadget.gadgetbridge.service.devices.huami.zeppos.operations.ZeppOsAgpsUpdateOperation;
 import nodomain.freeyourgadget.gadgetbridge.service.devices.huami.zeppos.services.ZeppOsAgpsService;
+import nodomain.freeyourgadget.gadgetbridge.service.devices.huami.zeppos.services.ZeppOsShortcutCardsService;
 import nodomain.freeyourgadget.gadgetbridge.service.devices.huami.zeppos.services.ZeppOsConfigService;
 import nodomain.freeyourgadget.gadgetbridge.service.devices.huami.zeppos.services.ZeppOsContactsService;
 import nodomain.freeyourgadget.gadgetbridge.service.devices.huami.zeppos.services.ZeppOsFileUploadService;
 import nodomain.freeyourgadget.gadgetbridge.service.devices.huami.zeppos.services.ZeppOsFtpServerService;
 import nodomain.freeyourgadget.gadgetbridge.service.devices.huami.zeppos.services.ZeppOsMorningUpdatesService;
 import nodomain.freeyourgadget.gadgetbridge.service.devices.huami.zeppos.services.ZeppOsPhoneService;
+import nodomain.freeyourgadget.gadgetbridge.service.devices.huami.zeppos.services.ZeppOsWatchfaceService;
 import nodomain.freeyourgadget.gadgetbridge.service.devices.huami.zeppos.services.ZeppOsWifiService;
 import nodomain.freeyourgadget.gadgetbridge.util.AlarmUtils;
 import nodomain.freeyourgadget.gadgetbridge.util.BitmapUtil;
@@ -157,8 +161,10 @@ public abstract class Huami2021Support extends HuamiSupport {
     private final ZeppOsContactsService contactsService = new ZeppOsContactsService(this);
     private final ZeppOsMorningUpdatesService morningUpdatesService = new ZeppOsMorningUpdatesService(this);
     private final ZeppOsPhoneService phoneService = new ZeppOsPhoneService(this);
+    private final ZeppOsShortcutCardsService shortcutCardsService = new ZeppOsShortcutCardsService(this);
+    private final ZeppOsWatchfaceService watchfaceService = new ZeppOsWatchfaceService(this);
 
-    private final Map<Short, AbstractZeppOsService> mServiceMap = new HashMap<Short, AbstractZeppOsService>() {{
+    private final Map<Short, AbstractZeppOsService> mServiceMap = new LinkedHashMap<Short, AbstractZeppOsService>() {{
         put(fileUploadService.getEndpoint(), fileUploadService);
         put(configService.getEndpoint(), configService);
         put(agpsService.getEndpoint(), agpsService);
@@ -167,6 +173,8 @@ public abstract class Huami2021Support extends HuamiSupport {
         put(contactsService.getEndpoint(), contactsService);
         put(morningUpdatesService.getEndpoint(), morningUpdatesService);
         put(phoneService.getEndpoint(), phoneService);
+        put(shortcutCardsService.getEndpoint(), shortcutCardsService);
+        put(watchfaceService.getEndpoint(), watchfaceService);
     }};
 
     public Huami2021Support() {
@@ -201,73 +209,11 @@ public abstract class Huami2021Support extends HuamiSupport {
         final ZeppOsConfigService.ConfigSetter configSetter = configService.newSetter();
         final Prefs prefs = getDevicePrefs();
 
-        // Handle button presses - these are not preferences
-        // See Huami2021SettingsCustomizer
-        switch (config) {
-            case DeviceSettingsPreferenceConst.PREF_BLUETOOTH_CALLS_PAIR:
-                if (!phoneService.isSupported()) {
-                    GB.toast(getContext(), "Phone service is not supported.", Toast.LENGTH_LONG, GB.ERROR);
-                    return;
-                }
-
-                phoneService.startPairing();
+        // Check if any of the services handles this config
+        for (AbstractZeppOsService service : mServiceMap.values()) {
+            if (service.onSendConfiguration(config, prefs)) {
                 return;
-            case DeviceSettingsPreferenceConst.WIFI_HOTSPOT_START:
-                final String ssid = getDevicePrefs().getString(DeviceSettingsPreferenceConst.WIFI_HOTSPOT_SSID, "");
-                if (StringUtils.isNullOrEmpty(ssid)) {
-                    LOG.error("Wi-Fi hotspot SSID not specified");
-                    return;
-                }
-
-                final String password = getDevicePrefs().getString(DeviceSettingsPreferenceConst.WIFI_HOTSPOT_PASSWORD, "");
-                if (StringUtils.isNullOrEmpty(password) || password.length() < 8) {
-                    LOG.error("Wi-Fi hotspot password is not valid");
-                    return;
-                }
-                wifiService.startWifiHotspot(ssid, password);
-                return;
-            case DeviceSettingsPreferenceConst.WIFI_HOTSPOT_STOP:
-                wifiService.stopWifiHotspot();
-                return;
-            case DeviceSettingsPreferenceConst.FTP_SERVER_START:
-                ftpServerService.startFtpServer(getDevicePrefs().getString(DeviceSettingsPreferenceConst.FTP_SERVER_ROOT_DIR, ""));
-                return;
-            case DeviceSettingsPreferenceConst.FTP_SERVER_STOP:
-                ftpServerService.stopFtpServer();
-                return;
-            case DeviceSettingsPreferenceConst.WIFI_HOTSPOT_SSID:
-            case DeviceSettingsPreferenceConst.WIFI_HOTSPOT_PASSWORD:
-            case DeviceSettingsPreferenceConst.WIFI_HOTSPOT_STATUS:
-            case DeviceSettingsPreferenceConst.FTP_SERVER_ROOT_DIR:
-            case DeviceSettingsPreferenceConst.FTP_SERVER_ADDRESS:
-            case DeviceSettingsPreferenceConst.FTP_SERVER_USERNAME:
-            case DeviceSettingsPreferenceConst.FTP_SERVER_STATUS:
-                // Ignore preferences that are not reloadable
-                return;
-        }
-
-        // morning updates preferences, they do not use the configService
-        switch (config) {
-            case DeviceSettingsPreferenceConst.MORNING_UPDATES_ENABLED:
-                final boolean morningUpdatesEnabled = prefs.getBoolean(config, false);
-                LOG.info("Setting morning updates enabled = {}", morningUpdatesEnabled);
-                morningUpdatesService.setEnabled(morningUpdatesEnabled);
-                return;
-            case DeviceSettingsPreferenceConst.MORNING_UPDATES_CATEGORIES_SORTABLE:
-                final List<String> categories = new ArrayList<>(prefs.getList(config, Collections.emptyList()));
-                final List<String> allCategories = new ArrayList<>(prefs.getList(Huami2021Coordinator.getPrefPossibleValuesKey(config), Collections.emptyList()));
-                LOG.info("Setting morning updates categories = {}", categories);
-                morningUpdatesService.setCategories(categories, allCategories);
-                return;
-        }
-
-        // phoneService preferences, they do not use the configService
-        switch (config) {
-            case DeviceSettingsPreferenceConst.PREF_BLUETOOTH_CALLS_ENABLED:
-                final boolean bluetoothCallsEnabled = prefs.getBoolean(DeviceSettingsPreferenceConst.PREF_BLUETOOTH_CALLS_ENABLED, false);
-                LOG.info("Setting bluetooth calls enabled = {}", bluetoothCallsEnabled);
-                phoneService.setEnabled(bluetoothCallsEnabled);
-                return;
+            }
         }
 
         // Other preferences
@@ -571,6 +517,8 @@ public abstract class Huami2021Support extends HuamiSupport {
         LOG.info("Attempting to set user info...");
 
         final Prefs prefs = GBApplication.getPrefs();
+        final Prefs devicePrefs = getDevicePrefs();
+
         final String alias = prefs.getString(PREF_USER_NAME, null);
         final ActivityUser activityUser = new ActivityUser();
         final int height = activityUser.getHeightCm();
@@ -578,6 +526,7 @@ public abstract class Huami2021Support extends HuamiSupport {
         final int birthYear = activityUser.getYearOfBirth();
         final byte birthMonth = 7; // not in user attributes
         final byte birthDay = 1; // not in user attributes
+        final String region = devicePrefs.getString(DeviceSettingsPreferenceConst.PREF_DEVICE_REGION, "unknown");
 
         if (alias == null || weight == 0 || height == 0 || birthYear == 0) {
             LOG.warn("Unable to set user info, make sure it is set up");
@@ -597,16 +546,18 @@ public abstract class Huami2021Support extends HuamiSupport {
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         try {
-            baos.write(new byte[]{0x01, 0x4f, 0x07, 0x00, 0x00});
+            baos.write(USER_INFO_CMD_SET);
+            baos.write(new byte[]{0x4f, 0x07, 0x00, 0x00});
             baos.write(fromUint16(birthYear));
             baos.write(birthMonth);
             baos.write(birthDay);
             baos.write(genderByte);
-            baos.write((byte) height);
-            baos.write((byte) 0); // TODO ?
+            baos.write(fromUint16(height));
             baos.write(fromUint16(weight * 200));
-            baos.write(BLETypeConversions.fromUint32(userid));
-            baos.write(new byte[]{0x00, 0x00, 0x00, 0x00, 0x75, 0x6e, 0x6b, 0x6e, 0x6f, 0x77, 0x6e, 0x00, 0x09}); // TODO ?
+            baos.write(BLETypeConversions.fromUint64(userid));
+            baos.write(region.getBytes(StandardCharsets.UTF_8));
+            baos.write(0);
+            baos.write(0x09); // TODO ?
             baos.write(alias.getBytes(StandardCharsets.UTF_8));
             baos.write((byte) 0);
 
@@ -1435,6 +1386,11 @@ public abstract class Huami2021Support extends HuamiSupport {
         return this;
     }
 
+    public void requestWatchfaces(final TransactionBuilder builder) {
+        watchfaceService.requestWatchfaces(builder);
+        watchfaceService.requestCurrentWatchface(builder);
+    }
+
     protected Huami2021Support requestShortcuts(final TransactionBuilder builder) {
         LOG.info("Requesting shortcuts");
 
@@ -1507,7 +1463,6 @@ public abstract class Huami2021Support extends HuamiSupport {
 
         configService.requestAllConfigs(builder);
         requestCapabilityReminders(builder);
-        fileUploadService.requestCapability(builder);
 
         for (final HuamiVibrationPatternNotificationType type : coordinator.getVibrationPatternNotificationTypes(gbDevice)) {
             // FIXME: Can we read these from the band?
@@ -1523,13 +1478,16 @@ public abstract class Huami2021Support extends HuamiSupport {
         }
         requestAlarms(builder);
         //requestReminders(builder);
+
+        for (AbstractZeppOsService service : mServiceMap.values()) {
+            service.initialize(builder);
+        }
+
         if (coordinator.supportsBluetoothPhoneCalls(gbDevice)) {
             phoneService.requestCapabilities(builder);
             phoneService.requestEnabled(builder);
         }
         //contactsService.requestCapabilities(builder);
-        morningUpdatesService.getEnabled(builder);
-        morningUpdatesService.getCategories(builder);
     }
 
     @Override
@@ -2548,7 +2506,12 @@ public abstract class Huami2021Support extends HuamiSupport {
     }
 
     protected void handle2021UserInfo(final byte[] payload) {
-        // TODO handle2021UserInfo
+        switch (payload[0]) {
+            case USER_INFO_CMD_SET_ACK:
+                LOG.info("Got user info set ack, status = {}", payload[1]);
+                return;
+        }
+
         LOG.warn("Unexpected user info payload byte {}", String.format("0x%02x", payload[0]));
     }
 

@@ -42,6 +42,7 @@ import nodomain.freeyourgadget.gadgetbridge.entities.Device;
 import nodomain.freeyourgadget.gadgetbridge.entities.HuamiExtendedActivitySampleDao;
 import nodomain.freeyourgadget.gadgetbridge.impl.GBDevice;
 import nodomain.freeyourgadget.gadgetbridge.model.ActivitySummaryParser;
+import nodomain.freeyourgadget.gadgetbridge.service.devices.huami.zeppos.services.ZeppOsShortcutCardsService;
 import nodomain.freeyourgadget.gadgetbridge.service.devices.huami.zeppos.services.ZeppOsConfigService;
 import nodomain.freeyourgadget.gadgetbridge.service.devices.huami.HuamiLanguageType;
 import nodomain.freeyourgadget.gadgetbridge.service.devices.huami.HuamiVibrationPatternNotificationType;
@@ -194,10 +195,14 @@ public abstract class Huami2021Coordinator extends HuamiCoordinator {
         if (supportsControlCenter()) {
             settings.add(R.xml.devicesettings_huami2021_control_center);
         }
+        if (supportsShortcutCards(device)) {
+            settings.add(R.xml.devicesettings_huami2021_shortcut_cards);
+        }
         settings.add(R.xml.devicesettings_nightmode);
         settings.add(R.xml.devicesettings_sleep_mode);
         settings.add(R.xml.devicesettings_liftwrist_display_sensitivity_with_smart);
         settings.add(R.xml.devicesettings_password);
+        settings.add(R.xml.devicesettings_huami2021_watchface);
         settings.add(R.xml.devicesettings_always_on_display);
         settings.add(R.xml.devicesettings_screen_timeout);
         if (supportsAutoBrightness(device)) {
@@ -368,6 +373,10 @@ public abstract class Huami2021Coordinator extends HuamiCoordinator {
 
     public boolean supportsBluetoothPhoneCalls(final GBDevice device) {
         return ZeppOsPhoneService.isSupported(getPrefs(device));
+    }
+
+    public boolean supportsShortcutCards(final GBDevice device) {
+        return ZeppOsShortcutCardsService.isSupported(getPrefs(device));
     }
 
     private boolean supportsConfig(final GBDevice device, final ZeppOsConfigService.ConfigArg config) {

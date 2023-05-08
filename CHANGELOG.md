@@ -2,6 +2,8 @@
 
 #### Next Version
 
+* Initial support for Amazfit GTR 3 Pro
+* Initial support for Sony WH-1000XM5
 * Amazfit Bip U: Remove alarm snooze option
 * Amazfit GTR 4 / GTS 4: Add watch Wi-Fi Hotspot and FTP Server
 * Amazfit GTR 4 / GTS 4: Perform and receive phone calls on watch
@@ -10,11 +12,16 @@
 * Bangle.js: Fix updating timezone in settings.json if the timezone is zero
 * Huami: Implement repeated activity fetching
 * Sony WH-1000XM4: Add speak-to-chat
+* Sony Headphones: Add button modes help
+* Zepp OS: Add shortcut cards preference
 * Zepp OS: Add support for morning updates
 * Zepp OS: Add preference to keep screen on during workout
 * Zepp OS: Add preference for camera remote
 * Zepp OS: Fix activate display upon lift wrist smart mode
+* Zepp OS: Fix Cards and MI AI display item and shortcuts
+* Zepp OS: Fix setting of control center
 * Zepp OS: Fix setting of unknown configuration values
+* Zepp OS: Set watchface from phone
 * Add Croatian transliterator
 * Fix restoring app notification/pebble blacklist preferences on import
 * Cache notifications while devices are out of range (opt-in)

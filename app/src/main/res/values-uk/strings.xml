@@ -3,7 +3,7 @@
     <string name="application_name_generic">Gadgetbridge</string>
     <string name="title_activity_controlcenter_generic">Gadgetbridge</string>
     <string name="action_settings">Налаштування</string>
-    <string name="action_debug">Зневадження</string>
+    <string name="action_debug">Налагодження</string>
     <string name="action_quit">Вийти</string>
     <string name="controlcenter_fetch_activity_data">Синхронізувати</string>
     <string name="controlcenter_find_device">Знайти загублений пристрій</string>
@@ -12,7 +12,7 @@
     <string name="controlcenter_delete_device">Видалити пристрій</string>
     <string name="controlcenter_delete_device_name">Видалити %1$s</string>
     <string name="controlcenter_delete_device_dialogmessage">Це видалить пристрій та всі пов\'язані з ним дані!</string>
-    <string name="title_activity_debug">Зневадження</string>
+    <string name="title_activity_debug">Налагодження</string>
     <!--Strings related to AppManager-->
     <string name="title_activity_appmanager">Менеджер застосунків</string>
     <string name="appmanager_installed_watchapps">Встановлені застосунки</string>
@@ -1249,7 +1249,7 @@
     <string name="activity_summary_detail_editing_gpx_track">Редагувати пов\'язану трасу GPX</string>
     <string name="activity_summary_detail_clear_gpx_track">Очистити трасу GPX</string>
     <string name="activity_summary_detail_select_gpx_track">Вибрати трасу GPX</string>
-    <string name="set">Встановити</string>
+    <string name="set">Налаштувати</string>
     <string name="watchface_install_info">Ви збираєтесь установити цей циферблат:
 \n
 \n%1$s
@@ -2128,4 +2128,84 @@
     <string name="devicetype_soflow_s06">SoFlow SO6</string>
     <string name="pref_title_lock_unlock">Заблокувати</string>
     <string name="devicetype_galaxybuds_2_pro">Galaxy Buds2 Pro</string>
+    <string name="pref_camera_remote_title">Віддалене керування камерою</string>
+    <string name="pref_camera_remote_summary">Дозволяє годиннику керувати камерою телефону</string>
+    <string name="pref_workout_keep_screen_on_title">Лишати екран увімкненим під час тренування</string>
+    <string name="pref_workout_keep_screen_on_summary">Екран буде ввімкнений під час тренування, а яскравість буде регулюватися для безперервного показу даних тренування в режимі реального часу</string>
+    <string name="status">Стан</string>
+    <string name="stop">Зупинити</string>
+    <string name="wifi_hotspot_configuration">Налаштування точки доступу Wi-Fi</string>
+    <string name="wifi_hotspot_start_summary">Запустити точку доступу Wi-Fi з годинника</string>
+    <string name="ftp_server">FTP-сервер</string>
+    <string name="ftp_server_configuration">Налаштування FTP-сервера</string>
+    <string name="ftp_server_root_dir">Кореневий каталог</string>
+    <string name="address">Адреса</string>
+    <string name="username">Ім’я користувача</string>
+    <string name="wifi_hotspot">Точка доступу Wi-Fi</string>
+    <string name="wifi_hotspot_summary">Керування точкою доступу Wi-Fi з годинника</string>
+    <string name="wifi_hotspot_status">Стан точки доступу Wi-Fi</string>
+    <string name="wifi_ssid">SSID</string>
+    <string name="wifi_hotspot_stop_summary">Зупинити точку доступу Wi-Fi з годинника</string>
+    <string name="ftp_server_start_summary">Запустити FTP-сервер з годинника</string>
+    <string name="ftp_server_summary">Керування FTP-сервером з годинника</string>
+    <string name="ftp_server_stop_summary">Зупинити FTP-сервер з годинника</string>
+    <string name="ftp_server_status">Стан FTP-сервера</string>
+    <string name="croatian">Хорватська</string>
+    <string name="sony_speak_to_chat_summary">Автоматично вимикати шумозаглушення, коли ви починаєте говорити.</string>
+    <string name="pref_morning_updates_title">Ранкові оновлення</string>
+    <string name="pref_morning_updates_summary">Показувати оновлення щоранку</string>
+    <string name="pref_morning_updates_categories_title">Категорії ранкових оновлень</string>
+    <string name="pref_morning_updates_categories_summary">Список показуваних щоранку категорій</string>
+    <string name="yesterdays_activity">Учорашня діяльність</string>
+    <string name="bluetooth_calls">Виклики через Bluetooth</string>
+    <string name="bluetooth_calls_pairing">Сполучення викликів Bluetooth</string>
+    <string name="bluetooth_calls_settings">Налаштування викликів Bluetooth</string>
+    <string name="pref_display_caller_summary">Показувати номер телефону або ім\'я для вхідних викликів</string>
+    <string name="pref_pair_bluetooth_calls_title">Пара для викликів через Bluetooth</string>
+    <string name="pref_pair_bluetooth_calls_help_title">Як приймати виклики Bluetooth</string>
+    <string name="pref_pair_bluetooth_calls_help_1">1. Торкніться кнопки нижче, щоб розпочати процес створення пари.</string>
+    <string name="pref_summary_receive_calls_watch">Здійснювати та приймати виклики безпосередньо на годиннику</string>
+    <string name="pref_display_caller_title">Показати контактну інформацію</string>
+    <string name="pref_pair_bluetooth_calls_help_summary">Щоб приймати виклики через Bluetooth, вам потрібно з\'єднати телефон з другим екземпляром годинника.</string>
+    <string name="pref_pair_bluetooth_calls_summary">Клацніть тут, щоб розпочати процес створення пари</string>
+    <string name="pref_pair_bluetooth_calls_help_2">2. Перейдіть до налаштувань Bluetooth свого телефону та створіть пару з новим пристроєм, який з’явиться (назва схожа на поточний годинник, але з суфіксом, наприклад, «Amazfit GTR 4 - AFC8»).</string>
+    <string name="pref_pair_bluetooth_calls_help_warning">ПОПЕРЕДЖЕННЯ. Якщо ввімкнути виклики через Bluetooth без під\'єднання до другого екземпляра, сповіщення про виклики можуть не працювати належним чином.</string>
+    <string name="pref_pair_bluetooth_calls_help_3">3. Увімкніть налаштування викликів Bluetooth нижче.</string>
+    <string name="pref_title_notification_cache_while_disconnected">Кеш поза зоною досяжності</string>
+    <string name="pref_summary_notification_cache_while_disconnected">Надсилати пропущені сповіщення, коли пристрій під\'єднується після перебування поза зоною досяжності</string>
+    <string name="sony_button_mode_help_summary">Опис режиму кожної кнопки</string>
+    <string name="single_tap">Один дотик</string>
+    <string name="double_tap">Подвійне торкання</string>
+    <string name="triple_tap">Потрійний дотик</string>
+    <string name="continue_pressing">Продовжити натискання</string>
+    <string name="quick_attention">Швидка увага</string>
+    <string name="long_press">Затискання</string>
+    <string name="pref_switch_controls_anc_ambient_off">Шумозаглушення ←→ Навколишнє середовище ←→ Вимкнено</string>
+    <string name="sony_button_mode_help_title">Режими кнопок - Довідка</string>
+    <string name="menuitem_mi_ai">MI AI</string>
+    <string name="menuitem_cards">Картки</string>
+    <string name="prefs_shortcut_cards">Картки ярликів</string>
+    <string name="prefs_shortcut_cards_summary">Картки ярликів, які видно під час гортання праворуч по циферблату. Під час роботи застосунку це налаштування не впливає на автоматично створені картки.</string>
+    <string name="menuitem_last_workout">Останнє тренування</string>
+    <string name="menuitem_forecast">Погода</string>
+    <string name="menuitem_total_workout">Загалом тренувань</string>
+    <string name="menuitem_vo2_max">VO₂ Max</string>
+    <string name="menuitem_recommendation">Рекомендації</string>
+    <string name="zepp_os_watchface_rush">Квапливість</string>
+    <string name="zepp_os_watchface_minimalist">Мінімаліст</string>
+    <string name="zepp_os_watchface_vibrant">Яскравість</string>
+    <string name="zepp_os_watchface_rotating_earth">Обертання Землі</string>
+    <string name="zepp_os_watchface_superposition">накладання</string>
+    <string name="zepp_os_watchface_simplicity_data">Простота даних</string>
+    <string name="zepp_os_watchface_multiple_data">Багато даних</string>
+    <string name="zepp_os_watchface_red_fantasy">Червона фантазія</string>
+    <string name="zepp_os_watchface_business_style">Діловий стиль</string>
+    <string name="zepp_os_watchface_emerald_moonlight">Смарагдове місячне сяйво</string>
+    <string name="menuitem_aqi">Індекс якості повітря</string>
+    <string name="devicetype_amazfit_gtr3_pro">Amazfit GTR 3 Pro</string>
+    <string name="fw_upgrade_notice_amazfit_gtr3_pro">Ви збираєтесь установити мікропрограму %s на Amazfit GTR 3 Pro.
+\n
+\nВаш годинник перезавантажиться після встановлення файлу .zip.
+\n
+\nПРОДОВЖУЙТЕ НА ВЛАСНИЙ РИЗИК!</string>
 </resources>

@@ -21,24 +21,22 @@ import org.slf4j.LoggerFactory;
 
 import java.nio.ByteBuffer;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import nodomain.freeyourgadget.gadgetbridge.deviceevents.GBDeviceEvent;
 import nodomain.freeyourgadget.gadgetbridge.deviceevents.GBDeviceEventUpdatePreferences;
-import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.SonyHeadphonesCapabilities;
 import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.prefs.AmbientSoundControl;
 import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.prefs.AmbientSoundControlButtonMode;
 import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.prefs.ButtonModes;
-import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.prefs.EqualizerPreset;
+import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.prefs.EqualizerCustomBands;
 import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.prefs.QuickAccess;
+import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.prefs.SpeakToChatConfig;
+import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.prefs.SpeakToChatEnabled;
+import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.prefs.VoiceNotifications;
 import nodomain.freeyourgadget.gadgetbridge.impl.GBDevice;
 import nodomain.freeyourgadget.gadgetbridge.service.devices.sony.headphones.protocol.MessageType;
 import nodomain.freeyourgadget.gadgetbridge.service.devices.sony.headphones.protocol.Request;
 import nodomain.freeyourgadget.gadgetbridge.service.devices.sony.headphones.protocol.impl.v1.PayloadTypeV1;
-import nodomain.freeyourgadget.gadgetbridge.service.devices.sony.headphones.protocol.impl.v1.params.BatteryType;
-import nodomain.freeyourgadget.gadgetbridge.service.devices.sony.headphones.protocol.impl.v2.PayloadTypeV2;
 import nodomain.freeyourgadget.gadgetbridge.service.devices.sony.headphones.protocol.impl.v2.SonyProtocolImplV2;
 import nodomain.freeyourgadget.gadgetbridge.util.GB;
 
@@ -62,7 +60,7 @@ public class SonyProtocolImplV3 extends SonyProtocolImplV2 {
 
     @Override
     public Request setAmbientSoundControl(final AmbientSoundControl ambientSoundControl) {
-        final ByteBuffer buf = ByteBuffer.allocate(8);
+        final ByteBuffer buf = ByteBuffer.allocate(7);
 
         buf.put(PayloadTypeV1.AMBIENT_SOUND_CONTROL_SET.getCode());
         buf.put((byte) 0x17);
@@ -87,11 +85,59 @@ public class SonyProtocolImplV3 extends SonyProtocolImplV2 {
     }
 
     @Override
+    public Request setSpeakToChatEnabled(final SpeakToChatEnabled config) {
+        return new Request(
+                PayloadTypeV1.AUTOMATIC_POWER_OFF_BUTTON_MODE_SET.getMessageType(),
+                new byte[]{
+                        PayloadTypeV1.AUTOMATIC_POWER_OFF_BUTTON_MODE_SET.getCode(),
+                        (byte) 0x0c,
+                        (byte) (config.isEnabled() ? 0x00 : 0x01), // TODO it's reversed?
+                        (byte) 0x01
+                }
+        );
+    }
+
+    @Override
+    public Request getSpeakToChatEnabled() {
+        return new Request(
+                PayloadTypeV1.AUTOMATIC_POWER_OFF_BUTTON_MODE_GET.getMessageType(),
+                new byte[]{
+                        PayloadTypeV1.AUTOMATIC_POWER_OFF_BUTTON_MODE_GET.getCode(),
+                        (byte) 0x0c
+                }
+        );
+    }
+
+    @Override
+    public Request setSpeakToChatConfig(final SpeakToChatConfig config) {
+        return new Request(
+                PayloadTypeV1.SPEAK_TO_CHAT_CONFIG_SET.getMessageType(),
+                new byte[]{
+                        PayloadTypeV1.SPEAK_TO_CHAT_CONFIG_SET.getCode(),
+                        (byte) 0x0c,
+                        config.getSensitivity().getCode(),
+                        config.getTimeout().getCode()
+                }
+        );
+    }
+
+    @Override
+    public Request getSpeakToChatConfig() {
+        return new Request(
+                PayloadTypeV1.SPEAK_TO_CHAT_CONFIG_GET.getMessageType(),
+                new byte[]{
+                        PayloadTypeV1.SPEAK_TO_CHAT_CONFIG_GET.getCode(),
+                        (byte) 0x0c
+                }
+        );
+    }
+
+    @Override
     public Request getQuickAccess() {
         return new Request(
-                PayloadTypeV3.QUICK_ACCESS_GET.getMessageType(),
+                PayloadTypeV1.AUTOMATIC_POWER_OFF_BUTTON_MODE_GET.getMessageType(),
                 new byte[]{
-                        PayloadTypeV3.QUICK_ACCESS_GET.getCode(),
+                        PayloadTypeV1.AUTOMATIC_POWER_OFF_BUTTON_MODE_GET.getCode(),
                         (byte) 0x0d
                 }
         );
@@ -100,9 +146,9 @@ public class SonyProtocolImplV3 extends SonyProtocolImplV2 {
     @Override
     public Request setQuickAccess(final QuickAccess quickAccess) {
         return new Request(
-                PayloadTypeV3.QUICK_ACCESS_SET.getMessageType(),
+                PayloadTypeV1.AUTOMATIC_POWER_OFF_BUTTON_MODE_SET.getMessageType(),
                 new byte[]{
-                        PayloadTypeV3.QUICK_ACCESS_SET.getCode(),
+                        PayloadTypeV1.AUTOMATIC_POWER_OFF_BUTTON_MODE_SET.getCode(),
                         (byte) 0x0d,
                         (byte) 0x02,
                         quickAccess.getModeDoubleTap().getCode(),
@@ -139,13 +185,53 @@ public class SonyProtocolImplV3 extends SonyProtocolImplV2 {
     }
 
     @Override
+    public Request setEqualizerCustomBands(final EqualizerCustomBands config) {
+        final ByteBuffer buf = ByteBuffer.allocate(10);
+
+        buf.put(PayloadTypeV1.EQUALIZER_SET.getCode());
+        buf.put((byte) 0x00);
+        buf.put((byte) 0xa0);
+        buf.put((byte) 0x06);
+
+        buf.put((byte) (config.getBass() + 10));
+        for (final Integer band : config.getBands()) {
+            buf.put((byte) (band + 10));
+        }
+
+        return new Request(
+                PayloadTypeV1.EQUALIZER_SET.getMessageType(),
+                buf.array()
+        );
+    }
+
+    @Override
+    public Request getVoiceNotifications() {
+        return new Request(
+                PayloadTypeV1.VOICE_NOTIFICATIONS_GET.getMessageType(),
+                new byte[]{
+                        PayloadTypeV1.VOICE_NOTIFICATIONS_GET.getCode(),
+                        (byte) 0x01
+                }
+        );
+    }
+
+    @Override
+    public Request setVoiceNotifications(final VoiceNotifications config) {
+        return new Request(
+                PayloadTypeV1.VOICE_NOTIFICATIONS_SET.getMessageType(),
+                new byte[]{
+                        PayloadTypeV1.VOICE_NOTIFICATIONS_SET.getCode(),
+                        (byte) 0x01,
+                        (byte) (config.isEnabled() ? 0x00 : 0x01)  // reversed?
+                }
+        );
+    }
+
+    @Override
     public List<? extends GBDeviceEvent> handlePayload(final MessageType messageType, final byte[] payload) {
         final PayloadTypeV3 payloadType = PayloadTypeV3.fromCode(messageType, payload[0]);
 
         switch (payloadType) {
-            case QUICK_ACCESS_RET:
-            case QUICK_ACCESS_NOTIFY:
-                return handleQuickAccess(payload);
             case AMBIENT_SOUND_CONTROL_BUTTON_MODE_RET:
             case AMBIENT_SOUND_CONTROL_BUTTON_MODE_NOTIFY:
                 return handleAmbientSoundControlButtonMode(payload);
@@ -257,6 +343,72 @@ public class SonyProtocolImplV3 extends SonyProtocolImplV2 {
 
         final GBDeviceEventUpdatePreferences event = new GBDeviceEventUpdatePreferences()
                 .withPreferences(mode.toPreferences());
+
+        return Collections.singletonList(event);
+    }
+
+    @Override
+    public List<? extends GBDeviceEvent> handleSpeakToChatEnabled(final byte[] payload) {
+        if (payload.length != 4) {
+            LOG.warn("Unexpected payload length {}", payload.length);
+            return Collections.emptyList();
+        }
+
+        if (payload[1] != 0x0c) {
+            LOG.warn("Not speak to chat enabled, ignoring");
+            return Collections.emptyList();
+        }
+
+        final Boolean disabled = booleanFromByte(payload[3]);
+        if (disabled == null) {
+            LOG.warn("Unknown speak to chat enabled code {}", String.format("%02x", payload[3]));
+            return Collections.emptyList();
+        }
+
+        LOG.debug("Speak to chat: {}", !disabled);
+
+        final GBDeviceEventUpdatePreferences event = new GBDeviceEventUpdatePreferences()
+                .withPreferences(new SpeakToChatEnabled(!disabled).toPreferences());
+
+        return Collections.singletonList(event);
+    }
+
+    public List<? extends GBDeviceEvent> handleAutomaticPowerOffButtonMode(final byte[] payload) {
+        switch (payload[1]) {
+            case 0x0c:
+                return handleSpeakToChatEnabled(payload);
+            case 0x0d:
+                return handleQuickAccess(payload);
+        }
+
+        return Collections.emptyList();
+    }
+
+    public List<? extends GBDeviceEvent> handleVoiceNotifications(final byte[] payload) {
+        if (payload.length != 4) {
+            LOG.warn("Unexpected payload length {}", payload.length);
+            return Collections.emptyList();
+        }
+
+        boolean enabled;
+
+        // reversed?
+        switch (payload[2]) {
+            case 0x00:
+                enabled = true;
+                break;
+            case 0x01:
+                enabled = false;
+                break;
+            default:
+                LOG.warn("Unknown voice notifications code {}", String.format("%02x", payload[3]));
+                return Collections.emptyList();
+        }
+
+        LOG.debug("Voice Notifications: {}", enabled);
+
+        final GBDeviceEventUpdatePreferences event = new GBDeviceEventUpdatePreferences()
+                .withPreferences(new VoiceNotifications(enabled).toPreferences());
 
         return Collections.singletonList(event);
     }

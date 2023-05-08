@@ -44,11 +44,13 @@ import nodomain.freeyourgadget.gadgetbridge.database.DBHandler;
 import nodomain.freeyourgadget.gadgetbridge.database.DBHelper;
 import nodomain.freeyourgadget.gadgetbridge.devices.DeviceCoordinator;
 import nodomain.freeyourgadget.gadgetbridge.devices.asteroidos.AsteroidOSDeviceCoordinator;
+import nodomain.freeyourgadget.gadgetbridge.devices.huami.amazfitgtr3pro.AmazfitGTR3ProCoordinator;
 import nodomain.freeyourgadget.gadgetbridge.devices.huami.amazfitgts4.AmazfitGTS4Coordinator;
 import nodomain.freeyourgadget.gadgetbridge.devices.huami.amazfitgts4mini.AmazfitGTS4MiniCoordinator;
 import nodomain.freeyourgadget.gadgetbridge.devices.huami.amazfittrex2.AmazfitTRex2Coordinator;
 import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.coordinators.SonyLinkBudsSCoordinator;
 import nodomain.freeyourgadget.gadgetbridge.devices.soflow.SoFlowCoordinator;
+import nodomain.freeyourgadget.gadgetbridge.devices.sony.headphones.coordinators.SonyWH1000XM5Coordinator;
 import nodomain.freeyourgadget.gadgetbridge.devices.supercars.SuperCarsCoordinator;
 import nodomain.freeyourgadget.gadgetbridge.devices.fitpro.FitProDeviceCoordinator;
 import nodomain.freeyourgadget.gadgetbridge.devices.UnknownDeviceCoordinator;
@@ -308,6 +310,7 @@ public class DeviceHelper {
         result.add(new AmazfitGTR3Coordinator());
         result.add(new AmazfitGTR4Coordinator());
         result.add(new AmazfitTRex2Coordinator());
+        result.add(new AmazfitGTR3ProCoordinator());
         result.add(new MiBand2HRXCoordinator());
         result.add(new MiBand2Coordinator()); // Note: MiBand2 and all of the above  must come before MiBand because detection is hacky, atm
         result.add(new MiBandCoordinator());
@@ -361,6 +364,7 @@ public class DeviceHelper {
         result.add(new SonyWF1000XM3Coordinator());
         result.add(new SonyWH1000XM2Coordinator());
         result.add(new SonyWF1000XM4Coordinator());
+        result.add(new SonyWH1000XM5Coordinator());
         result.add(new QC35Coordinator());
         result.add(new BinarySensorCoordinator());
         result.add(new FlipperZeroCoordinator());

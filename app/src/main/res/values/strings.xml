@@ -159,6 +159,7 @@
     <string name="fw_upgrade_notice_amazfit_gts4">You are about to install the %s firmware on your Amazfit GTS 4.\n\nYour band will reboot after installing the .zip file.\n\nPROCEED AT YOUR OWN RISK!</string>
     <string name="fw_upgrade_notice_amazfit_gts4_mini">You are about to install the %s firmware on your Amazfit GTS 4 Mini.\n\nYour band will reboot after installing the .zip file.\n\nPROCEED AT YOUR OWN RISK!</string>
     <string name="fw_upgrade_notice_amazfit_gtr3">You are about to install the %s firmware on your Amazfit GTR 3.\n\nYour band will reboot after installing the .zip file.\n\nPROCEED AT YOUR OWN RISK!</string>
+    <string name="fw_upgrade_notice_amazfit_gtr3_pro">You are about to install the %s firmware on your Amazfit GTR 3 Pro.\n\nYour band will reboot after installing the .zip file.\n\nPROCEED AT YOUR OWN RISK!</string>
     <string name="fw_upgrade_notice_amazfit_gtr4">You are about to install the %s firmware on your Amazfit GTR 4.\n\nYour band will reboot after installing the .zip file.\n\nPROCEED AT YOUR OWN RISK!</string>
     <string name="fw_upgrade_notice_amazfit_trex2">You are about to install the %s firmware on your Amazfit T-Rex 2.\n\nYour band will reboot after installing the .zip file.\n\nPROCEED AT YOUR OWN RISK!</string>
     <string name="fw_upgrade_notice_amazfit_band7">You are about to install the %s firmware on your Amazfit Band 7.\n\nYour band will reboot after installing the .zip file.\n\nPROCEED AT YOUR OWN RISK!</string>
@@ -914,6 +915,8 @@
     <string name="mi3_prefs_night_mode_summary">Lower band screen brightness automatically at night</string>
     <string name="bip_prefs_shortcuts">Shortcuts</string>
     <string name="bip_prefs_shotcuts_summary">Choose the shortcuts on the band screen</string>
+    <string name="prefs_shortcut_cards">Shortcut Cards</string>
+    <string name="prefs_shortcut_cards_summary">Shortcut cards seen when swiping right on the watchface. When an app is running, auto-generated cards are not affected by this setting.</string>
     <string name="prefs_control_center">Control Center</string>
     <string name="prefs_control_center_summary">Choose the items on the control center dropdown</string>
     <string name="prefs_activate_display_on_lift_sensitivity">Sensitivity</string>
@@ -1210,6 +1213,7 @@
     <string name="devicetype_amazfit_gts4">Amazfit GTS 4</string>
     <string name="devicetype_amazfit_gts4_mini">Amazfit GTS 4 Mini</string>
     <string name="devicetype_amazfit_gtr3">Amazfit GTR 3</string>
+    <string name="devicetype_amazfit_gtr3_pro">Amazfit GTR 3 Pro</string>
     <string name="devicetype_amazfit_gtr4">Amazfit GTR 4</string>
     <string name="devicetype_amazfit_trex_2">Amazfit T-Rex 2</string>
     <string name="devicetype_amazfit_band5">Amazfit Band 5</string>
@@ -1272,6 +1276,7 @@
     <string name="devicetype_sony_wh_1000xm2">Sony WH-1000XM2</string>
     <string name="devicetype_sony_wh_1000xm3">Sony WH-1000XM3</string>
     <string name="devicetype_sony_wh_1000xm4">Sony WH-1000XM4</string>
+    <string name="devicetype_sony_wh_1000xm5">Sony WH-1000XM5</string>
     <string name="devicetype_sony_wf_sp800n">Sony WF-SP800N</string>
     <string name="devicetype_sony_wf_1000xm3">Sony WF-1000XM3</string>
     <string name="devicetype_sony_wf_1000xm4">Sony WF-1000XM4</string>
@@ -1295,6 +1300,12 @@
     <string name="menuitem_notifications">Notifications</string>
     <string name="menuitem_activity">Workout History</string>
     <string name="menuitem_weather">Weather</string>
+    <string name="menuitem_aqi">Air Quality Index</string>
+    <string name="menuitem_forecast">Forecast</string>
+    <string name="menuitem_last_workout">Last workout</string>
+    <string name="menuitem_total_workout">Total workout</string>
+    <string name="menuitem_vo2_max">VO₂ Max</string>
+    <string name="menuitem_recommendation">Recommendation</string>
     <string name="menuitem_breathing">Breathing</string>
     <string name="menuitem_cycles">Cycle Tracking</string>
     <string name="menuitem_alarm">Alarm</string>
@@ -1355,6 +1366,16 @@
     <string name='menuitem_eject_water'>Eject Water</string>
     <string name="menuitem_unknown_app">Unknown (%s)</string>
     <string name="menuitem_unsupported">[UNSUPPORTED] %s</string>
+    <string name="zepp_os_watchface_red_fantasy">Red Fantasy</string>
+    <string name="zepp_os_watchface_multiple_data">Multiple Data</string>
+    <string name="zepp_os_watchface_rush">Rush</string>
+    <string name="zepp_os_watchface_minimalist">Minimalist</string>
+    <string name="zepp_os_watchface_simplicity_data">Simplicity Data</string>
+    <string name="zepp_os_watchface_vibrant">Vibrant</string>
+    <string name="zepp_os_watchface_business_style">Business Style</string>
+    <string name="zepp_os_watchface_emerald_moonlight">Emerald Moonlight</string>
+    <string name="zepp_os_watchface_rotating_earth">Rotating Earth</string>
+    <string name="zepp_os_watchface_superposition">superposition</string>
     <string name="yesterdays_activity">Yesterday\'s Activity</string>
     <string name="watch9_time_minutes">Minutes:</string>
     <string name="watch9_time_hours">Hours:</string>

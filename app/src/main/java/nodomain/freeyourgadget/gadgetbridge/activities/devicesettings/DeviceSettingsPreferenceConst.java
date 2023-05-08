@@ -45,6 +45,7 @@ public class DeviceSettingsPreferenceConst {
 
     public static final String PREF_LANGUAGE = "language";
     public static final String PREF_LANGUAGE_AUTO = "auto";
+    public static final String PREF_DEVICE_REGION = "device_region";
     public static final String PREF_DATEFORMAT = "dateformat";
     public static final String PREF_TIMEFORMAT = "timeformat";
     public static final String PREF_TIMEFORMAT_24H = "24h";
@@ -248,6 +249,10 @@ public class DeviceSettingsPreferenceConst {
 
     public static final String MORNING_UPDATES_ENABLED = "morning_updates_enabled";
     public static final String MORNING_UPDATES_CATEGORIES_SORTABLE = "morning_updates_categories";
+
+    public static final String SHORTCUT_CARDS_SORTABLE = "shortcut_cards_sortable";
+
+    public static final String PREF_WATCHFACE = "watchface";
 
     public static final String FTP_SERVER_ROOT_DIR = "ftp_server_root_dir";
     public static final String FTP_SERVER_ADDRESS = "ftp_server_address";

@@ -46,7 +46,6 @@ import nodomain.freeyourgadget.gadgetbridge.capabilities.HeartRateCapability;
 import nodomain.freeyourgadget.gadgetbridge.capabilities.password.PasswordCapabilityImpl;
 import nodomain.freeyourgadget.gadgetbridge.database.DBHandler;
 import nodomain.freeyourgadget.gadgetbridge.database.DBHelper;
-import nodomain.freeyourgadget.gadgetbridge.devices.huami.HuamiActivitySummaryParser;
 import nodomain.freeyourgadget.gadgetbridge.devices.miband.MiBandConst;
 import nodomain.freeyourgadget.gadgetbridge.entities.AlarmDao;
 import nodomain.freeyourgadget.gadgetbridge.entities.BatteryLevelDao;
@@ -380,5 +379,9 @@ public abstract class AbstractDeviceCoordinator implements DeviceCoordinator {
                 HeartRateCapability.MeasurementInterval.MINUTES_30,
                 HeartRateCapability.MeasurementInterval.HOUR_1
         );
+    }
+
+    public boolean supportsNavigation() {
+        return false;
     }
 }

@@ -74,7 +74,7 @@
         android:theme="@style/GadgetbridgeTheme"
         tools:replace="android:label">
         <activity
-            android:name=".activities.ControlCenterv2"
+            android:name=".activities.MainActivity"
             android:label="@string/title_activity_controlcenter"
             android:theme="@style/SplashTheme"
             android:launchMode="singleTop">
@@ -89,7 +89,7 @@
         <activity
             android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".activities.ControlCenterv2" />
+            android:parentActivityName=".activities.MainActivity" />
         <activity
             android:name=".activities.AboutUserPreferencesActivity"
             android:label="@string/activity_prefs_about_you"
@@ -113,12 +113,12 @@
         <activity
             android:name=".activities.ActivitySummariesActivity"
             android:label="@string/activity_summaries"
-            android:parentActivityName=".activities.ControlCenterv2" />
+            android:parentActivityName=".activities.MainActivity" />
         <activity
             android:name=".activities.appmanager.AppManagerActivity"
             android:label="@string/title_activity_appmanager"
             android:launchMode="singleTop"
-            android:parentActivityName=".activities.ControlCenterv2" />
+            android:parentActivityName=".activities.MainActivity" />
         <activity
             android:name=".activities.AppBlacklistActivity"
             android:label="@string/title_activity_notification_management"
@@ -130,11 +130,11 @@
         <activity
             android:name=".devices.vesc.VescControlActivity"
             android:label="@string/devicetype_vesc"
-            android:parentActivityName=".activities.ControlCenterv2" />
+            android:parentActivityName=".activities.MainActivity" />
         <activity
             android:name=".activities.FwAppInstallerActivity"
             android:label="@string/title_activity_fw_app_insaller"
-            android:parentActivityName=".activities.ControlCenterv2">
+            android:parentActivityName=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -437,23 +437,23 @@
         <activity
             android:name=".activities.DebugActivity"
             android:label="@string/title_activity_debug"
-            android:parentActivityName=".activities.ControlCenterv2"
+            android:parentActivityName=".activities.MainActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".activities.AboutActivity"
             android:label="@string/about_activity_title"
-            android:parentActivityName=".activities.ControlCenterv2"
+            android:parentActivityName=".activities.MainActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".activities.OpenFwAppInstallerActivity"
             android:label="@string/open_fw_installer_info_text_title"
-            android:parentActivityName=".activities.ControlCenterv2"
+            android:parentActivityName=".activities.MainActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".activities.BatteryInfoActivity"
             android:label="@string/battery_detail_activity_title"
-            android:parentActivityName=".activities.ControlCenterv2" />
+            android:parentActivityName=".activities.MainActivity" />
 
         <activity
             android:name=".activities.ActivitySummaryDetail"
@@ -469,17 +469,17 @@
         <activity
             android:name=".activities.DataManagementActivity"
             android:label="@string/title_activity_db_management"
-            android:parentActivityName=".activities.ControlCenterv2"
+            android:parentActivityName=".activities.MainActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".activities.NotificationManagementActivity"
             android:label="@string/title_activity_notification_management"
-            android:parentActivityName=".activities.ControlCenterv2"
+            android:parentActivityName=".activities.MainActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".activities.DiscoveryActivity"
             android:label="@string/title_activity_discovery"
-            android:parentActivityName=".activities.ControlCenterv2" />
+            android:parentActivityName=".activities.MainActivity" />
         <activity
             android:name=".activities.AndroidPairingActivity"
             android:label="@string/title_activity_android_pairing" />
@@ -487,7 +487,7 @@
             android:name=".devices.banglejs.AppsManagementActivity"
             android:label="@string/title_activity_appmanager"
             android:launchMode="singleTop"
-            android:parentActivityName=".activities.ControlCenterv2" />
+            android:parentActivityName=".activities.MainActivity" />
         <activity
             android:name=".devices.miband.MiBandPairingActivity"
             android:label="@string/title_activity_mi_band_pairing" />
@@ -509,15 +509,15 @@
         <activity
             android:name=".activities.charts.ChartsActivity"
             android:label="@string/title_activity_charts"
-            android:parentActivityName=".activities.ControlCenterv2" />
+            android:parentActivityName=".activities.MainActivity" />
         <activity
             android:name=".activities.ConfigureAlarms"
             android:label="@string/title_activity_set_alarm"
-            android:parentActivityName=".activities.ControlCenterv2" />
+            android:parentActivityName=".activities.MainActivity" />
         <activity
             android:name=".activities.ConfigureReminders"
             android:label="@string/title_activity_set_reminders"
-            android:parentActivityName=".activities.ControlCenterv2" />
+            android:parentActivityName=".activities.MainActivity" />
         <activity
             android:name=".activities.ConfigureContacts"
             android:label="@string/title_activity_set_contacts"
@@ -525,11 +525,11 @@
         <activity
             android:name=".activities.ConfigureWorldClocks"
             android:label="@string/pref_world_clocks_title"
-            android:parentActivityName=".activities.ControlCenterv2" />
+            android:parentActivityName=".activities.MainActivity" />
         <activity
             android:name=".activities.devicesettings.DeviceSettingsActivity"
             android:label="@string/title_activity_device_specific_settings"
-            android:parentActivityName=".activities.ControlCenterv2" />
+            android:parentActivityName=".activities.MainActivity" />
         <activity
             android:name=".activities.AlarmDetails"
             android:label="@string/title_activity_alarm_details"
@@ -556,7 +556,7 @@
         <activity
             android:name=".activities.VibrationActivity"
             android:label="@string/title_activity_vibration"
-            android:parentActivityName=".activities.ControlCenterv2" />
+            android:parentActivityName=".activities.MainActivity" />
         <activity
             android:name=".activities.NotificationFilterActivity"
             android:label="@string/title_activity_notification_filter"
@@ -651,7 +651,7 @@
             android:name=".devices.qhybrid.ConfigActivity"
             android:label="@string/qhybrid_title_watchface"
             android:exported="true"
-            android:parentActivityName=".activities.ControlCenterv2" />
+            android:parentActivityName=".activities.MainActivity" />
         <activity
             android:name=".devices.qhybrid.QHybridAppChoserActivity"
             android:label="@string/qhybrid_title_apps"
@@ -661,7 +661,7 @@
             android:name=".devices.qhybrid.HRConfigActivity"
             android:label="@string/qhybrid_title_watchface"
             android:exported="true"
-            android:parentActivityName=".activities.ControlCenterv2" />
+            android:parentActivityName=".activities.MainActivity" />
         <activity android:name=".devices.qhybrid.WidgetSettingsActivity"
             android:label="@string/add_widget"
             android:parentActivityName=".devices.qhybrid.HRConfigActivity" />

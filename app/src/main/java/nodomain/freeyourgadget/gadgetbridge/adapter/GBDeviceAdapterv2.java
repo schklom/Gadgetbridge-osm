@@ -30,7 +30,6 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.ArraySet;
 import android.util.Pair;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -75,7 +74,6 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -83,7 +81,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import nodomain.freeyourgadget.gadgetbridge.GBApplication;
@@ -92,8 +89,8 @@ import nodomain.freeyourgadget.gadgetbridge.activities.ActivitySummariesActivity
 import nodomain.freeyourgadget.gadgetbridge.activities.BatteryInfoActivity;
 import nodomain.freeyourgadget.gadgetbridge.activities.ConfigureAlarms;
 import nodomain.freeyourgadget.gadgetbridge.activities.ConfigureReminders;
-import nodomain.freeyourgadget.gadgetbridge.activities.ControlCenterv2;
 import nodomain.freeyourgadget.gadgetbridge.activities.HeartRateDialog;
+import nodomain.freeyourgadget.gadgetbridge.activities.MainActivity;
 import nodomain.freeyourgadget.gadgetbridge.activities.OpenFwAppInstallerActivity;
 import nodomain.freeyourgadget.gadgetbridge.activities.VibrationActivity;
 import nodomain.freeyourgadget.gadgetbridge.activities.charts.ChartsActivity;
@@ -368,8 +365,8 @@ public class GBDeviceAdapterv2 extends ListAdapter<GBDevice, GBDeviceAdapterv2.V
             }
         }
         holder.heartRateStatusBox.setVisibility((device.isInitialized() && coordinator.supportsRealtimeData() && coordinator.supportsManualHeartRateMeasurement(device)) ? View.VISIBLE : View.GONE);
-        if (parent.getContext() instanceof ControlCenterv2) {
-            ActivitySample sample = ((ControlCenterv2) parent.getContext()).getCurrentHRSample();
+        if (parent.getContext() instanceof MainActivity) {
+            ActivitySample sample = ((MainActivity) parent.getContext()).getCurrentHRSample();
             if (sample != null) {
                 holder.heartRateStatusLabel.setText(String.valueOf(sample.getHeartRate()));
             } else {

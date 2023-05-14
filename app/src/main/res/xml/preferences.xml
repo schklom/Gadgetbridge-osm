@@ -376,6 +376,12 @@
             android:summary="@string/pref_check_permission_status_summary"
             android:title="@string/pref_check_permission_status" />
         <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="show_changelog"
+            android:layout="@layout/preference_checkbox"
+            android:summary="@string/pref_show_changelog_summary"
+            android:title="@string/pref_show_changelog" />
+        <CheckBoxPreference
             android:layout="@layout/preference_checkbox"
             android:defaultValue="true"
             android:key="cache_weather"

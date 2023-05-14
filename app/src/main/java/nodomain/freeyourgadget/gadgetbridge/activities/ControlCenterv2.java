@@ -299,8 +299,9 @@ public class ControlCenterv2 extends AppCompatActivity
             checkAndRequestPermissions(true);
         }
 
+        final boolean showChangelog = prefs.getBoolean("show_changelog", true);
         ChangeLog cl = createChangeLog();
-        if (cl.isFirstRun()) {
+        if (showChangelog && cl.isFirstRun()) {
             try {
                 cl.getLogDialog().show();
             } catch (Exception ignored) {

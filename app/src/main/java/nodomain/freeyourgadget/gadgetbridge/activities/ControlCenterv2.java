@@ -34,6 +34,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
+import android.util.SparseArray;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -408,7 +409,19 @@ public class ControlCenterv2 extends AppCompatActivity
                 + "color: " + AndroidUtils.getTextColorHex(getBaseContext()) + "; "
                 + "background-color: " + AndroidUtils.getBackgroundColorHex(getBaseContext()) + ";" +
                 "}";
-        return new ChangeLog(this, css);
+
+        final boolean isNightly = BuildConfig.APPLICATION_ID.contains("nightly");
+
+        return new ChangeLog(this, css) {
+            @Override
+            protected SparseArray<ReleaseItem> getMasterChangeLog(boolean full) {
+                if (isNightly) {
+                    return readChangeLogFromResource(R.xml.changelog_git, full);
+                } else {
+                    return super.getMasterChangeLog(full);
+                }
+            }
+        };
     }
 
     private void launchDiscoveryActivity() {

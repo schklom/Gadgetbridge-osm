@@ -1,0 +1,12 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".activities.DashboardFragment">
+
+    <item
+        android:id="@+id/dashboard_choose_devices"
+        android:icon="@drawable/ic_devices_other"
+        android:title="Choose devices"
+        app:iconTint="@color/primarytext_dark"
+        app:showAsAction="ifRoom" />
+</menu>

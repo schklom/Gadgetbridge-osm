@@ -462,6 +462,8 @@ public class ChartsActivity extends AbstractGBFragmentActivity implements Charts
                     return getString(R.string.stats_title);
                 case "livestats":
                     return getString(R.string.liveactivity_live_activity);
+                case "cycling":
+                    return getString(R.string.charts_cycling);
             }
             return super.getPageTitle(position);
         }
